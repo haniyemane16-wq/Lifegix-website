@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-// TODO: set RESEND_API_KEY in .env.local — get it at resend.com/api-keys
 const TO_EMAIL = "haniyemane16@gmail.com";
 
 export async function POST(req: NextRequest) {
+  // Instantiate inside handler so build doesn't fail without the env var
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const { name, email, phone, service, message } = await req.json();
 
   if (!name || !email || !message) {
