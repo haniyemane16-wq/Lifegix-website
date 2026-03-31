@@ -9,7 +9,13 @@ const TO_EMAIL = "haniyemane16@gmail.com";
 export async function POST(req: NextRequest) {
   // Instantiate inside handler so build doesn't fail without the env var
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const { name, email, phone, service, message } = await req.json();
+
+  let name: string, email: string, phone: string, service: string, message: string;
+  try {
+    ({ name, email, phone, service, message } = await req.json());
+  } catch {
+    return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
+  }
 
   if (!name || !email || !message) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
