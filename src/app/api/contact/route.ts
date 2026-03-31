@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
+// Force dynamic so Next.js never statically evaluates this route at build time
+export const dynamic = "force-dynamic";
+
 const TO_EMAIL = "haniyemane16@gmail.com";
 
 export async function POST(req: NextRequest) {
