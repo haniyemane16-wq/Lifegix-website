@@ -342,29 +342,42 @@ const BRANCHES = [
   "Anders",
 ];
 
-const SERVICE_CONFIG = {
-  website: {
-    label: "Website",
-    upliftPct: 0.15,
-    eenmalig: 500,
-    maand: 50,
-    desc: "Meer klanten via Google & betere eerste indruk",
-  },
-  ai: {
-    label: "AI-agent",
-    upliftPct: 0.10,
-    eenmalig: 300,
-    maand: 75,
-    desc: "Automatische opvolging & 24/7 klantenservice",
-  },
-  both: {
-    label: "Website + AI-agent",
-    upliftPct: 0.25,
-    eenmalig: 800,
-    maand: 125,
-    desc: "Maximale groei: meer bezoekers én slimmere opvolging",
-  },
+const SERVICE_META = {
+  website: { label: "Website", upliftPct: 0.15, desc: "Meer klanten via Google & betere eerste indruk" },
+  ai:      { label: "AI-agent", upliftPct: 0.10, desc: "Automatische opvolging & 24/7 klantenservice" },
+  both:    { label: "Website + AI-agent", upliftPct: 0.25, desc: "Maximale groei: meer bezoekers én slimmere opvolging" },
 };
+
+const PRICE_TIERS = {
+  website: [
+    { maxOmzet: 5_000,      eenmalig: 500,   maand: 50 },
+    { maxOmzet: 20_000,     eenmalig: 1_000, maand: 75 },
+    { maxOmzet: Infinity,   eenmalig: 1_500, maand: 100 },
+  ],
+  ai: [
+    { maxOmzet: 5_000,      eenmalig: 300,   maand: 75 },
+    { maxOmzet: 20_000,     eenmalig: 600,   maand: 120 },
+    { maxOmzet: Infinity,   eenmalig: 1_000, maand: 150 },
+  ],
+};
+
+function getTier(dienst: "website" | "ai", maandomzet: number) {
+  return PRICE_TIERS[dienst].find((t) => maandomzet < t.maxOmzet)!;
+}
+
+function getPricing(dienst: "website" | "ai" | "both", maandomzet: number): { eenmalig: number; maand: number; korting: boolean } {
+  if (dienst === "both") {
+    const w = getTier("website", maandomzet);
+    const a = getTier("ai", maandomzet);
+    return {
+      eenmalig: Math.round((w.eenmalig + a.eenmalig) * 0.8),
+      maand:    Math.round((w.maand    + a.maand)    * 0.8),
+      korting:  true,
+    };
+  }
+  const tier = getTier(dienst, maandomzet);
+  return { eenmalig: tier.eenmalig, maand: tier.maand, korting: false };
+}
 
 function ROICalculator({ onCalculate }: { onCalculate: (msg: string) => void }) {
   const [branche, setBranche] = useState("");
@@ -375,31 +388,37 @@ function ROICalculator({ onCalculate }: { onCalculate: (msg: string) => void }) 
     huidig: number;
     extra: number;
     terugverdien: number;
-    cfg: typeof SERVICE_CONFIG[keyof typeof SERVICE_CONFIG];
+    label: string;
+    desc: string;
+    eenmalig: number;
+    maand: number;
+    korting: boolean;
   } | null>(null);
 
   const calculate = () => {
     const k = parseInt(klanten, 10);
     const o = parseFloat(omzetPerKlant);
     if (!k || !o || k <= 0 || o <= 0) return;
-    const cfg = SERVICE_CONFIG[dienst];
+    const meta = SERVICE_META[dienst];
     const huidig = k * o;
-    const extra = Math.round(huidig * cfg.upliftPct);
-    const terugverdien = Math.ceil(cfg.eenmalig / Math.max(extra - cfg.maand, 1));
-    setResult({ huidig, extra, terugverdien, cfg });
+    const extra = Math.round(huidig * meta.upliftPct);
+    const { eenmalig, maand, korting } = getPricing(dienst, huidig);
+    const terugverdien = Math.ceil(eenmalig / Math.max(extra - maand, 1));
+    setResult({ huidig, extra, terugverdien, label: meta.label, desc: meta.desc, eenmalig, maand, korting });
   };
 
   const sendToContact = () => {
     if (!result) return;
+    const kortingRegel = result.korting ? " (incl. 20% combinatiekorting)" : "";
     const msg =
       `[ROI Calculator resultaat]\n` +
       `Branche: ${branche || "Niet opgegeven"}\n` +
       `Klanten per maand: ${klanten}\n` +
       `Gemiddelde omzet per klant: €${omzetPerKlant}\n` +
       `Huidige maandomzet: €${result.huidig.toLocaleString("nl-NL")}\n` +
-      `Gewenste dienst: ${result.cfg.label}\n` +
+      `Gewenste dienst: ${result.label}\n` +
       `Geschatte extra omzet/maand: +€${result.extra.toLocaleString("nl-NL")}\n` +
-      `Aanbevolen investering: €${result.cfg.eenmalig} eenmalig + €${result.cfg.maand}/mnd\n\n` +
+      `Aanbevolen investering: €${result.eenmalig} eenmalig + €${result.maand}/mnd${kortingRegel}\n\n` +
       `Graag meer informatie over een vrijblijvende offerte.`;
     onCalculate(msg);
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
@@ -515,13 +534,15 @@ function ROICalculator({ onCalculate }: { onCalculate: (msg: string) => void }) 
                   </p>
                 </div>
                 <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
-                  <p className="text-xs text-white/40 mb-1">Aanbevolen investering</p>
+                  <p className="text-xs text-white/40 mb-1">
+                    Aanbevolen investering{result.korting && <span className="ml-1 text-violet-400">−20%</span>}
+                  </p>
                   <p className="text-lg font-bold text-white">
-                    €{result.cfg.eenmalig}
+                    €{result.eenmalig.toLocaleString("nl-NL")}
                     <span className="text-xs font-normal text-white/40"> eenmalig</span>
                   </p>
                   <p className="text-sm font-semibold text-violet-300">
-                    + €{result.cfg.maand}
+                    + €{result.maand}
                     <span className="text-xs font-normal text-white/40">/mnd</span>
                   </p>
                 </div>
@@ -534,8 +555,8 @@ function ROICalculator({ onCalculate }: { onCalculate: (msg: string) => void }) 
                   </svg>
                 </div>
                 <p className="text-sm text-white/60">
-                  <span className="text-white/90 font-medium">{result.cfg.label}:</span>{" "}
-                  {result.cfg.desc}. Terugverdientijd eenmalige investering:{" "}
+                  <span className="text-white/90 font-medium">{result.label}:</span>{" "}
+                  {result.desc}. Terugverdientijd eenmalige investering:{" "}
                   <span className="text-violet-300 font-medium">
                     {result.terugverdien <= 1 ? "minder dan 1 maand" : `~${result.terugverdien} maanden`}
                   </span>.
