@@ -134,10 +134,6 @@ function Services() {
       tagline: "Snel online, professioneel en vindbaar",
       description:
         "Een moderne website die 24/7 voor jouw bedrijf werkt. Ontworpen voor conversie, geoptimaliseerd voor Google en gebouwd om lang mee te gaan.",
-      price: "€500",
-      priceLabel: "eenmalig",
-      monthly: "€50/maand",
-      monthlyLabel: "hosting & onderhoud",
       features: [
         "Volledig op maat ontworpen",
         "Mobielvriendelijk (responsive)",
@@ -154,10 +150,6 @@ function Services() {
       tagline: "Laat AI het zware werk doen",
       description:
         "Van automatische klantreacties tot slimme planningssystemen — ik bouw AI-agents die repetitieve taken voor jou overnemen.",
-      price: "€300",
-      priceLabel: "setup",
-      monthly: "€75/maand",
-      monthlyLabel: "beheer & updates",
       features: [
         "Persoonlijke AI-assistent",
         "Automatische klantopvolging",
@@ -211,22 +203,17 @@ function Services() {
               </p>
 
               {/* Price */}
-              <div className="mt-6 flex items-end gap-3">
-                <div>
-                  <span className="text-3xl font-bold text-white">{s.price}</span>
-                  <span className="text-white/40 text-sm ml-1">
-                    {s.priceLabel}
-                  </span>
-                </div>
-                <span className="text-white/30 mb-1">+</span>
-                <div>
-                  <span className="text-lg font-semibold text-violet-300">
-                    {s.monthly}
-                  </span>
-                  <span className="text-white/40 text-xs ml-1">
-                    {s.monthlyLabel}
-                  </span>
-                </div>
+              <div className="mt-6">
+                <p className="text-2xl font-bold text-white">Prijs op maat</p>
+                <p className="mt-1 text-xs text-white/40">
+                  Gebruik de calculator hieronder voor jouw persoonlijke berekening
+                </p>
+                <a
+                  href="#bereken"
+                  className="mt-3 inline-block text-sm font-medium text-violet-400 hover:text-violet-300 transition-colors"
+                >
+                  Bereken jouw prijs →
+                </a>
               </div>
 
               {/* Features */}
