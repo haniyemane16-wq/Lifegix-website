@@ -51,12 +51,27 @@ export async function POST(req: NextRequest) {
       `,
     });
 
+    // Parse calculator data out of the message if present
+    const ROI_MARKER = "[ROI Calculator resultaat]";
+    let calculatorData: string | null = null;
+    let customerMessage = message;
+    if (message.startsWith(ROI_MARKER)) {
+      const splitIndex = message.indexOf("\n\n");
+      if (splitIndex !== -1) {
+        calculatorData = message.slice(0, splitIndex).trim();
+        customerMessage = message.slice(splitIndex).trim();
+      } else {
+        calculatorData = message.trim();
+        customerMessage = "";
+      }
+    }
+
     // Notify n8n webhook — errors are caught so the main flow is never affected
     try {
       await fetch("https://hanibal-agent.app.n8n.cloud/webhook/6ccef574-98b0-49ed-b9b6-10df0b4c6475", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, service, message }),
+        body: JSON.stringify({ name, email, phone, service, message, calculatorData, customerMessage }),
       });
     } catch (webhookErr) {
       console.error("n8n webhook error:", webhookErr);
