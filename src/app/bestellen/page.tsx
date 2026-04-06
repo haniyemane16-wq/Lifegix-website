@@ -209,14 +209,16 @@ export default function BestelPage() {
                       : "bg-white/[0.03] hover:bg-white/[0.05]"
                   }`}
                 >
-                  {p.highlighted && (
-                    <span className="absolute top-4 right-4 text-xs font-semibold px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/20">
-                      Populair
-                    </span>
-                  )}
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-white">{p.naam}</h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-lg font-bold text-white">{p.naam}</h3>
+                        {p.highlighted && (
+                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/20">
+                            Aanbevolen
+                          </span>
+                        )}
+                      </div>
                       <ul className="mt-3 space-y-1.5">
                         {p.features.map((f) => (
                           <li key={f} className="flex items-start gap-2 text-sm text-white/60">
@@ -232,6 +234,12 @@ export default function BestelPage() {
                       <div className="mt-1 text-sm font-medium text-violet-300">
                         + €{p.maandelijks}/mnd
                       </div>
+                      {p.id !== "aionly" && (
+                        <div className="mt-2 text-xs text-violet-400/70 leading-snug">
+                          Met AI agent: €{p.eenmalig + AI_EENMALIG} eenmalig<br />
+                          + €{p.maandelijks + AI_MAANDELIJKS}/mnd
+                        </div>
+                      )}
                     </div>
                   </div>
                 </button>
