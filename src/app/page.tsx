@@ -34,12 +34,20 @@ function Navbar() {
           <a href="#portfolio" className="hover:text-white transition-colors">Portfolio</a>
           <a href="#contact" className="hover:text-white transition-colors">Contact</a>
         </div>
-        <a
-          href="#contact"
-          className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors"
-        >
-          Gratis gesprek
-        </a>
+        <div className="flex items-center gap-3">
+          <a
+            href="/bestellen"
+            className="text-sm font-medium px-4 py-2 rounded-lg border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 transition-colors"
+          >
+            Bestellen
+          </a>
+          <a
+            href="#contact"
+            className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors"
+          >
+            Gratis gesprek
+          </a>
+        </div>
       </div>
     </nav>
   );
