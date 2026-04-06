@@ -60,8 +60,15 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ checkoutUrl: payment.getCheckoutUrl() });
-  } catch (err) {
-    console.error("Mollie error:", err);
-    return NextResponse.json({ error: "Betaling aanmaken mislukt." }, { status: 500 });
+  } catch (err: unknown) {
+    const asAny = err as Record<string, unknown>;
+    const detail = err instanceof Error
+      ? `${err.message}${asAny["field"] ? ` (field: ${asAny["field"]})` : ""}`
+      : String(err);
+    console.error("Mollie error:", JSON.stringify(err, null, 2));
+    return NextResponse.json(
+      { error: `Betaling aanmaken mislukt: ${detail}` },
+      { status: 500 },
+    );
   }
 }

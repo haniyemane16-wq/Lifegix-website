@@ -33,6 +33,11 @@ const PAKKETTEN = [
 const AI_EENMALIG = 300;
 const AI_MAANDELIJKS = 75;
 
+const BUNDEL: Record<string, { eenmalig: number; maandelijks: number; korting: number }> = {
+  starter:  { eenmalig: 750,  maandelijks: 110, korting: 50 },
+  business: { eenmalig: 1200, maandelijks: 135, korting: 75 },
+};
+
 type PakketId = (typeof PAKKETTEN)[number]["id"];
 
 function CheckIcon() {
@@ -234,10 +239,14 @@ export default function BestelPage() {
                       <div className="mt-1 text-sm font-medium text-violet-300">
                         + €{p.maandelijks}/mnd
                       </div>
-                      {p.id !== "aionly" && (
-                        <div className="mt-2 text-xs text-violet-400/70 leading-snug">
-                          Met AI agent: €{p.eenmalig + AI_EENMALIG} eenmalig<br />
-                          + €{p.maandelijks + AI_MAANDELIJKS}/mnd
+                      {p.id !== "aionly" && BUNDEL[p.id] && (
+                        <div className="mt-2 text-xs leading-snug">
+                          <span className="text-violet-400/80">
+                            Met AI agent: €{BUNDEL[p.id].eenmalig} eenmalig + €{BUNDEL[p.id].maandelijks}/mnd
+                          </span>
+                          <span className="ml-1 text-green-400 font-semibold">
+                            (bespaar €{BUNDEL[p.id].korting})
+                          </span>
                         </div>
                       )}
                     </div>
