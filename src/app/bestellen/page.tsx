@@ -457,9 +457,52 @@ export default function BestelPage() {
                 >
                   {loading ? "Betaling aanmaken…" : `Bestellen en betalen — €${totaalEenmalig}`}
                 </button>
-                <p className="mt-3 text-center text-xs text-white/30">
-                  Veilig betalen via Mollie · iDEAL, creditcard & meer
-                </p>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+                  {/* Veilig betalen */}
+                  <span className="flex items-center gap-1.5 text-xs text-white/40">
+                    <svg width="13" height="14" viewBox="0 0 13 14" fill="none">
+                      <rect x="1" y="6" width="11" height="7" rx="2" stroke="currentColor" strokeWidth="1.3"/>
+                      <path d="M4 6V4a2.5 2.5 0 0 1 5 0v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    </svg>
+                    Veilig betalen
+                  </span>
+
+                  {/* Divider */}
+                  <span className="text-white/10 text-xs hidden sm:inline">|</span>
+
+                  {/* iDEAL */}
+                  <span className="flex items-center gap-1.5 text-xs text-white/40">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <rect x="1" y="1" width="12" height="12" rx="3" stroke="currentColor" strokeWidth="1.3"/>
+                      <path d="M4 7h6M7 4v6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                    </svg>
+                    iDEAL
+                  </span>
+
+                  {/* Divider */}
+                  <span className="text-white/10 text-xs hidden sm:inline">|</span>
+
+                  {/* Mollie */}
+                  <span className="flex items-center gap-1.5 text-xs text-white/40">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.3"/>
+                      <path d="M4 9V5l3 3 3-3v4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    Mollie
+                  </span>
+
+                  {/* Divider */}
+                  <span className="text-white/10 text-xs hidden sm:inline">|</span>
+
+                  {/* SSL */}
+                  <span className="flex items-center gap-1.5 text-xs text-white/40">
+                    <svg width="13" height="14" viewBox="0 0 13 14" fill="none">
+                      <path d="M6.5 1L1.5 3.5v3c0 2.8 2.1 5.4 5 6 2.9-.6 5-3.2 5-6v-3L6.5 1z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+                      <path d="M4.5 7l1.5 1.5L8.5 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    SSL beveiligd
+                  </span>
+                </div>
               </div>
             </form>
 
