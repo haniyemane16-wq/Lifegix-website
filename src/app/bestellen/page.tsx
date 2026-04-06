@@ -33,9 +33,9 @@ const PAKKETTEN = [
 const AI_EENMALIG = 300;
 const AI_MAANDELIJKS = 75;
 
-const BUNDEL: Record<string, { eenmalig: number; maandelijks: number; korting: number }> = {
-  starter:  { eenmalig: 750,  maandelijks: 110, korting: 50 },
-  business: { eenmalig: 1200, maandelijks: 135, korting: 75 },
+const BUNDEL: Record<string, { eenmalig: number; maandelijks: number; korting: number; kortingMaandelijks: number }> = {
+  starter:  { eenmalig: 750,  maandelijks: 110, korting: 50, kortingMaandelijks: 15 },
+  business: { eenmalig: 1200, maandelijks: 135, korting: 75, kortingMaandelijks: 15 },
 };
 
 type PakketId = (typeof PAKKETTEN)[number]["id"];
@@ -99,10 +99,13 @@ export default function BestelPage() {
   const [telefoon, setTelefoon] = useState("");
 
   const pakket = PAKKETTEN.find((p) => p.id === gekozenPakket);
-  const totaalEenmalig =
-    (pakket?.eenmalig ?? 0) + (metAiAgent ? AI_EENMALIG : 0);
-  const totaalMaandelijks =
-    (pakket?.maandelijks ?? 0) + (metAiAgent ? AI_MAANDELIJKS : 0);
+  const bundel = gekozenPakket && gekozenPakket !== "aionly" && metAiAgent ? BUNDEL[gekozenPakket] ?? null : null;
+  const totaalEenmalig = bundel
+    ? bundel.eenmalig
+    : (pakket?.eenmalig ?? 0) + (metAiAgent ? AI_EENMALIG : 0);
+  const totaalMaandelijks = bundel
+    ? bundel.maandelijks
+    : (pakket?.maandelijks ?? 0) + (metAiAgent ? AI_MAANDELIJKS : 0);
 
   const totalSteps = gekozenPakket === "aionly" ? 2 : 3;
 
@@ -244,8 +247,9 @@ export default function BestelPage() {
                           <span className="text-violet-400/80">
                             Met AI agent: €{BUNDEL[p.id].eenmalig} eenmalig + €{BUNDEL[p.id].maandelijks}/mnd
                           </span>
-                          <span className="ml-1 text-green-400 font-semibold">
-                            (bespaar €{BUNDEL[p.id].korting})
+                          {" "}
+                          <span className="text-green-400 font-semibold">
+                            (bespaar €{BUNDEL[p.id].korting} + €{BUNDEL[p.id].kortingMaandelijks}/mnd)
                           </span>
                         </div>
                       )}
@@ -348,6 +352,12 @@ export default function BestelPage() {
                       <span>AI Agent abonnement</span>
                       <span>€{AI_MAANDELIJKS}/mnd</span>
                     </div>
+                    {bundel && (
+                      <div className="flex items-center justify-between text-sm text-green-400 font-medium">
+                        <span>Bundelkorting</span>
+                        <span>−€{bundel.korting} eenmalig / −€{bundel.kortingMaandelijks}/mnd</span>
+                      </div>
+                    )}
                   </>
                 )}
 
