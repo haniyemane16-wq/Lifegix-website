@@ -284,11 +284,24 @@ export default function BestelPage() {
                 <p className="text-sm text-white/50 mb-3">
                   Automatische klantopvolging, WhatsApp integratie & 24/7 beschikbaar
                 </p>
-                <div className="flex items-center gap-4">
-                  <span className="text-xl font-bold text-white">+€{AI_EENMALIG}</span>
-                  <span className="text-xs text-white/40">eenmalig</span>
-                  <span className="text-sm font-medium text-violet-300">+ €{AI_MAANDELIJKS}/mnd</span>
+                <div className="flex items-center gap-3 line-through text-white/30 text-sm">
+                  <span>+€{AI_EENMALIG} eenmalig</span>
+                  <span>+ €{AI_MAANDELIJKS}/mnd</span>
                 </div>
+                {gekozenPakket && BUNDEL[gekozenPakket] && (() => {
+                  const b = BUNDEL[gekozenPakket]!;
+                  const p = PAKKETTEN.find((x) => x.id === gekozenPakket)!;
+                  const aiEenmalig = b.eenmalig - p.eenmalig;
+                  const aiMaandelijks = b.maandelijks - p.maandelijks;
+                  return (
+                    <div className="mt-1 flex items-center gap-2 flex-wrap">
+                      <span className="text-green-400 font-semibold text-sm">
+                        +€{aiEenmalig} eenmalig + €{aiMaandelijks}/mnd
+                      </span>
+                      <span className="text-green-400/70 text-xs">(bundelkorting)</span>
+                    </div>
+                  );
+})()}
               </button>
 
               <button
