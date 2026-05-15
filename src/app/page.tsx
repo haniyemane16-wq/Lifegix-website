@@ -601,23 +601,21 @@ function Portfolio() {
       ),
     },
     {
-      title: "AI Chatbot",
-      category: "AI Automatisering",
+      title: "Brasserie De Linde",
+      category: "Website Bouwen",
       description:
-        "Een klantenservice chatbot voor lokale bedrijven die vragen beantwoordt, afspraken plant en leads opvolgt — 24/7 zonder personeel.",
-      tech: ["n8n", "Claude AI", "WhatsApp API"],
-      gradient: "from-indigo-600/20 via-violet-800/10 to-transparent",
-      href: null,
+        "Elegante website voor een fine dining restaurant. Met seizoensmenu, reserveringsformulier, chef-profiel, sfeerbeelden en private dining sectie.",
+      tech: ["Next.js", "TypeScript", "Tailwind CSS"],
+      gradient: "from-emerald-600/20 via-teal-800/10 to-transparent",
+      href: "https://brasserie-de-linde.vercel.app",
       visual: (
         <svg viewBox="0 0 56 56" fill="none" className="w-14 h-14">
-          <rect x="4" y="8" width="36" height="28" rx="6" stroke="#a78bfa" strokeWidth="2"/>
-          <circle cx="14" cy="22" r="2.5" fill="#7c3aed"/>
-          <circle cx="22" cy="22" r="2.5" fill="#7c3aed"/>
-          <circle cx="30" cy="22" r="2.5" fill="#7c3aed"/>
-          <path d="M4 36l6 6v-6" fill="#7c3aed" opacity="0.6"/>
-          <rect x="24" y="26" width="28" height="22" rx="6" fill="#0a0a0f" stroke="#6d28d9" strokeWidth="1.5"/>
-          <rect x="29" y="33" width="18" height="2.5" rx="1.25" fill="#a78bfa" opacity="0.7"/>
-          <rect x="29" y="39" width="12" height="2.5" rx="1.25" fill="#7c3aed" opacity="0.5"/>
+          <path d="M28 6c-8 0-14 6-14 14 0 6 3.5 11 8.5 13.5V40h11v-6.5C38.5 31 42 26 42 20c0-8-6-14-14-14z" stroke="#a78bfa" strokeWidth="2" strokeLinejoin="round"/>
+          <rect x="22" y="40" width="12" height="4" rx="1.5" fill="#7c3aed" opacity="0.5"/>
+          <rect x="20" y="44" width="16" height="3" rx="1.5" fill="#7c3aed" opacity="0.4"/>
+          <line x1="28" y1="14" x2="28" y2="26" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="22" y1="18" x2="28" y2="14" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="34" y1="18" x2="28" y2="14" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
         </svg>
       ),
     },
