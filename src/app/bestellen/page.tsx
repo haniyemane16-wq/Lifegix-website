@@ -142,7 +142,6 @@ export default function BestelPage() {
           bedrijf,
           email,
           telefoon,
-          eenmaligBedrag: totaalEenmalig,
         }),
       });
 

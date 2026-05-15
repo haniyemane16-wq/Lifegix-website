@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-// Force dynamic so Next.js never statically evaluates this route at build time
 export const dynamic = "force-dynamic";
 
 const TO_EMAIL = "haniyemane16@gmail.com";
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 export async function POST(req: NextRequest) {
   // Instantiate inside handler so build doesn't fail without the env var
@@ -32,19 +40,19 @@ export async function POST(req: NextRequest) {
       from: "Lifegix Contact <onboarding@resend.dev>",
       to: TO_EMAIL,
       replyTo: email,
-      subject: `Nieuw bericht van ${name} via Lifegix`,
+      subject: `Nieuw bericht van ${escapeHtml(name)} via Lifegix`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #0a0a0f; color: #ededed; border-radius: 12px;">
           <h2 style="color: #a78bfa; margin-bottom: 24px;">Nieuw contactformulier inzending</h2>
           <table style="width: 100%; border-collapse: collapse;">
-            <tr><td style="padding: 8px 0; color: #9ca3af; width: 120px;">Naam</td><td style="padding: 8px 0; font-weight: 600;">${name}</td></tr>
-            <tr><td style="padding: 8px 0; color: #9ca3af;">E-mail</td><td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #a78bfa;">${email}</a></td></tr>
-            ${phone ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Telefoon</td><td style="padding: 8px 0;">${phone}</td></tr>` : ""}
-            ${service ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Dienst</td><td style="padding: 8px 0;">${serviceLabel[service] ?? service}</td></tr>` : ""}
+            <tr><td style="padding: 8px 0; color: #9ca3af; width: 120px;">Naam</td><td style="padding: 8px 0; font-weight: 600;">${escapeHtml(name)}</td></tr>
+            <tr><td style="padding: 8px 0; color: #9ca3af;">E-mail</td><td style="padding: 8px 0;"><a href="mailto:${escapeHtml(email)}" style="color: #a78bfa;">${escapeHtml(email)}</a></td></tr>
+            ${phone ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Telefoon</td><td style="padding: 8px 0;">${escapeHtml(phone)}</td></tr>` : ""}
+            ${service ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Dienst</td><td style="padding: 8px 0;">${escapeHtml(serviceLabel[service] ?? service)}</td></tr>` : ""}
           </table>
           <div style="margin-top: 24px; padding: 16px; background: #1a1a2e; border-radius: 8px; border-left: 3px solid #7c3aed;">
             <p style="color: #9ca3af; margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Bericht</p>
-            <p style="margin: 0; line-height: 1.6;">${message.replace(/\n/g, "<br>")}</p>
+            <p style="margin: 0; line-height: 1.6;">${escapeHtml(message).replace(/\n/g, "<br>")}</p>
           </div>
           <p style="margin-top: 24px; font-size: 12px; color: #4b5563;">Verzonden via lifegix.nl</p>
         </div>

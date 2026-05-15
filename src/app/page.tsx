@@ -579,24 +579,24 @@ function ROICalculator({ onCalculate }: { onCalculate: (msg: string) => void }) 
 function Portfolio() {
   const projects = [
     {
-      title: "Rijplatform",
-      category: "Web App",
+      title: "AutoFix Pro",
+      category: "Website Bouwen",
       description:
-        "Een online rijexamen oefenplatform waar leerlingen theorie-examens kunnen oefenen met directe feedback en voortgangsoverzicht.",
+        "Professionele website voor een automonteur. Inclusief diensten­overzicht, transparante prijstabel, klantbeoordelingen, afspraakformulier en FAQ.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS"],
       gradient: "from-violet-600/20 via-purple-800/10 to-transparent",
+      href: "https://autofixpro-lac.vercel.app",
       visual: (
         <svg viewBox="0 0 56 56" fill="none" className="w-14 h-14">
-          <rect x="4" y="8" width="48" height="36" rx="6" stroke="#a78bfa" strokeWidth="2"/>
-          <line x1="4" y1="16" x2="52" y2="16" stroke="#a78bfa" strokeWidth="2"/>
-          <circle cx="10" cy="12" r="1.5" fill="#7c3aed"/>
-          <circle cx="15" cy="12" r="1.5" fill="#7c3aed"/>
-          <circle cx="20" cy="12" r="1.5" fill="#7c3aed"/>
-          <rect x="10" y="21" width="36" height="3" rx="1.5" fill="#7c3aed" opacity="0.4"/>
-          <rect x="10" y="28" width="24" height="3" rx="1.5" fill="#7c3aed" opacity="0.3"/>
-          <rect x="10" y="35" width="30" height="3" rx="1.5" fill="#7c3aed" opacity="0.2"/>
-          <line x1="20" y1="48" x2="36" y2="48" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round"/>
-          <line x1="28" y1="44" x2="28" y2="48" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round"/>
+          <rect x="4" y="20" width="48" height="22" rx="5" stroke="#a78bfa" strokeWidth="2"/>
+          <path d="M10 20l5-10h26l5 10" stroke="#a78bfa" strokeWidth="2" strokeLinejoin="round"/>
+          <circle cx="15" cy="42" r="5" fill="#0a0a0f" stroke="#a78bfa" strokeWidth="2"/>
+          <circle cx="41" cy="42" r="5" fill="#0a0a0f" stroke="#a78bfa" strokeWidth="2"/>
+          <circle cx="15" cy="42" r="2" fill="#7c3aed"/>
+          <circle cx="41" cy="42" r="2" fill="#7c3aed"/>
+          <rect x="22" y="26" width="12" height="8" rx="2" fill="#7c3aed" opacity="0.4"/>
+          <line x1="4" y1="32" x2="8" y2="32" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+          <line x1="48" y1="32" x2="52" y2="32" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
         </svg>
       ),
     },
@@ -607,6 +607,7 @@ function Portfolio() {
         "Een klantenservice chatbot voor lokale bedrijven die vragen beantwoordt, afspraken plant en leads opvolgt — 24/7 zonder personeel.",
       tech: ["n8n", "Claude AI", "WhatsApp API"],
       gradient: "from-indigo-600/20 via-violet-800/10 to-transparent",
+      href: null,
       visual: (
         <svg viewBox="0 0 56 56" fill="none" className="w-14 h-14">
           <rect x="4" y="8" width="36" height="28" rx="6" stroke="#a78bfa" strokeWidth="2"/>
@@ -642,11 +643,20 @@ function Portfolio() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {projects.map((p) => (
-            <div
-              key={p.title}
-              className="group relative rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-violet-500/50 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)] transition-all duration-300"
-            >
+          {projects.map((p) => {
+            const Wrapper = p.href
+              ? ({ children }: { children: React.ReactNode }) => (
+                  <a href={p.href!} target="_blank" rel="noopener noreferrer" className="group relative rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-violet-500/50 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)] transition-all duration-300 block">
+                    {children}
+                  </a>
+                )
+              : ({ children }: { children: React.ReactNode }) => (
+                  <div className="group relative rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-violet-500/50 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)] transition-all duration-300">
+                    {children}
+                  </div>
+                );
+            return (
+            <Wrapper key={p.title}>
               {/* Card top accent */}
               <div className={`h-32 bg-gradient-to-br ${p.gradient} flex items-center justify-center`}>
                 {p.visual}
@@ -654,7 +664,14 @@ function Portfolio() {
 
               <div className="p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-white">{p.title}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-white">{p.title}</h3>
+                    {p.href && (
+                      <svg className="w-3.5 h-3.5 text-violet-400/60 group-hover:text-violet-400 transition-colors" fill="none" viewBox="0 0 14 14">
+                        <path d="M2 12L12 2M12 2H6M12 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </div>
                   <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/20">
                     {p.category}
                   </span>
@@ -675,8 +692,9 @@ function Portfolio() {
                   ))}
                 </div>
               </div>
-            </div>
-          ))}
+            </Wrapper>
+            );
+          })}
         </div>
       </div>
     </section>
