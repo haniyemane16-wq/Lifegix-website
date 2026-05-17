@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [prefilledMessage, setPrefilledMessage] = useState("");
@@ -9,46 +9,79 @@ export default function Home() {
     <main className="flex flex-col min-h-screen bg-[#0a0a0f]">
       <Navbar />
       <Hero />
+      <Stats />
       <Services />
       <HowItWorks />
       <ROICalculator onCalculate={setPrefilledMessage} />
       <Portfolio />
+      <Testimonials />
+      <FAQ />
       <Contact initialMessage={prefilledMessage} />
       <Footer />
+      <StickyContactBtn />
     </main>
   );
 }
 
 /* ─── Navbar ─────────────────────────────────────────────── */
 function Navbar() {
+  const [open, setOpen] = useState(false);
+  const navLinks = [
+    { href: "#diensten", label: "Diensten" },
+    { href: "#werkwijze", label: "Werkwijze" },
+    { href: "#bereken", label: "ROI Calculator" },
+    { href: "#portfolio", label: "Portfolio" },
+    { href: "#contact", label: "Contact" },
+  ];
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <a href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
           <span className="text-white">Life</span><span className="text-violet-400">gix</span>
         </a>
+        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8 text-sm text-white/60">
-          <a href="#diensten" className="hover:text-white transition-colors">Diensten</a>
-          <a href="#werkwijze" className="hover:text-white transition-colors">Werkwijze</a>
-          <a href="#bereken" className="hover:text-white transition-colors">ROI Calculator</a>
-          <a href="#portfolio" className="hover:text-white transition-colors">Portfolio</a>
-          <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+          {navLinks.map((l) => (
+            <a key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</a>
+          ))}
         </div>
-        <div className="flex items-center gap-3">
-          <a
-            href="/bestellen"
-            className="text-sm font-medium px-4 py-2 rounded-lg border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 transition-colors"
-          >
+        <div className="hidden md:flex items-center gap-3">
+          <a href="/bestellen" className="text-sm font-medium px-4 py-2 rounded-lg border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 transition-colors">
             Bestellen
           </a>
-          <a
-            href="#contact"
-            className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors"
-          >
+          <a href="#contact" className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors">
             Gratis gesprek
           </a>
         </div>
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="md:hidden flex flex-col justify-center gap-1.5 w-8 h-8 focus:outline-none"
+          aria-label="Menu openen"
+        >
+          <span className={`block h-0.5 w-6 bg-white/70 transition-all duration-300 ${open ? "rotate-45 translate-y-2" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-white/70 transition-all duration-300 ${open ? "opacity-0" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-white/70 transition-all duration-300 ${open ? "-rotate-45 -translate-y-2" : ""}`} />
+        </button>
       </div>
+      {/* Mobile dropdown */}
+      {open && (
+        <div className="md:hidden border-t border-white/5 bg-[#0a0a0f]/95 backdrop-blur-md px-6 py-4 flex flex-col gap-4">
+          {navLinks.map((l) => (
+            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm text-white/70 hover:text-white transition-colors py-1">
+              {l.label}
+            </a>
+          ))}
+          <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
+            <a href="/bestellen" className="text-sm font-medium px-4 py-2.5 rounded-lg border border-violet-500/40 text-violet-300 text-center">
+              Bestellen
+            </a>
+            <a href="#contact" onClick={() => setOpen(false)} className="text-sm font-medium px-4 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors text-center">
+              Gratis gesprek
+            </a>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
@@ -104,6 +137,28 @@ function Hero() {
         Gevestigd in Warnsveld · Lokale focus · Persoonlijk contact
       </p>
     </section>
+  );
+}
+
+/* ─── Stats ──────────────────────────────────────────────── */
+function Stats() {
+  const items = [
+    { value: "5+", label: "Projecten opgeleverd" },
+    { value: "1–2 wkn", label: "Gemiddeld live" },
+    { value: "24u", label: "Reactietijd" },
+    { value: "100%", label: "Op tijd opgeleverd" },
+  ];
+  return (
+    <div className="border-y border-white/5 bg-white/[0.02] py-6 px-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+        {items.map((item) => (
+          <div key={item.label}>
+            <p className="text-2xl font-bold text-violet-300">{item.value}</p>
+            <p className="mt-1 text-xs text-white/40">{item.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -872,6 +927,166 @@ function Contact({ initialMessage }: { initialMessage: string }) {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ─── Testimonials ───────────────────────────────────────── */
+function Testimonials() {
+  const reviews = [
+    {
+      name: "Mark van den Berg",
+      bedrijf: "AutoFix Pro",
+      tekst: "Binnen twee weken hadden we een strakke website die echt converteert. Klanten vinden ons nu makkelijk via Google en de afsprakenpagina scheelt ons dagelijks tijd.",
+      dienst: "Website Bouwen",
+    },
+    {
+      name: "Lisette Janssen",
+      bedrijf: "Brasserie De Linde",
+      tekst: "Precies de uitstraling die we zochten — warm, professioneel en snel. Reserveringen via de site zijn flink gestegen sinds de lancering.",
+      dienst: "Website Bouwen",
+    },
+    {
+      name: "Daan Vermeer",
+      bedrijf: "Lokale ondernemer",
+      tekst: "De AI agent pakt nu automatisch klantvragen op via WhatsApp. Ik hoef 's avonds niet meer achter mijn telefoon te zitten. Had dit jaren eerder willen doen.",
+      dienst: "AI Automatisering",
+    },
+  ];
+
+  return (
+    <section className="py-24 px-6 relative">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-violet-900/8 blur-[100px]" />
+      </div>
+      <div className="max-w-6xl mx-auto relative">
+        <div className="text-center mb-16">
+          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">
+            Klanten aan het woord
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">
+            Wat zeggen onze klanten?
+          </h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {reviews.map((r) => (
+            <div key={r.name} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-violet-500/30 transition-all flex flex-col gap-4">
+              {/* Sterren */}
+              <div className="flex gap-1">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <svg key={i} className="w-4 h-4 text-violet-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  </svg>
+                ))}
+              </div>
+              <p className="text-white/60 text-sm leading-relaxed flex-1">&ldquo;{r.tekst}&rdquo;</p>
+              <div>
+                <p className="text-white font-semibold text-sm">{r.name}</p>
+                <p className="text-white/40 text-xs">{r.bedrijf} · {r.dienst}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── FAQ ────────────────────────────────────────────────── */
+function FAQ() {
+  const [open, setOpen] = useState<number | null>(null);
+  const items = [
+    {
+      q: "Hoe lang duurt het om een website te bouwen?",
+      a: "Gemiddeld 1 tot 2 weken na ons eerste gesprek. Jij levert de informatie aan, ik regel de rest — van ontwerp tot live zetten.",
+    },
+    {
+      q: "Wat kost een website?",
+      a: "Websites starten vanaf €500 eenmalig plus €50 per maand voor hosting, onderhoud en support. Gebruik de ROI-calculator voor een berekening op maat op basis van jouw situatie.",
+    },
+    {
+      q: "Heb ik technische kennis nodig?",
+      a: "Nee, helemaal niet. Ik regel alles van A tot Z — ontwerp, teksten, hosting en techniek. Jij focust op je bedrijf, ik op de technologie.",
+    },
+    {
+      q: "Wat is een AI agent precies?",
+      a: "Een AI agent is een digitale assistent die automatisch taken uitvoert: klantvragen beantwoorden, afspraken inplannen, leads opvolgen — 24/7, ook als jij slaapt of werkt.",
+    },
+    {
+      q: "Kan ik mijn website zelf aanpassen?",
+      a: "Ja, kleine aanpassingen kun je zelf doen. Voor grotere wijzigingen sta ik altijd klaar — dat is inbegrepen bij het maandabonnement.",
+    },
+    {
+      q: "Ik heb al een website. Kan ik alleen een AI agent afnemen?",
+      a: "Absoluut. De AI agent koppelen we aan je bestaande website, WhatsApp-nummer of e-mail. Je hoeft niets te vervangen.",
+    },
+    {
+      q: "Werken jullie alleen in Warnsveld?",
+      a: "Ik ben gevestigd in Warnsveld maar werk voor bedrijven door heel Nederland. Alles gaat prima op afstand — met regelmatig contact via video of telefoon.",
+    },
+  ];
+
+  return (
+    <section id="faq" className="py-24 px-6">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-16">
+          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">
+            FAQ
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">
+            Veelgestelde vragen
+          </h2>
+          <p className="mt-4 text-white/50 max-w-md mx-auto">
+            Staat jouw vraag er niet bij? Stuur een bericht en ik reageer binnen 24 uur.
+          </p>
+        </div>
+        <div className="space-y-3">
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden transition-all"
+            >
+              <button
+                onClick={() => setOpen(open === i ? null : i)}
+                className="w-full flex items-center justify-between px-6 py-4 text-left gap-4"
+              >
+                <span className="text-sm font-medium text-white">{item.q}</span>
+                <span className={`flex-shrink-0 w-5 h-5 rounded-full border border-violet-500/40 flex items-center justify-center transition-transform duration-200 ${open === i ? "rotate-45" : ""}`}>
+                  <svg className="w-3 h-3 text-violet-400" fill="none" viewBox="0 0 12 12">
+                    <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </span>
+              </button>
+              {open === i && (
+                <div className="px-6 pb-5">
+                  <p className="text-sm text-white/55 leading-relaxed">{item.a}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Sticky CTA ─────────────────────────────────────────── */
+function StickyContactBtn() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const handler = () => setVisible(window.scrollY > 500);
+    window.addEventListener("scroll", handler);
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+  return (
+    <div className={`fixed bottom-6 right-6 z-40 transition-all duration-300 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
+      <a
+        href="#contact"
+        className="flex items-center gap-2 px-5 py-3 rounded-full bg-violet-600 hover:bg-violet-500 font-semibold text-sm shadow-lg purple-glow transition-all hover:scale-105"
+      >
+        <span className="w-2 h-2 rounded-full bg-violet-300 animate-pulse" />
+        Gratis gesprek →
+      </a>
+    </div>
   );
 }
 
