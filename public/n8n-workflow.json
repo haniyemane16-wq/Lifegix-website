@@ -1,0 +1,160 @@
+{
+  "name": "Lifegix — Intake & Contact Automatisering",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lifegix-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": true },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.type }}",
+                    "rightValue": "intake",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "intake"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.type }}",
+                    "rightValue": "contact",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "contact"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "router",
+      "name": "Route op type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "from", "value": "Lifegix <onboarding@resend.dev>" },
+            { "name": "to", "value": "haniyemane16@gmail.com" },
+            { "name": "subject", "value": "=🎯 Nieuwe intake: {{ $json.body.bedrijf }}" },
+            {
+              "name": "html",
+              "value": "=<div style='font-family:sans-serif;padding:20px'><h2>Nieuwe intake ontvangen</h2><p><strong>Naam:</strong> {{ $json.body.name }}</p><p><strong>Bedrijf:</strong> {{ $json.body.bedrijf }}</p><p><strong>E-mail:</strong> {{ $json.body.email }}</p><p><strong>Dienst:</strong> {{ $json.body.service }}</p><p><strong>Doel:</strong> {{ $json.body.doel }}</p><p><strong>Deadline:</strong> {{ $json.body.deadline }}</p></div>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "notify-intake",
+      "name": "Notificeer Hanibal (intake)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [750, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "from", "value": "Lifegix <onboarding@resend.dev>" },
+            { "name": "to", "value": "haniyemane16@gmail.com" },
+            { "name": "subject", "value": "=📬 Nieuw contactbericht: {{ $json.body.name }}" },
+            {
+              "name": "html",
+              "value": "=<div style='font-family:sans-serif;padding:20px'><h2>Nieuw contactbericht</h2><p><strong>Naam:</strong> {{ $json.body.name }}</p><p><strong>E-mail:</strong> {{ $json.body.email }}</p><p><strong>Dienst:</strong> {{ $json.body.service }}</p><p><strong>Intake link:</strong> <a href='{{ $json.body.intakeUrl }}'>{{ $json.body.intakeUrl }}</a></p></div>"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "notify-contact",
+      "name": "Notificeer Hanibal (contact)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [750, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": true }",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1000, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{ "node": "Route op type", "type": "main", "index": 0 }]]
+    },
+    "Route op type": {
+      "intake": [[{ "node": "Notificeer Hanibal (intake)", "type": "main", "index": 0 }]],
+      "contact": [[{ "node": "Notificeer Hanibal (contact)", "type": "main", "index": 0 }]]
+    },
+    "Notificeer Hanibal (intake)": {
+      "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]]
+    },
+    "Notificeer Hanibal (contact)": {
+      "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "versionId": "lifegix-v1",
+  "meta": {
+    "instanceId": "lifegix"
+  },
+  "tags": []
+}
