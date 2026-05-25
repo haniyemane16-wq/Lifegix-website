@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 
 export default function Home() {
-  const [prefilledMessage, setPrefilledMessage] = useState("");
-
   return (
     <main className="flex flex-col min-h-screen bg-[#0a0a0f]">
       <Navbar />
@@ -12,11 +10,11 @@ export default function Home() {
       <Stats />
       <Services />
       <HowItWorks />
-      <ROICalculator onCalculate={setPrefilledMessage} />
+      <Pricing />
       <Portfolio />
       <Testimonials />
       <FAQ />
-      <Contact initialMessage={prefilledMessage} />
+      <Contact />
       <Footer />
       <StickyContactBtn />
     </main>
@@ -29,7 +27,7 @@ function Navbar() {
   const navLinks = [
     { href: "#diensten", label: "Diensten" },
     { href: "#werkwijze", label: "Werkwijze" },
-    { href: "#bereken", label: "ROI Calculator" },
+    { href: "#prijzen", label: "Prijzen" },
     { href: "#portfolio", label: "Portfolio" },
     { href: "#contact", label: "Contact" },
   ];
@@ -378,253 +376,147 @@ function HowItWorks() {
   );
 }
 
-/* ─── ROI Calculator ─────────────────────────────────────── */
-const BRANCHES = [
-  "Kapper / Barbier",
-  "Restaurant / Café",
-  "Winkel / Retail",
-  "Schoonheidssalon",
-  "Fysiotherapeut",
-  "Tandarts",
-  "Aannemer / Bouwbedrijf",
-  "Autogarage",
-  "Bakkerij",
-  "Anders",
-];
+/* ─── Pricing ────────────────────────────────────────────── */
+function Pricing() {
+  const pakketten = [
+    {
+      name: "Website Starter",
+      priceEenmalig: "€500",
+      priceMaand: "€50",
+      desc: "Perfect voor kleine bedrijven die online zichtbaar willen worden.",
+      features: [
+        "Op maat ontworpen website",
+        "Tot 5 pagina's",
+        "Mobielvriendelijk & snel",
+        "SEO-basis geoptimaliseerd",
+        "Contactformulier",
+        "SSL-beveiliging inbegrepen",
+        "Oplevering in 1–2 weken",
+      ],
+      cta: "Start met Starter",
+      highlight: false,
+      badge: null,
+    },
+    {
+      name: "Website + AI-agent",
+      priceEenmalig: "Vanaf €750",
+      priceMaand: "Vanaf €110",
+      desc: "Meer bezoekers én slimmere opvolging. 20% korting op de combinatie.",
+      features: [
+        "Alles van Starter of Business",
+        "AI-chatbot op je website",
+        "24/7 automatische klantenservice",
+        "Leads automatisch opvolgen",
+        "Koppelingen met jouw systemen",
+        "Maandelijkse rapportage",
+        "20% combinatiekorting",
+      ],
+      cta: "Kies Website + AI",
+      highlight: true,
+      badge: "Meest gekozen",
+    },
+    {
+      name: "Website Business",
+      priceEenmalig: "€1.000",
+      priceMaand: "€75",
+      desc: "Voor groeiende bedrijven met meer wensen en hogere ambities.",
+      features: [
+        "Op maat ontworpen website",
+        "Onbeperkt aantal pagina's",
+        "Mobielvriendelijk & snel",
+        "Uitgebreide SEO-optimalisatie",
+        "Afspraak- of boekingssysteem",
+        "Prioriteit support",
+        "Oplevering in 2–3 weken",
+      ],
+      cta: "Start met Business",
+      highlight: false,
+      badge: null,
+    },
+  ];
 
-const SERVICE_META = {
-  website: { label: "Website", upliftPct: 0.15, desc: "Meer klanten via Google & betere eerste indruk" },
-  ai:      { label: "AI-agent", upliftPct: 0.10, desc: "Automatische opvolging & 24/7 klantenservice" },
-  both:    { label: "Website + AI-agent", upliftPct: 0.25, desc: "Maximale groei: meer bezoekers én slimmere opvolging" },
-};
-
-const PRICE_TIERS = {
-  website: [
-    { maxOmzet: 5_000,      eenmalig: 500,   maand: 50 },
-    { maxOmzet: 20_000,     eenmalig: 1_000, maand: 75 },
-    { maxOmzet: Infinity,   eenmalig: 1_500, maand: 100 },
-  ],
-  ai: [
-    { maxOmzet: 5_000,      eenmalig: 300,   maand: 75 },
-    { maxOmzet: 20_000,     eenmalig: 600,   maand: 120 },
-    { maxOmzet: Infinity,   eenmalig: 1_000, maand: 150 },
-  ],
-};
-
-function getTier(dienst: "website" | "ai", maandomzet: number) {
-  return PRICE_TIERS[dienst].find((t) => maandomzet < t.maxOmzet)!;
-}
-
-function getPricing(dienst: "website" | "ai" | "both", maandomzet: number): { eenmalig: number; maand: number; korting: boolean } {
-  if (dienst === "both") {
-    const w = getTier("website", maandomzet);
-    const a = getTier("ai", maandomzet);
-    return {
-      eenmalig: Math.round((w.eenmalig + a.eenmalig) * 0.8),
-      maand:    Math.round((w.maand    + a.maand)    * 0.8),
-      korting:  true,
-    };
-  }
-  const tier = getTier(dienst, maandomzet);
-  return { eenmalig: tier.eenmalig, maand: tier.maand, korting: false };
-}
-
-function ROICalculator({ onCalculate }: { onCalculate: (msg: string) => void }) {
-  const [branche, setBranche] = useState("");
-  const [klanten, setKlanten] = useState("");
-  const [omzetPerKlant, setOmzetPerKlant] = useState("");
-  const [dienst, setDienst] = useState<"website" | "ai" | "both">("website");
-  const [result, setResult] = useState<{
-    huidig: number;
-    extra: number;
-    terugverdien: number;
-    label: string;
-    desc: string;
-    eenmalig: number;
-    maand: number;
-    korting: boolean;
-  } | null>(null);
-
-  const calculate = () => {
-    const k = parseInt(klanten, 10);
-    const o = parseFloat(omzetPerKlant);
-    if (!k || !o || k <= 0 || o <= 0) return;
-    const meta = SERVICE_META[dienst];
-    const huidig = k * o;
-    const extra = Math.round(huidig * meta.upliftPct);
-    const { eenmalig, maand, korting } = getPricing(dienst, huidig);
-    const terugverdien = Math.ceil(eenmalig / Math.max(extra - maand, 1));
-    setResult({ huidig, extra, terugverdien, label: meta.label, desc: meta.desc, eenmalig, maand, korting });
-  };
-
-  const sendToContact = () => {
-    if (!result) return;
-    const kortingRegel = result.korting ? " (incl. 20% combinatiekorting)" : "";
-    const msg =
-      `[ROI Calculator resultaat]\n` +
-      `Branche: ${branche || "Niet opgegeven"}\n` +
-      `Klanten per maand: ${klanten}\n` +
-      `Gemiddelde omzet per klant: €${omzetPerKlant}\n` +
-      `Huidige maandomzet: €${result.huidig.toLocaleString("nl-NL")}\n` +
-      `Gewenste dienst: ${result.label}\n` +
-      `Geschatte extra omzet/maand: +€${result.extra.toLocaleString("nl-NL")}\n` +
-      `Aanbevolen investering: €${result.eenmalig} eenmalig + €${result.maand}/mnd${kortingRegel}\n\n` +
-      `Graag meer informatie over een vrijblijvende offerte.`;
-    onCalculate(msg);
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-  };
+  const checkIcon = (
+    <svg className="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 16 16">
+      <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
 
   return (
-    <section id="bereken" className="py-24 px-6 relative">
-      {/* Background glow */}
+    <section id="prijzen" className="py-24 px-6 relative">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-violet-900/10 blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-violet-900/8 blur-[140px]" />
       </div>
 
       <div className="max-w-6xl mx-auto relative">
         <div className="text-center mb-16">
-          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">
-            ROI Calculator
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">
-            Bereken je return
-          </h2>
+          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Transparante prijzen</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">Kies wat bij je past</h2>
           <p className="mt-4 text-white/50 max-w-md mx-auto">
-            Vul je gegevens in en zie hoeveel extra omzet een website of AI-agent jou kan opleveren.
+            Geen verborgen kosten. Vaste prijs, vaste kwaliteit. Altijd inclusief btw.
           </p>
         </div>
 
-        <div className="max-w-3xl mx-auto">
-          <div className="p-8 rounded-2xl bg-white/[0.03] gradient-border space-y-6">
-            {/* Row 1 */}
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium text-white/50 mb-1.5">
-                  Branche
-                </label>
-                <select
-                  value={branche}
-                  onChange={(e) => setBranche(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.07] transition-all appearance-none"
-                >
-                  <option value="" className="bg-[#0a0a0f]">Kies je branche</option>
-                  {BRANCHES.map((b) => (
-                    <option key={b} value={b} className="bg-[#0a0a0f]">{b}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-white/50 mb-1.5">
-                  Klanten per maand
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={klanten}
-                  onChange={(e) => setKlanten(e.target.value)}
-                  placeholder="bijv. 80"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.07] transition-all"
-                />
-              </div>
-            </div>
-
-            {/* Row 2 */}
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium text-white/50 mb-1.5">
-                  Gemiddelde omzet per klant (€)
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={omzetPerKlant}
-                  onChange={(e) => setOmzetPerKlant(e.target.value)}
-                  placeholder="bijv. 45"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.07] transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-white/50 mb-1.5">
-                  Gewenste dienst
-                </label>
-                <select
-                  value={dienst}
-                  onChange={(e) => setDienst(e.target.value as "website" | "ai" | "both")}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.07] transition-all appearance-none"
-                >
-                  <option value="website" className="bg-[#0a0a0f]">Website</option>
-                  <option value="ai" className="bg-[#0a0a0f]">AI-agent</option>
-                  <option value="both" className="bg-[#0a0a0f]">Website + AI-agent</option>
-                </select>
-              </div>
-            </div>
-
-            <button
-              onClick={calculate}
-              className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all hover:scale-[1.02] purple-glow"
+        <div className="grid md:grid-cols-3 gap-6 items-start">
+          {pakketten.map((p) => (
+            <div
+              key={p.name}
+              className={`relative rounded-2xl p-6 flex flex-col gap-5 transition-all ${
+                p.highlight
+                  ? "bg-violet-950/50 border border-violet-500/40 shadow-lg shadow-violet-900/20 md:-mt-4"
+                  : "bg-white/[0.03] border border-white/10"
+              }`}
             >
-              Bereken mijn ROI →
-            </button>
-          </div>
+              {p.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="px-3 py-1 rounded-full bg-violet-600 text-white text-xs font-bold tracking-wide">
+                    {p.badge}
+                  </span>
+                </div>
+              )}
 
-          {/* Result panel */}
-          {result && (
-            <div className="mt-6 p-8 rounded-2xl bg-violet-950/30 border border-violet-500/20 space-y-6">
-              <div className="grid sm:grid-cols-3 gap-4 text-center">
-                <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
-                  <p className="text-xs text-white/40 mb-1">Huidige maandomzet</p>
-                  <p className="text-2xl font-bold text-white">
-                    €{result.huidig.toLocaleString("nl-NL")}
-                  </p>
-                </div>
-                <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/30">
-                  <p className="text-xs text-violet-300/70 mb-1">Geschatte extra omzet/mnd</p>
-                  <p className="text-2xl font-bold text-violet-300">
-                    +€{result.extra.toLocaleString("nl-NL")}
-                  </p>
-                </div>
-                <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
-                  <p className="text-xs text-white/40 mb-1">
-                    Aanbevolen investering{result.korting && <span className="ml-1 text-violet-400">−20%</span>}
-                  </p>
-                  <p className="text-lg font-bold text-white">
-                    €{result.eenmalig.toLocaleString("nl-NL")}
-                    <span className="text-xs font-normal text-white/40"> eenmalig</span>
-                  </p>
-                  <p className="text-sm font-semibold text-violet-300">
-                    + €{result.maand}
-                    <span className="text-xs font-normal text-white/40">/mnd</span>
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/10">
-                <div className="w-5 h-5 mt-0.5 flex-shrink-0 rounded-full bg-violet-500/20 flex items-center justify-center">
-                  <svg className="w-3 h-3 text-violet-400" fill="none" viewBox="0 0 10 10">
-                    <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <p className="text-sm text-white/60">
-                  <span className="text-white/90 font-medium">{result.label}:</span>{" "}
-                  {result.desc}. Terugverdientijd eenmalige investering:{" "}
-                  <span className="text-violet-300 font-medium">
-                    {result.terugverdien <= 1 ? "minder dan 1 maand" : `~${result.terugverdien} maanden`}
-                  </span>.
+              <div>
+                <p className={`text-xs font-semibold uppercase tracking-widest mb-1 ${p.highlight ? "text-violet-400" : "text-white/40"}`}>
+                  {p.name}
                 </p>
+                <div className="flex items-end gap-1 mt-2">
+                  <span className="text-3xl font-bold text-white">{p.priceEenmalig}</span>
+                  <span className="text-white/40 text-sm mb-1">eenmalig</span>
+                </div>
+                <p className="text-violet-300 font-semibold text-sm mt-0.5">
+                  + {p.priceMaand}<span className="text-white/40 font-normal">/mnd</span>
+                </p>
+                <p className="text-white/40 text-xs mt-3 leading-relaxed">{p.desc}</p>
               </div>
 
-              <button
-                onClick={sendToContact}
-                className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all hover:scale-[1.02] purple-glow"
+              <ul className="space-y-2.5">
+                {p.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2.5">
+                    {checkIcon}
+                    <span className="text-sm text-white/70">{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href="#contact"
+                className={`mt-auto block text-center py-3 rounded-xl font-semibold text-sm transition-all hover:scale-[1.02] ${
+                  p.highlight
+                    ? "bg-violet-600 hover:bg-violet-500 text-white purple-glow"
+                    : "bg-white/[0.06] hover:bg-white/10 text-white border border-white/10"
+                }`}
               >
-                Vraag gratis offerte aan →
-              </button>
-              <p className="text-center text-white/25 text-xs">
-                Berekening wordt automatisch meegestuurd in je bericht.
-              </p>
+                {p.cta} →
+              </a>
             </div>
-          )}
+          ))}
         </div>
+
+        <p className="text-center mt-10 text-white/30 text-sm">
+          Wil je eerst weten hoeveel je terugverdient?{" "}
+          <a href="/roi" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">
+            Bereken je ROI →
+          </a>
+        </p>
       </div>
     </section>
   );
@@ -755,7 +647,7 @@ function Portfolio() {
 }
 
 /* ─── Contact ────────────────────────────────────────────── */
-function Contact({ initialMessage }: { initialMessage: string }) {
+function Contact() {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -763,15 +655,6 @@ function Contact({ initialMessage }: { initialMessage: string }) {
     service: "",
     message: "",
   });
-
-  // Sync pre-filled message from ROI calculator
-  const [prevInitial, setPrevInitial] = useState("");
-  if (initialMessage !== prevInitial) {
-    setPrevInitial(initialMessage);
-    if (initialMessage) {
-      setForm((f) => ({ ...f, message: initialMessage }));
-    }
-  }
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
