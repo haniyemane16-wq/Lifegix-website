@@ -15,10 +15,45 @@ const BRANCHES = [
   "Anders",
 ];
 
+// Hoeveel groeipotentieel een branche typisch heeft online.
+// Lager = capaciteitsbeperkt of al sterk online.
+// Hoger = veel te winnen met online aanwezigheid.
+const BRANCH_MULTIPLIER: Record<string, number> = {
+  "Kapper / Barbier":       0.7,  // zit vaak al vol
+  "Restaurant / Café":      0.7,  // beperkt door stoelen/capaciteit
+  "Winkel / Retail":        0.8,  // concurrerende online markt
+  "Schoonheidssalon":       0.9,  // gemiddeld potentieel
+  "Fysiotherapeut":         1.1,  // goed lokaal SEO-potentieel
+  "Tandarts":               0.8,  // vaak al wachtlijst
+  "Aannemer / Bouwbedrijf": 1.3,  // hoge omzet per klant, weinig online
+  "Autogarage":             1.1,  // sterk lokaal zoekgedrag
+  "Bakkerij":               0.8,  // beperkt online groeipotentieel
+  "Anders":                 1.0,
+};
+
+// Realistische bandbreedtes (min–max) per dienst.
+// Website: gemiddeld +3–7% extra omzet via meer online vindbaarheid.
+// AI-agent: gemiddeld +2–5% via snellere opvolging & minder gemiste leads.
+// Beide: combinatie, maar niet simpelweg de som (overlap in effect).
 const SERVICE_META = {
-  website: { label: "Website", upliftPct: 0.15, desc: "Meer klanten via Google & betere eerste indruk" },
-  ai:      { label: "AI-agent", upliftPct: 0.10, desc: "Automatische opvolging & 24/7 klantenservice" },
-  both:    { label: "Website + AI-agent", upliftPct: 0.25, desc: "Maximale groei: meer bezoekers én slimmere opvolging" },
+  website: {
+    label: "Website",
+    upliftMin: 0.03,
+    upliftMax: 0.07,
+    desc: "Meer klanten via Google & een betere eerste indruk",
+  },
+  ai: {
+    label: "AI-agent",
+    upliftMin: 0.02,
+    upliftMax: 0.05,
+    desc: "Automatische opvolging & minder gemiste aanvragen",
+  },
+  both: {
+    label: "Website + AI-agent",
+    upliftMin: 0.05,
+    upliftMax: 0.11,
+    desc: "Meer bezoekers én slimmere opvolging gecombineerd",
+  },
 };
 
 const PRICE_TIERS = {
@@ -44,8 +79,8 @@ function getPricing(dienst: "website" | "ai" | "both", maandomzet: number) {
     const a = getTier("ai", maandomzet);
     return {
       eenmalig: Math.round((w.eenmalig + a.eenmalig) * 0.8),
-      maand:    Math.round((w.maand    + a.maand)    * 0.8),
-      korting:  true,
+      maand: Math.round((w.maand + a.maand) * 0.8),
+      korting: true,
     };
   }
   const tier = getTier(dienst, maandomzet);
@@ -59,28 +94,49 @@ export default function ROIPage() {
   const [dienst, setDienst] = useState<"website" | "ai" | "both">("website");
   const [result, setResult] = useState<{
     huidig: number;
-    extra: number;
+    extraMin: number;
+    extraMax: number;
     terugverdien: number;
     label: string;
     desc: string;
     eenmalig: number;
     maand: number;
     korting: boolean;
+    brancheMultiplier: number;
   } | null>(null);
 
   const calculate = () => {
     const k = parseInt(klanten, 10);
     const o = parseFloat(omzetPerKlant);
     if (!k || !o || k <= 0 || o <= 0) return;
+
     const meta = SERVICE_META[dienst];
     const huidig = k * o;
-    const extra = Math.round(huidig * meta.upliftPct);
+    const multiplier = BRANCH_MULTIPLIER[branche] ?? 1.0;
+
+    const extraMin = Math.round(huidig * meta.upliftMin * multiplier);
+    const extraMax = Math.round(huidig * meta.upliftMax * multiplier);
+    const extraMid = (extraMin + extraMax) / 2;
+
     const { eenmalig, maand, korting } = getPricing(dienst, huidig);
-    const terugverdien = Math.ceil(eenmalig / Math.max(extra - maand, 1));
-    setResult({ huidig, extra, terugverdien, label: meta.label, desc: meta.desc, eenmalig, maand, korting });
+    const terugverdien = Math.ceil(eenmalig / Math.max(extraMid - maand, 1));
+
+    setResult({
+      huidig,
+      extraMin,
+      extraMax,
+      terugverdien,
+      label: meta.label,
+      desc: meta.desc,
+      eenmalig,
+      maand,
+      korting,
+      brancheMultiplier: multiplier,
+    });
   };
 
-  const inputClass = "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.07] transition-all appearance-none";
+  const inputClass =
+    "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.07] transition-all appearance-none";
 
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white">
@@ -94,7 +150,9 @@ export default function ROIPage() {
           <a href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
             <span className="text-white">Life</span><span className="text-violet-400">gix</span>
           </a>
-          <a href="/" className="text-sm text-white/50 hover:text-white transition-colors">← Terug naar home</a>
+          <a href="/" className="text-sm text-white/50 hover:text-white transition-colors">
+            ← Terug naar home
+          </a>
         </div>
       </nav>
 
@@ -104,7 +162,7 @@ export default function ROIPage() {
           <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">ROI Calculator</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-white">Bereken je return</h1>
           <p className="mt-4 text-white/50 max-w-md mx-auto">
-            Vul je gegevens in en zie hoeveel extra omzet een website of AI-agent jou kan opleveren.
+            Vul je situatie in en zie een realistische schatting van wat een website of AI-agent jou kan opleveren.
           </p>
         </div>
 
@@ -125,23 +183,31 @@ export default function ROIPage() {
               <input
                 type="number" min="1" value={klanten}
                 onChange={(e) => setKlanten(e.target.value)}
-                placeholder="bijv. 80" className={inputClass}
+                placeholder="bijv. 80"
+                className={inputClass}
               />
             </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-white/50 mb-1.5">Gemiddelde omzet per klant (€)</label>
+              <label className="block text-xs font-medium text-white/50 mb-1.5">
+                Gemiddelde omzet per klant (€)
+              </label>
               <input
                 type="number" min="1" value={omzetPerKlant}
                 onChange={(e) => setOmzetPerKlant(e.target.value)}
-                placeholder="bijv. 45" className={inputClass}
+                placeholder="bijv. 45"
+                className={inputClass}
               />
             </div>
             <div>
               <label className="block text-xs font-medium text-white/50 mb-1.5">Gewenste dienst</label>
-              <select value={dienst} onChange={(e) => setDienst(e.target.value as "website" | "ai" | "both")} className={inputClass}>
+              <select
+                value={dienst}
+                onChange={(e) => setDienst(e.target.value as "website" | "ai" | "both")}
+                className={inputClass}
+              >
                 <option value="website" className="bg-[#0a0a0f]">Website</option>
                 <option value="ai" className="bg-[#0a0a0f]">AI-agent</option>
                 <option value="both" className="bg-[#0a0a0f]">Website + AI-agent</option>
@@ -159,52 +225,81 @@ export default function ROIPage() {
 
         {/* Result */}
         {result && (
-          <div className="mt-6 p-8 rounded-2xl bg-violet-950/30 border border-violet-500/20 space-y-6">
-            <div className="grid sm:grid-cols-3 gap-4 text-center">
-              <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
-                <p className="text-xs text-white/40 mb-1">Huidige maandomzet</p>
-                <p className="text-2xl font-bold text-white">€{result.huidig.toLocaleString("nl-NL")}</p>
+          <div className="mt-6 space-y-4">
+            <div className="p-8 rounded-2xl bg-violet-950/30 border border-violet-500/20 space-y-6">
+              {/* Metrics */}
+              <div className="grid sm:grid-cols-3 gap-4 text-center">
+                <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
+                  <p className="text-xs text-white/40 mb-1">Huidige maandomzet</p>
+                  <p className="text-2xl font-bold text-white">
+                    €{result.huidig.toLocaleString("nl-NL")}
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/30">
+                  <p className="text-xs text-violet-300/70 mb-1">Geschatte extra omzet/mnd</p>
+                  <p className="text-xl font-bold text-violet-300">
+                    +€{result.extraMin.toLocaleString("nl-NL")}
+                    <span className="text-base text-violet-400/70"> – </span>
+                    €{result.extraMax.toLocaleString("nl-NL")}
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
+                  <p className="text-xs text-white/40 mb-1">
+                    Investering{result.korting && <span className="ml-1 text-violet-400">−20%</span>}
+                  </p>
+                  <p className="text-lg font-bold text-white">
+                    €{result.eenmalig.toLocaleString("nl-NL")}
+                    <span className="text-xs font-normal text-white/40"> eenmalig</span>
+                  </p>
+                  <p className="text-sm font-semibold text-violet-300">
+                    + €{result.maand}
+                    <span className="text-xs font-normal text-white/40">/mnd</span>
+                  </p>
+                </div>
               </div>
-              <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/30">
-                <p className="text-xs text-violet-300/70 mb-1">Geschatte extra omzet/mnd</p>
-                <p className="text-2xl font-bold text-violet-300">+€{result.extra.toLocaleString("nl-NL")}</p>
+
+              {/* Insight */}
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                <div className="w-5 h-5 mt-0.5 flex-shrink-0 rounded-full bg-violet-500/20 flex items-center justify-center">
+                  <svg className="w-3 h-3 text-violet-400" fill="none" viewBox="0 0 10 10">
+                    <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="text-sm text-white/60 space-y-1">
+                  <p>
+                    <span className="text-white/90 font-medium">{result.label}:</span>{" "}
+                    {result.desc}.
+                  </p>
+                  <p>
+                    Geschatte terugverdientijd:{" "}
+                    <span className="text-violet-300 font-medium">
+                      {result.terugverdien <= 1
+                        ? "minder dan 1 maand"
+                        : result.terugverdien <= 3
+                        ? `~${result.terugverdien} maanden`
+                        : result.terugverdien <= 12
+                        ? `${result.terugverdien} maanden`
+                        : `meer dan 1 jaar`}
+                    </span>
+                    {" "}(op basis van het gemiddelde van de bandbreedte).
+                  </p>
+                </div>
               </div>
-              <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
-                <p className="text-xs text-white/40 mb-1">
-                  Investering{result.korting && <span className="ml-1 text-violet-400">−20%</span>}
-                </p>
-                <p className="text-lg font-bold text-white">
-                  €{result.eenmalig.toLocaleString("nl-NL")}
-                  <span className="text-xs font-normal text-white/40"> eenmalig</span>
-                </p>
-                <p className="text-sm font-semibold text-violet-300">
-                  + €{result.maand}<span className="text-xs font-normal text-white/40">/mnd</span>
-                </p>
-              </div>
+
+              <a
+                href="/#contact"
+                className="block text-center w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all hover:scale-[1.02]"
+              >
+                Vraag gratis offerte aan →
+              </a>
             </div>
 
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/10">
-              <div className="w-5 h-5 mt-0.5 flex-shrink-0 rounded-full bg-violet-500/20 flex items-center justify-center">
-                <svg className="w-3 h-3 text-violet-400" fill="none" viewBox="0 0 10 10">
-                  <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <p className="text-sm text-white/60">
-                <span className="text-white/90 font-medium">{result.label}:</span>{" "}
-                {result.desc}. Terugverdientijd:{" "}
-                <span className="text-violet-300 font-medium">
-                  {result.terugverdien <= 1 ? "minder dan 1 maand" : `~${result.terugverdien} maanden`}
-                </span>.
+            {/* Disclaimer */}
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+              <p className="text-xs text-white/30 leading-relaxed">
+                <span className="text-white/50 font-medium">Let op:</span> Dit zijn indicatieve schattingen op basis van branchegemiddelden en typische groeicijfers bij bedrijven zonder of met een zwakke online aanwezigheid. Werkelijke resultaten hangen af van factoren zoals je huidige zichtbaarheid, concurrentie, locatie en hoe actief je de website of AI-agent inzet. Geen enkele investering garandeert een vast rendement.
               </p>
             </div>
-
-            <a
-              href="/#contact"
-              className="block text-center w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all hover:scale-[1.02]"
-            >
-              Vraag gratis offerte aan →
-            </a>
-            <p className="text-center text-white/25 text-xs">Vrijblijvend. Geen verplichtingen.</p>
           </div>
         )}
 
