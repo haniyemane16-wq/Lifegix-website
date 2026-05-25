@@ -1,6 +1,99 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
+/* ─── Zoekbare branche-combobox ─── */
+function BrancheCombobox({
+  value,
+  onChange,
+  branches,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  branches: string[];
+}) {
+  const [query, setQuery] = useState(value);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Sluit dropdown bij klik buiten component
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+        // Als niks geselecteerd, reset query
+        if (!value) setQuery("");
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [value]);
+
+  // Sync query als externe value verandert
+  useEffect(() => {
+    setQuery(value);
+  }, [value]);
+
+  const filtered = query.trim() === ""
+    ? branches
+    : branches.filter((b) =>
+        b.toLowerCase().includes(query.toLowerCase())
+      );
+
+  const select = (b: string) => {
+    onChange(b);
+    setQuery(b);
+    setOpen(false);
+  };
+
+  return (
+    <div ref={ref} className="relative">
+      <div className="relative">
+        <input
+          type="text"
+          value={query}
+          placeholder="Zoek je branche..."
+          onFocus={() => setOpen(true)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            onChange("");
+            setOpen(true);
+          }}
+          className="w-full px-4 py-3 pr-9 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/25 focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.07] transition-all"
+        />
+        {/* Chevron icoon */}
+        <svg
+          className={`absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 transition-transform pointer-events-none ${open ? "rotate-180" : ""}`}
+          fill="none" viewBox="0 0 16 16"
+        >
+          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+
+      {open && (
+        <ul className="absolute z-50 mt-1 w-full max-h-56 overflow-y-auto rounded-xl bg-[#16162a] border border-white/10 shadow-xl shadow-black/40 py-1">
+          {filtered.length === 0 ? (
+            <li className="px-4 py-2.5 text-sm text-white/30">Geen resultaten</li>
+          ) : (
+            filtered.map((b) => (
+              <li
+                key={b}
+                onMouseDown={() => select(b)}
+                className={`px-4 py-2.5 text-sm cursor-pointer transition-colors ${
+                  value === b
+                    ? "bg-violet-600/30 text-violet-200"
+                    : "text-white/70 hover:bg-white/[0.06] hover:text-white"
+                }`}
+              >
+                {b}
+              </li>
+            ))
+          )}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 const BRANCHES = [
   // Persoonlijke verzorging
@@ -225,12 +318,11 @@ export default function ROIPage() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-white/50 mb-1.5">Branche</label>
-              <select value={branche} onChange={(e) => setBranche(e.target.value)} className={inputClass}>
-                <option value="" className="bg-[#0a0a0f]">Kies je branche</option>
-                {BRANCHES.map((b) => (
-                  <option key={b} value={b} className="bg-[#0a0a0f]">{b}</option>
-                ))}
-              </select>
+              <BrancheCombobox
+                value={branche}
+                onChange={setBranche}
+                branches={BRANCHES}
+              />
             </div>
             <div>
               <label className="block text-xs font-medium text-white/50 mb-1.5">Klanten per maand</label>
