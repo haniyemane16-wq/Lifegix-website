@@ -3,15 +3,42 @@
 import { useState } from "react";
 
 const BRANCHES = [
+  // Persoonlijke verzorging
   "Kapper / Barbier",
-  "Restaurant / Café",
-  "Winkel / Retail",
   "Schoonheidssalon",
+  "Nagelstudio / Waxsalon",
+  "Dierenkapper",
+  // Eten & drinken
+  "Restaurant / Café",
+  "Bakkerij",
+  "Slager / Vishandel",
+  "Catering",
+  // Bouw & onderhoud
+  "Aannemer / Bouwbedrijf",
+  "Loodgieter / Installateur",
+  "Elektricien",
+  "Schilder / Stucadoor",
+  "Dakdekker",
+  "Klusbedrijf",
+  // Voertuigen
+  "Autogarage",
+  "Fietsenmaker / Fietswinkel",
+  // Gezondheid & sport
   "Fysiotherapeut",
   "Tandarts",
-  "Aannemer / Bouwbedrijf",
-  "Autogarage",
-  "Bakkerij",
+  "Personal trainer / Sportschool",
+  "Dierenarts",
+  // Tuin & groen
+  "Hovenier / Tuinman",
+  // Retail & winkel
+  "Winkel / Retail",
+  "Bloemist",
+  // Zakelijke diensten
+  "Boekhouder / Administratiekantoor",
+  "Fotograaf / Videograaf",
+  "Schoonmaakbedrijf",
+  "Rijschool",
+  // Overig
   "Anders",
 ];
 
@@ -19,16 +46,43 @@ const BRANCHES = [
 // Lager = capaciteitsbeperkt of al sterk online.
 // Hoger = veel te winnen met online aanwezigheid.
 const BRANCH_MULTIPLIER: Record<string, number> = {
-  "Kapper / Barbier":       0.7,  // zit vaak al vol
-  "Restaurant / Café":      0.7,  // beperkt door stoelen/capaciteit
-  "Winkel / Retail":        0.8,  // concurrerende online markt
-  "Schoonheidssalon":       0.9,  // gemiddeld potentieel
-  "Fysiotherapeut":         1.1,  // goed lokaal SEO-potentieel
-  "Tandarts":               0.8,  // vaak al wachtlijst
-  "Aannemer / Bouwbedrijf": 1.3,  // hoge omzet per klant, weinig online
-  "Autogarage":             1.1,  // sterk lokaal zoekgedrag
-  "Bakkerij":               0.8,  // beperkt online groeipotentieel
-  "Anders":                 1.0,
+  // Persoonlijke verzorging
+  "Kapper / Barbier":               0.7,  // zit vaak al vol, weinig zoekvolume
+  "Schoonheidssalon":               0.9,  // gemiddeld potentieel
+  "Nagelstudio / Waxsalon":         0.9,  // vergelijkbaar met salon
+  "Dierenkapper":                   1.0,  // niche maar groeiend zoekgedrag
+  // Eten & drinken
+  "Restaurant / Café":              0.7,  // beperkt door stoelen/capaciteit
+  "Bakkerij":                       0.8,  // lokaal, beperkt online potentieel
+  "Slager / Vishandel":             0.8,  // lokaal, weinig online concurrentie maar ook weinig zoek
+  "Catering":                       1.2,  // B2B potentieel, hoge orderwaarde
+  // Bouw & onderhoud
+  "Aannemer / Bouwbedrijf":         1.3,  // hoge omzet per klant, weinig online
+  "Loodgieter / Installateur":      1.3,  // spoedzoekopdrachten, hoge waarde
+  "Elektricien":                    1.2,  // veel lokale zoekopdrachten
+  "Schilder / Stucadoor":           1.2,  // hoge vraag, weinig vindbare vakmannen
+  "Dakdekker":                      1.2,  // hoge orderwaarde, weinig online aanwezig
+  "Klusbedrijf":                    1.1,  // breed publiek, actief zoekgedrag
+  // Voertuigen
+  "Autogarage":                     1.1,  // sterk lokaal zoekgedrag
+  "Fietsenmaker / Fietswinkel":     1.1,  // groeiende markt, lokale zoekopdrachten
+  // Gezondheid & sport
+  "Fysiotherapeut":                 1.1,  // goed lokaal SEO-potentieel
+  "Tandarts":                       0.8,  // vaak al wachtlijst
+  "Personal trainer / Sportschool": 1.0,  // concurrentieel maar actief zoekpubliek
+  "Dierenarts":                     0.9,  // vaak al vol, beperkte capaciteit
+  // Tuin & groen
+  "Hovenier / Tuinman":             1.2,  // hoog seizoenszoekgedrag, weinig online
+  // Retail & winkel
+  "Winkel / Retail":                0.8,  // concurrerende online markt
+  "Bloemist":                       0.9,  // lokaal, matig online potentieel
+  // Zakelijke diensten
+  "Boekhouder / Administratiekantoor": 1.0, // professioneel maar al redelijk online
+  "Fotograaf / Videograaf":         1.2,  // portfolio-gedreven, hoge conversie
+  "Schoonmaakbedrijf":              1.1,  // B2B potentieel, terugkerende klanten
+  "Rijschool":                      0.9,  // al vrij online aanwezig
+  // Overig
+  "Anders":                         1.0,
 };
 
 // Realistische bandbreedtes (min–max) per dienst.
