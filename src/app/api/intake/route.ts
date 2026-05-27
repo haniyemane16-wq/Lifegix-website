@@ -227,7 +227,7 @@ export async function POST(req: NextRequest) {
   // 3. n8n webhook
   try {
     await fetch(
-      "https://hanibal-agent.app.n8n.cloud/webhook/6ccef574-98b0-49ed-b9b6-10df0b4c6475",
+      "https://hanibal-agent.app.n8n.cloud/webhook/lifegix-intake",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
