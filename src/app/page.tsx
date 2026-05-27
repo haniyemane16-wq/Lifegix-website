@@ -981,7 +981,7 @@ function Footer() {
         <span>
           © {new Date().getFullYear()} Life<span className="text-violet-500/60">gix</span> · Warnsveld
         </span>
-        {/* TODO: fill in real KvK number */}
+        <span>KvK-nummer: 98120336</span>
       </div>
     </footer>
   );
