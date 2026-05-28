@@ -37,7 +37,7 @@ const localBusinessSchema = {
   name: "Lifegix",
   description: "Websites en AI-automatisering voor lokale bedrijven",
   url: "https://lifegix.nl",
-  email: "haniyemane16@gmail.com",
+  email: "lifegix.contact@gmail.com",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Warnsveld",
