@@ -224,7 +224,7 @@ export default function BestelPage() {
                       : "bg-white/[0.03] hover:bg-white/[0.05]"
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="text-lg font-bold text-white">{p.naam}</h3>
@@ -243,20 +243,20 @@ export default function BestelPage() {
                         ))}
                       </ul>
                     </div>
-                    <div className="text-right shrink-0">
+                    <div className="sm:text-right shrink-0">
                       <div className="text-2xl font-bold text-white">€{p.eenmalig}</div>
                       <div className="text-xs text-white/40">eenmalig</div>
                       <div className="mt-1 text-sm font-medium text-violet-300">
                         + €{p.maandelijks}/mnd
                       </div>
-                      {p.id !== "aionly" && BUNDEL[p.id] && (
-                        <div className="mt-2 text-xs leading-snug">
+                      {p.id !== "aionly" && p.id !== "test" && BUNDEL[p.id] && (
+                        <div className="mt-2 text-xs leading-snug max-w-[180px] sm:ml-auto">
                           <span className="text-violet-400/80">
-                            Met AI agent: €{BUNDEL[p.id].eenmalig} eenmalig + €{BUNDEL[p.id].maandelijks}/mnd
+                            Met AI: €{BUNDEL[p.id].eenmalig} + €{BUNDEL[p.id].maandelijks}/mnd
                           </span>
                           {" "}
                           <span className="text-green-400 font-semibold">
-                            (bespaar €{BUNDEL[p.id].korting} + €{BUNDEL[p.id].kortingMaandelijks}/mnd)
+                            (−€{BUNDEL[p.id].korting})
                           </span>
                         </div>
                       )}
