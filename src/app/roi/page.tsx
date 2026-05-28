@@ -203,35 +203,30 @@ const SERVICE_META = {
   },
 };
 
+// Vaste prijzen — zelfde als op de bestelpagina
 const PRICE_TIERS = {
   website: [
-    { maxOmzet: 5_000,    eenmalig: 500,   maand: 50 },
-    { maxOmzet: 20_000,   eenmalig: 1_000, maand: 75 },
-    { maxOmzet: Infinity, eenmalig: 1_500, maand: 100 },
+    { maxOmzet: 5_000,    eenmalig: 500,   maand: 50,  naam: "Website Starter" },
+    { maxOmzet: Infinity, eenmalig: 1_000, maand: 75,  naam: "Website Business" },
   ],
   ai: [
-    { maxOmzet: 5_000,    eenmalig: 300,   maand: 75 },
-    { maxOmzet: 20_000,   eenmalig: 600,   maand: 120 },
-    { maxOmzet: Infinity, eenmalig: 1_000, maand: 150 },
+    { maxOmzet: Infinity, eenmalig: 300,   maand: 75,  naam: "AI Agent" },
+  ],
+  both: [
+    { maxOmzet: 5_000,    eenmalig: 750,   maand: 110, naam: "Website Starter + AI Agent" },
+    { maxOmzet: Infinity, eenmalig: 1_200, maand: 135, naam: "Website Business + AI Agent" },
   ],
 };
 
-function getTier(dienst: "website" | "ai", maandomzet: number) {
-  return PRICE_TIERS[dienst].find((t) => maandomzet < t.maxOmzet)!;
-}
-
 function getPricing(dienst: "website" | "ai" | "both", maandomzet: number) {
-  if (dienst === "both") {
-    const w = getTier("website", maandomzet);
-    const a = getTier("ai", maandomzet);
-    return {
-      eenmalig: Math.round((w.eenmalig + a.eenmalig) * 0.8),
-      maand: Math.round((w.maand + a.maand) * 0.8),
-      korting: true,
-    };
-  }
-  const tier = getTier(dienst, maandomzet);
-  return { eenmalig: tier.eenmalig, maand: tier.maand, korting: false };
+  const tiers = PRICE_TIERS[dienst];
+  const tier = tiers.find((t) => maandomzet < t.maxOmzet) ?? tiers[tiers.length - 1];
+  return {
+    eenmalig: tier.eenmalig,
+    maand: tier.maand,
+    naam: tier.naam,
+    korting: dienst === "both",
+  };
 }
 
 export default function ROIPage() {
@@ -249,6 +244,7 @@ export default function ROIPage() {
     eenmalig: number;
     maand: number;
     korting: boolean;
+    pakketnaam: string;
     brancheMultiplier: number;
   } | null>(null);
 
@@ -265,7 +261,7 @@ export default function ROIPage() {
     const extraMax = Math.round(huidig * meta.upliftMax * multiplier);
     const extraMid = (extraMin + extraMax) / 2;
 
-    const { eenmalig, maand, korting } = getPricing(dienst, huidig);
+    const { eenmalig, maand, korting, naam: pakketnaam } = getPricing(dienst, huidig);
     const terugverdien = Math.ceil(eenmalig / Math.max(extraMid - maand, 1));
 
     setResult({
@@ -278,6 +274,7 @@ export default function ROIPage() {
       eenmalig,
       maand,
       korting,
+      pakketnaam,
       brancheMultiplier: multiplier,
     });
   };
@@ -391,7 +388,7 @@ export default function ROIPage() {
                 </div>
                 <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
                   <p className="text-xs text-white/40 mb-1">
-                    Investering{result.korting && <span className="ml-1 text-violet-400">−20%</span>}
+                    {result.pakketnaam}{result.korting && <span className="ml-1 text-violet-400"> (bundel)</span>}
                   </p>
                   <p className="text-lg font-bold text-white">
                     €{result.eenmalig.toLocaleString("nl-NL")}
