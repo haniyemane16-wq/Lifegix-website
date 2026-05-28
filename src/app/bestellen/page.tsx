@@ -341,9 +341,15 @@ export default function BestelPage() {
                 {/* Test pakket */}
                 <button
                   onClick={() => handlePakketKeuze("test")}
-                  className="w-full text-center py-2 text-xs text-white/20 hover:text-white/40 transition-colors"
+                  className="w-full text-left rounded-2xl p-4 border border-dashed border-white/20 hover:border-white/40 bg-white/[0.02] transition-all"
                 >
-                  🧪 Testbetaling (€0,01)
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-sm font-medium text-white/50">🧪 Testbetaling</span>
+                      <p className="text-xs text-white/30 mt-0.5">Intern testen — €0,01 eenmalig</p>
+                    </div>
+                    <span className="text-xs text-white/30">→</span>
+                  </div>
                 </button>
               </>
             ) : (
