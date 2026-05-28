@@ -88,6 +88,14 @@ const BUNDEL: Record<string, { eenmalig: number; maandelijks: number; korting: n
   business: { eenmalig: 1200, maandelijks: 135, korting: 75, kortingMaandelijks: 15 },
 };
 
+const TEST_PAKKET = {
+  id: "test",
+  naam: "🧪 Testbetaling",
+  eenmalig: 0.01,
+  maandelijks: 0,
+  features: [] as string[],
+} as const;
+
 type WebsitePakketId = (typeof WEBSITE_PAKKETTEN)[number]["id"];
 type AIPakketId = (typeof AI_PAKKETTEN)[number]["id"];
 type PakketId = WebsitePakketId | AIPakketId | "test";
@@ -157,7 +165,7 @@ export default function BestelPage() {
 
   const websitePakket = WEBSITE_PAKKETTEN.find((p) => p.id === gekozenPakket);
   const aiPakket = AI_PAKKETTEN.find((p) => p.id === gekozenPakket);
-  const huidigPakket = websitePakket ?? aiPakket;
+  const huidigPakket = websitePakket ?? aiPakket ?? (gekozenPakket === "test" ? TEST_PAKKET : undefined);
 
   const bundel =
     gekozenPakket && !isAIPakket(gekozenPakket) && gekozenPakket !== "test" && metAiAgent
