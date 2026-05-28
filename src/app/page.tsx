@@ -571,7 +571,7 @@ function Portfolio() {
   return (
     <section id="portfolio" className="pt-12 pb-24 px-6 relative">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 right-0 w-[350px] h-[350px] rounded-full bg-violet-900/10 blur-[100px]" />
+        <div className="hidden sm:block absolute top-1/2 right-0 w-[350px] h-[350px] rounded-full bg-violet-900/10 blur-[100px]" />
       </div>
 
       <div className="max-w-6xl mx-auto relative">
