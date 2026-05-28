@@ -452,7 +452,7 @@ function Pricing() {
           <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Transparante prijzen</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white">Kies wat bij je past</h2>
           <p className="mt-4 text-white/50 max-w-md mx-auto">
-            Geen verborgen kosten. Vaste prijs, vaste kwaliteit. Altijd inclusief btw.
+            Geen verborgen kosten. Vaste prijs, vaste kwaliteit. Vrijgesteld van BTW (KOR).
           </p>
         </div>
 
@@ -979,9 +979,12 @@ function Footer() {
     <footer className="border-t border-white/5 py-8 px-6 mt-auto">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-white/30 text-sm">
         <span>
-          © {new Date().getFullYear()} Life<span className="text-violet-500/60">gix</span> · Warnsveld
+          © {new Date().getFullYear()} Life<span className="text-violet-500/60">gix</span> · Warnsveld · KvK 98120336
         </span>
-        <span>KvK-nummer: 98120336</span>
+        <span className="flex gap-4">
+          <a href="/privacy" className="hover:text-white/60 transition-colors">Privacyverklaring</a>
+          <a href="/voorwaarden" className="hover:text-white/60 transition-colors">Algemene Voorwaarden</a>
+        </span>
       </div>
     </footer>
   );
