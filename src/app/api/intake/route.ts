@@ -168,7 +168,7 @@ export async function POST(req: NextRequest) {
   // 1. Offerte naar klant
   try {
     await resend.emails.send({
-      from: "Hanibal via Lifegix <onboarding@resend.dev>",
+      from: "Hanibal via Lifegix <hanibal@lifegix.nl>",
       to: typeof email === "string" ? email : "",
       replyTo: TO_EMAIL,
       subject: `Je offerte van Lifegix — ${escapeHtml(typeof bedrijf === "string" ? bedrijf : "")}`,
@@ -188,7 +188,7 @@ export async function POST(req: NextRequest) {
   // 2. Volledige brief naar Hanibal
   try {
     await resend.emails.send({
-      from: "Lifegix Intake <onboarding@resend.dev>",
+      from: "Lifegix Intake <hanibal@lifegix.nl>",
       to: TO_EMAIL,
       subject: `Nieuwe intake — ${escapeHtml(typeof bedrijf === "string" ? bedrijf : "")} (${escapeHtml(typeof name === "string" ? name : "")})`,
       html: `

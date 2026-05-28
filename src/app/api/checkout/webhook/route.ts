@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   // Bevestigingsmail naar de klant
   try {
     await resend.emails.send({
-      from: "Lifegix <onboarding@resend.dev>",
+      from: "Lifegix <hanibal@lifegix.nl>",
       to: email,
       replyTo: TO_EMAIL,
       subject: "Bevestiging van je bestelling — Lifegix",
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
   // Notificatie naar jou
   try {
     await resend.emails.send({
-      from: "Lifegix Bestellingen <onboarding@resend.dev>",
+      from: "Lifegix Bestellingen <hanibal@lifegix.nl>",
       to: TO_EMAIL,
       subject: `Nieuwe betaling ontvangen — ${naam}`,
       html: `

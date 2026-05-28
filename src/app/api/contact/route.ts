@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
   try {
     // 1. Mail naar Hanibal
     await resend.emails.send({
-      from: "Lifegix Contact <onboarding@resend.dev>",
+      from: "Lifegix Contact <hanibal@lifegix.nl>",
       to: TO_EMAIL,
       replyTo: email,
       subject: `Nieuw bericht van ${escapeHtml(name)} via Lifegix`,
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     // 2. Auto-reply naar klant met intake link
     try {
       await resend.emails.send({
-        from: "Hanibal via Lifegix <onboarding@resend.dev>",
+        from: "Hanibal via Lifegix <hanibal@lifegix.nl>",
         to: email,
         replyTo: TO_EMAIL,
         subject: `Bedankt voor je bericht, ${escapeHtml(name)}!`,
