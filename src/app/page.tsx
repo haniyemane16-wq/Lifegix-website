@@ -444,7 +444,7 @@ function Pricing() {
   return (
     <section id="prijzen" className="py-24 px-6 relative">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-violet-900/8 blur-[140px]" />
+        <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-violet-900/8 blur-[140px]" />
       </div>
 
       <div className="max-w-6xl mx-auto relative">
