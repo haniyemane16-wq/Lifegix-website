@@ -3,6 +3,7 @@ import Navbar from "./_components/Navbar";
 import FAQAccordion from "./_components/FAQAccordion";
 import ContactForm from "./_components/ContactForm";
 import StickyContactBtn from "./_components/StickyContactBtn";
+import ChatWidget from "./_components/ChatWidget";
 
 export default function Home() {
   return (
