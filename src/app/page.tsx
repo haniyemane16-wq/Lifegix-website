@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Navbar from "./_components/Navbar";
 import FAQAccordion from "./_components/FAQAccordion";
 import ContactForm from "./_components/ContactForm";
@@ -54,7 +55,7 @@ function Hero() {
           Plan een gratis gesprek →
         </a>
         <a href="#diensten" className="px-7 py-3.5 rounded-xl border border-white/10 hover:border-white/20 text-white/70 hover:text-white font-medium text-sm transition-colors">
-          Bekijk diensten
+          Bekijk diensten ↓
         </a>
       </div>
 
@@ -278,7 +279,7 @@ function Pricing() {
         </div>
         <p className="text-center mt-10 text-white/30 text-sm">
           Wil je eerst weten hoeveel je terugverdient?{" "}
-          <a href="/roi" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">Bereken je ROI →</a>
+          <Link href="/roi" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">Bereken je ROI →</Link>
         </p>
       </div>
     </section>
@@ -435,8 +436,8 @@ function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-white/30 text-sm">
         <span>© {new Date().getFullYear()} Life<span className="text-violet-500/60">gix</span> · Warnsveld · KvK 98120336</span>
         <span className="flex gap-4">
-          <a href="/privacy" className="hover:text-white/60 transition-colors">Privacyverklaring</a>
-          <a href="/voorwaarden" className="hover:text-white/60 transition-colors">Algemene Voorwaarden</a>
+          <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacyverklaring</Link>
+          <Link href="/voorwaarden" className="hover:text-white/60 transition-colors">Algemene Voorwaarden</Link>
         </span>
       </div>
     </footer>

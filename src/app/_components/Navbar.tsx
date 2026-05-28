@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 
 const navLinks = [
   { href: "#diensten", label: "Diensten" },
@@ -14,18 +15,18 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/95 sm:bg-[#0a0a0f]/80 sm:backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
+        <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
           <span className="text-white">Life</span><span className="text-violet-400">gix</span>
-        </a>
+        </Link>
         <div className="hidden md:flex items-center gap-8 text-sm text-white/60">
           {navLinks.map((l) => (
             <a key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</a>
           ))}
         </div>
         <div className="hidden md:flex items-center gap-3">
-          <a href="/bestellen" className="text-sm font-medium px-4 py-2 rounded-lg border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 transition-colors">
+          <Link href="/bestellen" className="text-sm font-medium px-4 py-2 rounded-lg border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 transition-colors">
             Bestellen
-          </a>
+          </Link>
           <a href="#contact" className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors">
             Gratis gesprek
           </a>
@@ -48,9 +49,9 @@ export default function Navbar() {
             </a>
           ))}
           <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
-            <a href="/bestellen" className="text-sm font-medium px-4 py-2.5 rounded-lg border border-violet-500/40 text-violet-300 text-center">
+            <Link href="/bestellen" onClick={() => setOpen(false)} className="text-sm font-medium px-4 py-2.5 rounded-lg border border-violet-500/40 text-violet-300 text-center">
               Bestellen
-            </a>
+            </Link>
             <a href="#contact" onClick={() => setOpen(false)} className="text-sm font-medium px-4 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors text-center">
               Gratis gesprek
             </a>
