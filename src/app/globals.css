@@ -58,17 +58,37 @@ body {
 
 .gradient-border {
   position: relative;
+  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
-.gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(139, 92, 246, 0.05));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+@media (min-width: 640px) {
+  .gradient-border {
+    border: none;
+  }
+
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(139, 92, 246, 0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+/* Snellere hover op mobiel */
+@media (max-width: 639px) {
+  .hover\:-translate-y-0\.5:active {
+    transform: scale(0.98);
+  }
+  .hover\:-translate-y-1:active {
+    transform: scale(0.98);
+  }
+  .purple-glow {
+    box-shadow: none;
+  }
 }
