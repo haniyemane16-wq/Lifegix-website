@@ -28,6 +28,14 @@ const PAKKETTEN = [
     features: ["Voor wie al een website heeft", "Persoonlijke AI-assistent", "24/7 beschikbaar", "WhatsApp / e-mail integratie"],
     highlighted: false,
   },
+  {
+    id: "test",
+    naam: "🧪 Testbetaling",
+    eenmalig: 0.01,
+    maandelijks: 0,
+    features: ["Alleen voor intern testen", "€0,01 eenmalig", "Geen abonnement"],
+    highlighted: false,
+  },
 ] as const;
 
 const AI_EENMALIG = 300;

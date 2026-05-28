@@ -7,6 +7,7 @@ const PAKKETTEN: Record<string, { eenmalig: number; maandelijks: number }> = {
   starter:  { eenmalig: 500,  maandelijks: 50 },
   business: { eenmalig: 1000, maandelijks: 75 },
   aionly:   { eenmalig: 300,  maandelijks: 75 },
+  test:     { eenmalig: 0.01, maandelijks: 0 },
 };
 
 const BUNDEL: Record<string, { eenmalig: number; maandelijks: number }> = {
