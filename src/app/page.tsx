@@ -839,7 +839,7 @@ function Testimonials() {
   return (
     <section className="py-24 px-6 relative">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-violet-900/8 blur-[100px]" />
+        <div className="hidden sm:block absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-violet-900/8 blur-[100px]" />
       </div>
       <div className="max-w-6xl mx-auto relative">
         <div className="text-center mb-16">
