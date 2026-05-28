@@ -244,7 +244,7 @@ function Services() {
           {services.map((s) => (
             <div
               key={s.title}
-              className={`relative rounded-2xl p-8 gradient-border transition-all hover:-translate-y-1 ${
+              className={`relative rounded-2xl p-5 sm:p-8 gradient-border transition-all hover:-translate-y-1 ${
                 s.highlighted
                   ? "bg-violet-950/30 purple-glow"
                   : "bg-white/[0.03]"
@@ -265,15 +265,17 @@ function Services() {
 
               {/* Price */}
               <div className="mt-6">
-                <p className="text-2xl font-bold text-white">Prijs op maat</p>
+                <p className="text-2xl font-bold text-white">
+                  {s.title === "Website Bouwen" ? "Vanaf €500" : "Vanaf €300"}
+                </p>
                 <p className="mt-1 text-xs text-white/40">
-                  Gebruik de calculator hieronder voor jouw persoonlijke berekening
+                  {s.title === "Website Bouwen" ? "eenmalig + €50/mnd" : "eenmalig + €75/mnd"}
                 </p>
                 <a
-                  href="#bereken"
+                  href="#prijzen"
                   className="mt-3 inline-block text-sm font-medium text-violet-400 hover:text-violet-300 transition-colors"
                 >
-                  Bereken jouw prijs →
+                  Bekijk alle pakketten →
                 </a>
               </div>
 
@@ -359,7 +361,7 @@ function HowItWorks() {
         <div className="grid md:grid-cols-3 gap-6">
           {steps.map((step) => (
             <div key={step.number} className="relative group">
-              <div className="relative p-8 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-white/[0.09] hover:border-violet-500/30 transition-all group-hover:-translate-y-1">
+              <div className="relative p-5 sm:p-8 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-white/[0.09] hover:border-violet-500/30 transition-all group-hover:-translate-y-1">
                 <div className="text-violet-400/60 text-5xl font-bold font-mono mb-6 leading-none">
                   {step.number}
                 </div>
@@ -715,7 +717,7 @@ function Contact() {
           ) : (
             <form
               onSubmit={handleSubmit}
-              className="space-y-4 p-8 rounded-2xl bg-white/[0.03] gradient-border"
+              className="space-y-4 p-5 sm:p-8 rounded-2xl bg-white/[0.03] gradient-border"
             >
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
@@ -961,7 +963,7 @@ function StickyContactBtn() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
   return (
-    <div className={`fixed bottom-6 right-6 z-40 transition-all duration-300 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
+    <div className={`fixed bottom-8 right-5 z-40 transition-all duration-300 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}>
       <a
         href="#contact"
         className="flex items-center gap-2 px-5 py-3 rounded-full bg-violet-600 hover:bg-violet-500 font-semibold text-sm shadow-lg purple-glow transition-all hover:scale-105"
