@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const LINKS = [
   { label: "n8n Dashboard", url: "https://hanibal-agent.app.n8n.cloud", icon: "⚡", desc: "Workflows & automatisering" },
@@ -57,11 +58,11 @@ function AdminInner() {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="/" className="text-xl font-bold tracking-tight">
+          <Link href="/" className="text-xl font-bold tracking-tight">
             <span className="text-white">Life</span><span className="text-violet-400">gix</span>
             <span className="ml-2 text-xs font-normal text-violet-400/60 border border-violet-500/20 px-2 py-0.5 rounded-full">Admin</span>
-          </a>
-          <a href="/" className="text-sm text-white/50 hover:text-white transition-colors">← Terug naar site</a>
+          </Link>
+          <Link href="/" className="text-sm text-white/50 hover:text-white transition-colors">← Terug naar site</Link>
         </div>
       </nav>
 

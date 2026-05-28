@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function BedanktPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white flex flex-col items-center justify-center px-6">
@@ -19,12 +21,12 @@ export default function BedanktPage() {
           Je betaling is verwerkt. Je ontvangt binnen 24 uur een bevestiging per e-mail en ik neem persoonlijk contact met je op om te starten.
         </p>
 
-        <a
+        <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all hover:scale-105 purple-glow"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-colors purple-glow"
         >
           ← Terug naar home
-        </a>
+        </Link>
       </div>
     </main>
   );

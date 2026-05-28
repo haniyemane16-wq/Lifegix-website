@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 interface LeadPayload {
   name: string;
@@ -131,9 +132,9 @@ function IntakeFormInner() {
           <p className="text-white/50 leading-relaxed mb-8">
             Bedankt! Je ontvangt binnen 24 uur een persoonlijke offerte op <span className="text-violet-300">{form.email}</span>.
           </p>
-          <a href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all hover:scale-105">
+          <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-colors">
             ← Terug naar home
-          </a>
+          </Link>
         </div>
       </main>
     );
@@ -148,10 +149,10 @@ function IntakeFormInner() {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
+          <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
             <span className="text-white">Life</span><span className="text-violet-400">gix</span>
-          </a>
-          <a href="/" className="text-sm text-white/50 hover:text-white transition-colors">← Terug naar home</a>
+          </Link>
+          <Link href="/" className="text-sm text-white/50 hover:text-white transition-colors">← Terug naar home</Link>
         </div>
       </nav>
 

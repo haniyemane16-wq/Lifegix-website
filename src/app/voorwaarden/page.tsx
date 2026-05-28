@@ -1,10 +1,11 @@
+import Link from "next/link";
 export const metadata = { title: "Algemene Voorwaarden — Lifegix" };
 
 export default function VoorwaardenPage() {
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-[#ededed] px-6 py-20">
       <div className="max-w-3xl mx-auto">
-        <a href="/" className="text-violet-400 text-sm hover:underline">← Terug naar home</a>
+        <Link href="/" className="text-violet-400 text-sm hover:underline">← Terug naar home</Link>
         <h1 className="text-4xl font-bold mt-6 mb-2">Algemene Voorwaarden</h1>
         <p className="text-white/40 text-sm mb-12">Lifegix · KvK 98120336 · Warnsveld · Versie mei 2026</p>
 

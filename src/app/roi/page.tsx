@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 
 /* ─── Zoekbare branche-combobox ─── */
 function BrancheCombobox({
@@ -291,12 +292,12 @@ export default function ROIPage() {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
+          <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
             <span className="text-white">Life</span><span className="text-violet-400">gix</span>
-          </a>
-          <a href="/" className="text-sm text-white/50 hover:text-white transition-colors">
+          </Link>
+          <Link href="/" className="text-sm text-white/50 hover:text-white transition-colors">
             ← Terug naar home
-          </a>
+          </Link>
         </div>
       </nav>
 
@@ -429,12 +430,12 @@ export default function ROIPage() {
                 </div>
               </div>
 
-              <a
+              <Link
                 href="/#contact"
-                className="block text-center w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all hover:scale-[1.02]"
+                className="block text-center w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-colors"
               >
                 Vraag gratis offerte aan →
-              </a>
+              </Link>
             </div>
 
             {/* Disclaimer */}

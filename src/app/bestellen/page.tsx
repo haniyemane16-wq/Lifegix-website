@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 /* ─── Website pakketten ─────────────────────────────────── */
 const WEBSITE_PAKKETTEN = [
@@ -242,13 +243,13 @@ export default function BestelPage() {
 
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
+          <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
             <span className="text-white">Life</span>
             <span className="text-violet-400">gix</span>
-          </a>
-          <a href="/" className="text-sm text-white/50 hover:text-white transition-colors">
+          </Link>
+          <Link href="/" className="text-sm text-white/50 hover:text-white transition-colors">
             ← Terug naar home
-          </a>
+          </Link>
         </div>
       </nav>
 
