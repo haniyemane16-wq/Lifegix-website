@@ -4,7 +4,7 @@ import { Resend } from "resend";
 
 export const dynamic = "force-dynamic";
 
-const TO_EMAIL = "haniyemane16@gmail.com";
+const TO_EMAIL = "lifegix.contact@gmail.com";
 
 const PAKKET_LABEL: Record<string, string> = {
   starter:  "Website Starter",

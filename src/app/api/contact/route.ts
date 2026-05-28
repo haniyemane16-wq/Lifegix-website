@@ -4,7 +4,7 @@ import { createLeadToken } from "@/lib/token";
 
 export const dynamic = "force-dynamic";
 
-const TO_EMAIL = "haniyemane16@gmail.com";
+const TO_EMAIL = "lifegix.contact@gmail.com";
 
 function escapeHtml(str: string): string {
   return str
