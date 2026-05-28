@@ -7,9 +7,13 @@ export const dynamic = "force-dynamic";
 const TO_EMAIL = "lifegix.contact@gmail.com";
 
 const PAKKET_LABEL: Record<string, string> = {
-  starter:  "Website Starter",
-  business: "Website Business",
-  aionly:   "Alleen AI Agent",
+  starter:      "Website Starter",
+  business:     "Website Business",
+  ai_faq:       "FAQ Chatbot",
+  ai_leads:     "Leadopvolging Agent",
+  ai_afspraken: "Afspraakplanning Agent",
+  ai_volledig:  "Volledige AI Agent",
+  test:         "Testbetaling",
 };
 
 export async function POST(req: NextRequest) {

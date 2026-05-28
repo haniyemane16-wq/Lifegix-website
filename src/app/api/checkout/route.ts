@@ -4,10 +4,16 @@ import createMollieClient from "@mollie/api-client";
 export const dynamic = "force-dynamic";
 
 const PAKKETTEN: Record<string, { eenmalig: number; maandelijks: number }> = {
-  starter:  { eenmalig: 500,  maandelijks: 50 },
-  business: { eenmalig: 1000, maandelijks: 75 },
-  aionly:   { eenmalig: 300,  maandelijks: 75 },
-  test:     { eenmalig: 0.01, maandelijks: 0 },
+  // Website
+  starter:      { eenmalig: 500,  maandelijks: 50 },
+  business:     { eenmalig: 1000, maandelijks: 75 },
+  // AI Agent types
+  ai_faq:       { eenmalig: 300,  maandelijks: 50 },
+  ai_leads:     { eenmalig: 600,  maandelijks: 90 },
+  ai_afspraken: { eenmalig: 900,  maandelijks: 120 },
+  ai_volledig:  { eenmalig: 1500, maandelijks: 175 },
+  // Test
+  test:         { eenmalig: 0.01, maandelijks: 0 },
 };
 
 const BUNDEL: Record<string, { eenmalig: number; maandelijks: number }> = {
