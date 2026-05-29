@@ -14,6 +14,7 @@ const PAKKET_LABEL: Record<string, string> = {
   ai_afspraken: "Afspraakplanning Agent",
   ai_volledig:  "Volledige AI Agent",
   test:         "Testbetaling",
+  test_sub:     "Testbetaling + Abonnement",
 };
 
 /* ─── Moneybird helpers ─────────────────────────────────── */

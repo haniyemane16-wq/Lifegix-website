@@ -347,19 +347,23 @@ export default function BestelPage() {
                   </div>
                 </button>
 
-                {/* Test pakket */}
-                <button
-                  onClick={() => handlePakketKeuze("test")}
-                  className="w-full text-left rounded-2xl p-4 border border-dashed border-white/20 hover:border-white/40 bg-white/[0.02] transition-all"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-sm font-medium text-white/50">🧪 Testbetaling</span>
-                      <p className="text-xs text-white/30 mt-0.5">Intern testen — €0,01 eenmalig</p>
-                    </div>
-                    <span className="text-xs text-white/30">→</span>
-                  </div>
-                </button>
+                {/* Test pakketten */}
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => handlePakketKeuze("test")}
+                    className="text-left rounded-2xl p-4 border border-dashed border-white/20 hover:border-white/40 bg-white/[0.02] transition-all"
+                  >
+                    <span className="text-sm font-medium text-white/50">🧪 Testbetaling</span>
+                    <p className="text-xs text-white/30 mt-0.5">€0,01 eenmalig</p>
+                  </button>
+                  <button
+                    onClick={() => handlePakketKeuze("test_sub")}
+                    className="text-left rounded-2xl p-4 border border-dashed border-violet-500/30 hover:border-violet-500/50 bg-white/[0.02] transition-all"
+                  >
+                    <span className="text-sm font-medium text-violet-400/70">🧪 Test + Abo</span>
+                    <p className="text-xs text-white/30 mt-0.5">€0,01 + €0,01/mnd</p>
+                  </button>
+                </div>
               </>
             ) : (
               <>
