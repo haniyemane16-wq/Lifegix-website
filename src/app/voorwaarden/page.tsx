@@ -7,7 +7,7 @@ export default function VoorwaardenPage() {
       <div className="max-w-3xl mx-auto">
         <Link href="/" className="text-violet-400 text-sm hover:underline">← Terug naar home</Link>
         <h1 className="text-4xl font-bold mt-6 mb-2">Algemene Voorwaarden</h1>
-        <p className="text-white/40 text-sm mb-12">Lifegix · KvK 98120336 · Warnsveld · Versie mei 2026</p>
+        <p className="text-white/40 text-sm mb-12">Lifegix · KvK 98120336 · Warnsveld · Versie juni 2026</p>
 
         <section className="space-y-10 text-white/70 leading-relaxed">
 
@@ -37,10 +37,17 @@ export default function VoorwaardenPage() {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-white mb-3">5. Betaling</h2>
-            <p>De eenmalige opdrachtprijs wordt vooraf voldaan via het betaalportaal op lifegix.nl. Maandelijkse onderhoudskosten worden maandelijks vooraf gefactureerd.</p>
+            <h2 className="text-xl font-semibold text-white mb-3">5. Betaling en abonnement</h2>
+            <p>De eenmalige opdrachtprijs wordt vooraf voldaan via het betaalportaal op lifegix.nl.</p>
+            <p className="mt-2">Het maandelijkse abonnement wordt automatisch geïncasseerd via SEPA-machtiging. Door het plaatsen van een bestelling geeft de opdrachtgever toestemming voor maandelijkse automatische incasso van het abonnementsbedrag. De opdrachtgever ontvangt een bevestiging van de afgegeven machtiging.</p>
+            <p className="mt-2">Bij mislukte incasso ontvangt de opdrachtgever een melding. Na twee mislukte pogingen is Lifegix gerechtigd de dienstverlening op te schorten tot betaling heeft plaatsgevonden.</p>
             <p className="mt-2">Lifegix is vrijgesteld van BTW op grond van de Kleineondernemersregeling (KOR). Op facturen wordt geen BTW vermeld.</p>
-            <p className="mt-2">Bij niet-betaling is Lifegix gerechtigd de dienstverlening op te schorten tot betaling heeft plaatsgevonden.</p>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold text-white mb-3">5a. SEPA-machtiging</h2>
+            <p>Voor het maandelijkse abonnement machtigt de opdrachtgever Lifegix om via Mollie N.V. het verschuldigde bedrag automatisch af te schrijven van de opgegeven bankrekening. De opdrachtgever heeft het recht om het bedrag binnen 8 weken na afschrijving terug te laten boeken, conform de SEPA-regels.</p>
+            <p className="mt-2">Crediteurnummer Lifegix (SEPA): wordt vermeld op de machtigingsbevestiging.</p>
           </div>
 
           <div>
@@ -56,7 +63,9 @@ export default function VoorwaardenPage() {
 
           <div>
             <h2 className="text-xl font-semibold text-white mb-3">8. Opzegging en ontbinding</h2>
-            <p>Het maandelijkse abonnement kan maandelijks worden opgezegd met een opzegtermijn van 1 kalendermaand. Opzegging dient schriftelijk te gebeuren via <a href="mailto:hanibal@lifegix.nl" className="text-violet-400 hover:underline">hanibal@lifegix.nl</a>.</p>
+            <p>Het maandelijkse abonnement kan op elk moment worden opgezegd met een opzegtermijn van <strong className="text-white">1 kalendermaand</strong>. Opzegging dient schriftelijk te gebeuren via <a href="mailto:hanibal@lifegix.nl" className="text-violet-400 hover:underline">hanibal@lifegix.nl</a>. Na opzegging wordt de SEPA-machtiging ingetrokken en worden er geen verdere betalingen geïncasseerd.</p>
+            <p className="mt-2">Er geldt geen minimale contractduur, tenzij schriftelijk anders overeengekomen.</p>
+            <p className="mt-2">Bij opzegging blijft de website 30 dagen bereikbaar. Daarna wordt de hosting beëindigd tenzij de opdrachtgever de website elders onderbrengt.</p>
             <p className="mt-2">Lifegix kan de overeenkomst per direct ontbinden als de opdrachtgever zijn verplichtingen niet nakomt.</p>
           </div>
 

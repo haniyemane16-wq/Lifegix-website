@@ -7,7 +7,7 @@ export default function PrivacyPage() {
       <div className="max-w-3xl mx-auto">
         <Link href="/" className="text-violet-400 text-sm hover:underline">← Terug naar home</Link>
         <h1 className="text-4xl font-bold mt-6 mb-2">Privacyverklaring</h1>
-        <p className="text-white/40 text-sm mb-12">Laatste update: mei 2026</p>
+        <p className="text-white/40 text-sm mb-12">Laatste update: juni 2026</p>
 
         <section className="space-y-10 text-white/70 leading-relaxed">
 
@@ -28,6 +28,7 @@ export default function PrivacyPage() {
               <li>Projectomschrijving en aanvullende informatie die je zelf invult</li>
             </ul>
             <p className="mt-2">Bij een bestelling verwerkt Mollie betalingsgegevens. Ik heb geen toegang tot je betaalgegevens zoals kaartnummers.</p>
+            <p className="mt-2">Bij een abonnement met automatische incasso verwerkt Mollie ook je IBAN-nummer en naam rekeninghouder voor het aanmaken van een SEPA-machtiging. Deze gegevens worden uitsluitend gebruikt voor de maandelijkse abonnementskosten.</p>
           </div>
 
           <div>
@@ -51,7 +52,8 @@ export default function PrivacyPage() {
             <p>Ik maak gebruik van de volgende externe diensten die mogelijk persoonsgegevens verwerken:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li><strong className="text-white">Resend</strong> — voor het versturen van e-mails</li>
-              <li><strong className="text-white">Mollie</strong> — voor het verwerken van betalingen</li>
+              <li><strong className="text-white">Mollie</strong> — voor het verwerken van betalingen en SEPA-machtigingen voor abonnementen</li>
+              <li><strong className="text-white">Moneybird</strong> — voor factuurverwerking en boekhouding</li>
               <li><strong className="text-white">Vercel</strong> — voor het hosten van deze website</li>
               <li><strong className="text-white">n8n</strong> — voor geautomatiseerde workflows</li>
             </ul>
