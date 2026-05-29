@@ -186,7 +186,7 @@ export default function BestelPage() {
 
   function handlePakketKeuze(id: PakketId) {
     setGekozenPakket(id);
-    if (isAIPakket(id) || id === "test") {
+    if (isAIPakket(id) || isTestPakket(id)) {
       setMetAiAgent(false);
       setStap(2);
     } else {
