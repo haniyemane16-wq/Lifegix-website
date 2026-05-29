@@ -239,7 +239,8 @@ export async function POST(req: NextRequest) {
         startDate.setMonth(startDate.getMonth() + 1);
         const startDateStr = startDate.toISOString().split("T")[0];
 
-        await mollie.subscriptions.create({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (mollie.subscriptions as any).create({
           customerId,
           amount: {
             currency: "EUR",
