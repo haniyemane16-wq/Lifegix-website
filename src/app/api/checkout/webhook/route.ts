@@ -93,12 +93,11 @@ async function createInvoice(
   });
 }
 
-async function sendInvoice(adminId: string, invoiceId: string, email: string, naam: string) {
+async function markAsOpen(adminId: string, invoiceId: string) {
+  // Zet factuur van 'draft' naar 'open' zonder e-mail te sturen
   return moneybirdFetch(`${adminId}/sales_invoices/${invoiceId}/send_invoice`, "PATCH", {
     sales_invoice_sending: {
-      delivery_method: "Email",
-      email_address: email,
-      email_message: `Beste ${naam},\n\nHartelijk dank voor je bestelling bij LifeGix! In de bijlage vind je de factuur.\n\nMet vriendelijke groet,\nHanibal — LifeGix`,
+      delivery_method: "Manual",
     },
   });
 }
@@ -109,6 +108,16 @@ async function registerPayment(adminId: string, invoiceId: string, bedrag: strin
     payment: {
       payment_date: today,
       price: bedrag,
+    },
+  });
+}
+
+async function sendInvoice(adminId: string, invoiceId: string, email: string, naam: string) {
+  return moneybirdFetch(`${adminId}/sales_invoices/${invoiceId}/send_invoice`, "PATCH", {
+    sales_invoice_sending: {
+      delivery_method: "Email",
+      email_address: email,
+      email_message: `Beste ${naam},\n\nHartelijk dank voor je bestelling bij LifeGix! In de bijlage vind je de betaalde factuur.\n\nMet vriendelijke groet,\nHanibal — LifeGix`,
     },
   });
 }
@@ -208,8 +217,9 @@ export async function POST(req: NextRequest) {
             `Bestelling lifegix.nl — ${naam}`
           );
           if (invoice?.id) {
-            await registerPayment(adminId, invoice.id, payment.amount.value);
-            await sendInvoice(adminId, invoice.id, email, naam);
+            await markAsOpen(adminId, invoice.id);         // 1. draft → open
+            await registerPayment(adminId, invoice.id, payment.amount.value); // 2. betaald
+            await sendInvoice(adminId, invoice.id, email, naam); // 3. e-mail met betaalde factuur
             console.log("Moneybird factuur aangemaakt, betaald en verstuurd:", invoice.id);
           }
         }
