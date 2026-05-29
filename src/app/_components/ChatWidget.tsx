@@ -9,7 +9,6 @@ const WELKOM =
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,12 +24,12 @@ export default function ChatWidget() {
   }, [messages, loading]);
 
   async function send() {
-    const text = input.trim();
+    const text = inputRef.current?.value.trim() ?? "";
     if (!text || loading) return;
 
+    if (inputRef.current) inputRef.current.value = "";
     const newMessages: Message[] = [...messages, { role: "user", content: text }];
     setMessages(newMessages);
-    setInput("");
     setLoading(true);
 
     try {
@@ -119,8 +118,6 @@ export default function ChatWidget() {
               <input
                 ref={inputRef}
                 type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
                 placeholder="Stel een vraag..."
                 className="flex-1 bg-transparent text-sm text-white placeholder-white/30 focus:outline-none"
