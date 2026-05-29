@@ -182,7 +182,7 @@ export default function BestelPage() {
     ? bundel.maandelijks
     : (huidigPakket?.maandelijks ?? 0) + (metAiAgent && !isAIPakket(gekozenPakket) ? AI_MAANDELIJKS : 0);
 
-  const totalSteps = isAIPakket(gekozenPakket) || gekozenPakket === "test" ? 2 : 3;
+  const totalSteps = isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket) ? 2 : 3;
 
   function handlePakketKeuze(id: PakketId) {
     setGekozenPakket(id);
