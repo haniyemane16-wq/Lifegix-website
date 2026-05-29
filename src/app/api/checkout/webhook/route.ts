@@ -16,6 +16,95 @@ const PAKKET_LABEL: Record<string, string> = {
   test:         "Testbetaling",
 };
 
+/* ─── Moneybird helpers ─────────────────────────────────── */
+
+async function moneybirdFetch(path: string, method = "GET", body?: object) {
+  const token = process.env.MONEYBIRD_API_TOKEN;
+  if (!token) return null;
+
+  const res = await fetch(`https://moneybird.com/api/v2/${path}`, {
+    method,
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (!res.ok) {
+    console.error(`Moneybird ${method} ${path} failed:`, res.status, await res.text());
+    return null;
+  }
+  return res.json();
+}
+
+async function getAdministrationId(): Promise<string | null> {
+  const admins = await moneybirdFetch("administrations");
+  if (!admins || !admins[0]) return null;
+  return String(admins[0].id);
+}
+
+async function findOrCreateContact(adminId: string, naam: string, bedrijf: string, email: string, telefoon: string) {
+  // Zoek bestaand contact op e-mail
+  const results = await moneybirdFetch(`${adminId}/contacts?query=${encodeURIComponent(email)}`);
+  if (results && results.length > 0) return results[0].id;
+
+  // Maak nieuw contact aan
+  const nameParts = naam.trim().split(" ");
+  const firstname = nameParts[0] ?? naam;
+  const lastname = nameParts.slice(1).join(" ") || "";
+
+  const contact = await moneybirdFetch(`${adminId}/contacts`, "POST", {
+    contact: {
+      company_name: bedrijf || naam,
+      firstname,
+      lastname,
+      email,
+      phone: telefoon || "",
+    },
+  });
+  return contact?.id ?? null;
+}
+
+async function createInvoice(
+  adminId: string,
+  contactId: string,
+  beschrijving: string,
+  bedrag: string,
+  referentie: string
+) {
+  const today = new Date().toISOString().split("T")[0];
+
+  return moneybirdFetch(`${adminId}/sales_invoices`, "POST", {
+    sales_invoice: {
+      contact_id: contactId,
+      invoice_date: today,
+      reference: referentie,
+      send_method: "email",
+      details_attributes: [
+        {
+          description: beschrijving,
+          price: bedrag,
+          amount: "1",
+          tax_rate_id: null, // KOR — geen BTW
+        },
+      ],
+    },
+  });
+}
+
+async function sendInvoice(adminId: string, invoiceId: string, email: string, naam: string) {
+  return moneybirdFetch(`${adminId}/sales_invoices/${invoiceId}/send_invoice`, "PATCH", {
+    sales_invoice_sending: {
+      delivery_method: "Email",
+      email_address: email,
+      email_message: `Beste ${naam},\n\nHartelijk dank voor je bestelling bij LifeGix! In de bijlage vind je de factuur.\n\nMet vriendelijke groet,\nHanibal — LifeGix`,
+    },
+  });
+}
+
+/* ─── Webhook handler ───────────────────────────────────── */
+
 export async function POST(req: NextRequest) {
   const mollie = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY! });
   const resend = new Resend(process.env.RESEND_API_KEY);
@@ -29,9 +118,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
   }
 
-  if (!id) {
-    return new NextResponse(null, { status: 200 });
-  }
+  if (!id) return new NextResponse(null, { status: 200 });
 
   let payment;
   try {
@@ -41,16 +128,15 @@ export async function POST(req: NextRequest) {
     return new NextResponse(null, { status: 200 });
   }
 
-  if (payment.status !== "paid") {
-    return new NextResponse(null, { status: 200 });
-  }
+  if (payment.status !== "paid") return new NextResponse(null, { status: 200 });
 
   const { naam, bedrijf, email, telefoon, pakket, aiAgent } = payment.metadata as Record<string, string>;
   const pakketLabel = PAKKET_LABEL[pakket] ?? pakket;
   const aiLabel = aiAgent === "true" ? " + AI Agent (bundelkorting)" : "";
   const beschrijving = `${pakketLabel}${aiLabel}`;
+  const isTest = pakket === "test";
 
-  // Bevestigingsmail naar de klant
+  // Bevestigingsmail naar klant
   try {
     await resend.emails.send({
       from: "Lifegix <hanibal@lifegix.nl>",
@@ -66,16 +152,17 @@ export async function POST(req: NextRequest) {
             <p style="margin: 0; font-weight: 600;">${beschrijving}</p>
             ${bedrijf ? `<p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 14px;">${bedrijf}</p>` : ""}
           </div>
-          <p style="font-size: 14px; color: #9ca3af;">Vragen? Stuur een mail naar <a href="mailto:${TO_EMAIL}" style="color: #a78bfa;">${TO_EMAIL}</a></p>
-          <p style="margin-top: 24px; font-size: 12px; color: #4b5563;">Lifegix · Warnsveld</p>
+          <p style="color: #9ca3af; font-size: 14px;">Je ontvangt de factuur apart per e-mail vanuit Moneybird.</p>
+          <p style="font-size: 14px; color: #9ca3af; margin-top: 16px;">Vragen? Stuur een mail naar <a href="mailto:${TO_EMAIL}" style="color: #a78bfa;">${TO_EMAIL}</a></p>
+          <p style="margin-top: 24px; font-size: 12px; color: #4b5563;">Lifegix · Warnsveld · KvK 98120336 · Vrijgesteld van BTW (KOR)</p>
         </div>
       `,
     });
   } catch (err) {
-    console.error("Resend bevestigingsmail (klant) error:", err);
+    console.error("Resend bevestigingsmail error:", err);
   }
 
-  // Notificatie naar jou
+  // Notificatie naar Hanibal
   try {
     await resend.emails.send({
       from: "Lifegix Bestellingen <hanibal@lifegix.nl>",
@@ -96,7 +183,32 @@ export async function POST(req: NextRequest) {
       `,
     });
   } catch (err) {
-    console.error("Resend notificatie (jou) error:", err);
+    console.error("Resend notificatie error:", err);
+  }
+
+  // Moneybird factuur aanmaken (niet voor testbetalingen)
+  if (!isTest) {
+    try {
+      const adminId = await getAdministrationId();
+      if (adminId) {
+        const contactId = await findOrCreateContact(adminId, naam, bedrijf, email, telefoon);
+        if (contactId) {
+          const invoice = await createInvoice(
+            adminId,
+            contactId,
+            beschrijving,
+            payment.amount.value,
+            `Bestelling lifegix.nl — ${naam}`
+          );
+          if (invoice?.id) {
+            await sendInvoice(adminId, invoice.id, email, naam);
+            console.log("Moneybird factuur aangemaakt en verstuurd:", invoice.id);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Moneybird factuur error:", err);
+    }
   }
 
   return new NextResponse(null, { status: 200 });
