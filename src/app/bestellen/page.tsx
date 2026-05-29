@@ -482,7 +482,7 @@ export default function BestelPage() {
 
         {/* ── Formulier stap ── */}
         {((stap === 3 && !isAIPakket(gekozenPakket) && gekozenPakket !== "test") ||
-          (stap === 2 && (isAIPakket(gekozenPakket) || gekozenPakket === "test"))) &&
+          (stap === 2 && (isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket)))) &&
           huidigPakket && (
           <div>
             <h2 className="text-lg font-semibold text-white/80 mb-6">
@@ -638,7 +638,7 @@ export default function BestelPage() {
             </form>
 
             <button
-              onClick={() => setStap(isAIPakket(gekozenPakket) || gekozenPakket === "test" ? 1 : 2)}
+              onClick={() => setStap(isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket) ? 1 : 2)}
               className="mt-6 text-sm text-white/40 hover:text-white/70 transition-colors"
             >
               ← Terug
