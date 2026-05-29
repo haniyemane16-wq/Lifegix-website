@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { href: "#diensten", label: "Diensten" },
@@ -12,8 +13,10 @@ const navLinks = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const prefetchBestellen = () => router.prefetch("/bestellen");
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/95 sm:bg-[#0a0a0f]/80 sm:backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/95 sm:bg-[#0a0a0f]/80 sm:backdrop-blur-md [transform:translateZ(0)] [-webkit-backface-visibility:hidden]">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
           <span className="text-white">Life</span><span className="text-violet-400">gix</span>
@@ -28,7 +31,7 @@ export default function Navbar() {
           )}
         </div>
         <div className="hidden md:flex items-center gap-3">
-          <Link href="/bestellen" className="text-sm font-medium px-4 py-2 rounded-lg border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 transition-colors">
+          <Link href="/bestellen" onMouseEnter={prefetchBestellen} onTouchStart={prefetchBestellen} className="text-sm font-medium px-4 py-2 rounded-lg border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 transition-colors">
             Bestellen
           </Link>
           <a href="#contact" className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors">

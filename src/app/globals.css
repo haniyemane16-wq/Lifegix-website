@@ -23,6 +23,12 @@ a, button, [role="button"] {
   touch-action: manipulation;
 }
 
+/* Content visibility — skip rendering off-screen sections */
+.section-lazy {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
 /* Geen hover-animaties op touch-apparaten */
 @media (hover: none) {
   .hover\:-translate-y-0\.5:hover,

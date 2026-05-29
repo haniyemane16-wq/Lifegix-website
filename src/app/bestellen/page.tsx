@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -154,8 +154,16 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
 
 export default function BestelPage() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [stap, setStap] = useState(1);
   const [showAITypes, setShowAITypes] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => { setMounted(true); }, []);
+
+  const naarStap = useCallback((s: number) => {
+    startTransition(() => setStap(s));
+  }, []);
   const [gekozenPakket, setGekozenPakket] = useState<PakketId | null>(null);
   const [metAiAgent, setMetAiAgent] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
@@ -188,15 +196,15 @@ export default function BestelPage() {
     setGekozenPakket(id);
     if (isAIPakket(id) || isTestPakket(id)) {
       setMetAiAgent(false);
-      setStap(2);
+      naarStap(2);
     } else {
-      setStap(2);
+      naarStap(2);
     }
   }
 
   function handleAiKeuze(ja: boolean) {
     setMetAiAgent(ja);
-    setStap(3);
+    naarStap(3);
   }
 
   async function handleBestellen(e: React.FormEvent) {
@@ -236,6 +244,28 @@ export default function BestelPage() {
   }
 
   const displayStap = isAIPakket(gekozenPakket) && stap === 2 ? 2 : stap;
+
+  // Skeleton tijdens hydration — voorkomt leeg scherm op mobiel
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-[#0a0a0f] text-white">
+        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/95 h-16" />
+        <div className="max-w-3xl mx-auto px-6 pt-32 pb-24 animate-pulse">
+          <div className="text-center mb-12">
+            <div className="h-4 w-32 bg-white/10 rounded mx-auto mb-4" />
+            <div className="h-10 w-64 bg-white/10 rounded mx-auto mb-3" />
+            <div className="h-4 w-80 bg-white/5 rounded mx-auto" />
+          </div>
+          <div className="flex items-center gap-2 mb-10">
+            {[1,2,3].map(i => <div key={i} className="w-8 h-8 rounded-full bg-white/10" />)}
+          </div>
+          <div className="space-y-4">
+            {[1,2,3].map(i => <div key={i} className="h-28 rounded-2xl bg-white/5" />)}
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white">
@@ -349,21 +379,19 @@ export default function BestelPage() {
                   </div>
                 </button>
 
-                {/* Test pakketten */}
-                <div className="grid grid-cols-2 gap-2">
+                {/* Test pakketten — altijd zichtbaar */}
+                <div className="flex gap-2">
                   <button
                     onClick={() => handlePakketKeuze("test")}
-                    className="text-left rounded-2xl p-4 border border-dashed border-white/20 hover:border-white/40 bg-white/[0.02] transition-all"
+                    className="flex-1 py-2.5 px-3 rounded-xl border border-dashed border-white/20 bg-white/[0.02] text-xs text-white/40 hover:text-white/60 transition-colors text-center"
                   >
-                    <span className="text-sm font-medium text-white/50">🧪 Testbetaling</span>
-                    <p className="text-xs text-white/30 mt-0.5">€0,01 eenmalig</p>
+                    🧪 Test €0,01
                   </button>
                   <button
                     onClick={() => handlePakketKeuze("test_sub")}
-                    className="text-left rounded-2xl p-4 border border-dashed border-violet-500/30 hover:border-violet-500/50 bg-white/[0.02] transition-all"
+                    className="flex-1 py-2.5 px-3 rounded-xl border border-dashed border-violet-500/20 bg-white/[0.02] text-xs text-violet-400/50 hover:text-violet-400/80 transition-colors text-center"
                   >
-                    <span className="text-sm font-medium text-violet-400/70">🧪 Test + Abo</span>
-                    <p className="text-xs text-white/30 mt-0.5">€0,01 + €0,01/mnd</p>
+                    🧪 Test + Abo
                   </button>
                 </div>
               </>
@@ -474,7 +502,7 @@ export default function BestelPage() {
               </button>
             </div>
 
-            <button onClick={() => { setStap(1); setShowAITypes(false); }} className="mt-6 text-sm text-white/40 hover:text-white/70 transition-colors">
+            <button onClick={() => { naarStap(1); setShowAITypes(false); }} className="mt-6 text-sm text-white/40 hover:text-white/70 transition-colors">
               ← Terug
             </button>
           </div>
@@ -638,7 +666,7 @@ export default function BestelPage() {
             </form>
 
             <button
-              onClick={() => setStap(isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket) ? 1 : 2)}
+              onClick={() => naarStap(isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket) ? 1 : 2)}
               className="mt-6 text-sm text-white/40 hover:text-white/70 transition-colors"
             >
               ← Terug

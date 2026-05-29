@@ -187,7 +187,7 @@ function HowItWorks() {
     { number: "03", title: "Live", description: "Jouw website of AI-systeem gaat live. Ik blijf beschikbaar voor vragen, aanpassingen en uitbreidingen." },
   ];
   return (
-    <section id="werkwijze" className="py-24 pb-12 px-6 relative">
+    <section id="werkwijze" className="section-lazy py-24 pb-12 px-6 relative">
       <div className="absolute inset-0 pointer-events-none hidden sm:block">
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full"
           style={{ background: "radial-gradient(circle, rgba(109,40,217,0.08) 0%, transparent 70%)" }} />
@@ -240,7 +240,7 @@ function Pricing() {
     </svg>
   );
   return (
-    <section id="prijzen" className="py-24 px-6 relative">
+    <section id="prijzen" className="section-lazy py-24 px-6 relative">
       <div className="absolute inset-0 pointer-events-none hidden sm:block">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full"
           style={{ background: "radial-gradient(ellipse, rgba(109,40,217,0.07) 0%, transparent 70%)" }} />
@@ -329,7 +329,7 @@ function Portfolio() {
     },
   ];
   return (
-    <section id="portfolio" className="pt-12 pb-24 px-6 relative">
+    <section id="portfolio" className="section-lazy pt-12 pb-24 px-6 relative">
       <div className="absolute inset-0 pointer-events-none hidden sm:block">
         <div className="absolute top-1/2 right-0 w-[350px] h-[350px] rounded-full"
           style={{ background: "radial-gradient(circle, rgba(109,40,217,0.08) 0%, transparent 70%)" }} />
