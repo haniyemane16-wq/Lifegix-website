@@ -168,7 +168,7 @@ export default function BestelPage() {
 
   const websitePakket = WEBSITE_PAKKETTEN.find((p) => p.id === gekozenPakket);
   const aiPakket = AI_PAKKETTEN.find((p) => p.id === gekozenPakket);
-  const huidigPakket = websitePakket ?? aiPakket ?? (gekozenPakket === "test" ? TEST_PAKKET : undefined);
+  const huidigPakket = websitePakket ?? aiPakket ?? (isTestPakket(gekozenPakket) ? TEST_PAKKET : undefined);
 
   const bundel =
     gekozenPakket && !isAIPakket(gekozenPakket) && gekozenPakket !== "test" && metAiAgent
