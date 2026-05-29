@@ -4,8 +4,8 @@ import Link from "next/link";
 
 const navLinks = [
   { href: "#diensten", label: "Diensten" },
-  { href: "#werkwijze", label: "Werkwijze" },
   { href: "#prijzen", label: "Prijzen" },
+  { href: "/waarom-lifegix", label: "Waarom LifeGix" },
   { href: "#portfolio", label: "Portfolio" },
   { href: "#contact", label: "Contact" },
 ];
@@ -19,9 +19,13 @@ export default function Navbar() {
           <span className="text-white">Life</span><span className="text-violet-400">gix</span>
         </Link>
         <div className="hidden md:flex items-center gap-8 text-sm text-white/60">
-          {navLinks.map((l) => (
-            <a key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</a>
-          ))}
+          {navLinks.map((l) =>
+            l.href.startsWith("/") ? (
+              <Link key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</Link>
+            ) : (
+              <a key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</a>
+            )
+          )}
         </div>
         <div className="hidden md:flex items-center gap-3">
           <Link href="/bestellen" className="text-sm font-medium px-4 py-2 rounded-lg border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 transition-colors">
@@ -43,11 +47,17 @@ export default function Navbar() {
       </div>
       {open && (
         <div className="md:hidden border-t border-white/5 bg-[#0a0a0f]/98 px-6 py-4 flex flex-col gap-4">
-          {navLinks.map((l) => (
-            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm text-white/70 hover:text-white transition-colors py-1">
-              {l.label}
-            </a>
-          ))}
+          {navLinks.map((l) =>
+            l.href.startsWith("/") ? (
+              <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm text-white/70 hover:text-white transition-colors py-1">
+                {l.label}
+              </Link>
+            ) : (
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm text-white/70 hover:text-white transition-colors py-1">
+                {l.label}
+              </a>
+            )
+          )}
           <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
             <Link href="/bestellen" onClick={() => setOpen(false)} className="text-sm font-medium px-4 py-2.5 rounded-lg border border-violet-500/40 text-violet-300 text-center">
               Bestellen
