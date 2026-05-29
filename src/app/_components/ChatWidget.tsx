@@ -124,7 +124,7 @@ export default function ChatWidget() {
               />
               <button
                 onClick={send}
-                disabled={!input.trim() || loading}
+                disabled={loading}
                 className="w-7 h-7 rounded-lg bg-violet-600 hover:bg-violet-500 disabled:opacity-30 flex items-center justify-center transition-colors flex-shrink-0"
               >
                 <svg width="14" height="14" fill="none" viewBox="0 0 14 14">
