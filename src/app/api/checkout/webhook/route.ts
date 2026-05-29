@@ -134,8 +134,6 @@ export async function POST(req: NextRequest) {
   const pakketLabel = PAKKET_LABEL[pakket] ?? pakket;
   const aiLabel = aiAgent === "true" ? " + AI Agent (bundelkorting)" : "";
   const beschrijving = `${pakketLabel}${aiLabel}`;
-  const isTest = pakket === "test";
-
   // Bevestigingsmail naar klant
   try {
     await resend.emails.send({
@@ -186,9 +184,8 @@ export async function POST(req: NextRequest) {
     console.error("Resend notificatie error:", err);
   }
 
-  // Moneybird factuur aanmaken (niet voor testbetalingen)
-  if (!isTest) {
-    try {
+  // Moneybird factuur aanmaken
+  try {
       const adminId = await getAdministrationId();
       if (adminId) {
         const contactId = await findOrCreateContact(adminId, naam, bedrijf, email, telefoon);
@@ -206,9 +203,8 @@ export async function POST(req: NextRequest) {
           }
         }
       }
-    } catch (err) {
-      console.error("Moneybird factuur error:", err);
-    }
+  } catch (err) {
+    console.error("Moneybird factuur error:", err);
   }
 
   return new NextResponse(null, { status: 200 });
