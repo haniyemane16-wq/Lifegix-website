@@ -103,6 +103,16 @@ async function sendInvoice(adminId: string, invoiceId: string, email: string, na
   });
 }
 
+async function registerPayment(adminId: string, invoiceId: string, bedrag: string) {
+  const today = new Date().toISOString().split("T")[0];
+  return moneybirdFetch(`${adminId}/sales_invoices/${invoiceId}/register_payment`, "PATCH", {
+    payment: {
+      payment_date: today,
+      price: bedrag,
+    },
+  });
+}
+
 /* ─── Webhook handler ───────────────────────────────────── */
 
 export async function POST(req: NextRequest) {
@@ -198,8 +208,9 @@ export async function POST(req: NextRequest) {
             `Bestelling lifegix.nl — ${naam}`
           );
           if (invoice?.id) {
+            await registerPayment(adminId, invoice.id, payment.amount.value);
             await sendInvoice(adminId, invoice.id, email, naam);
-            console.log("Moneybird factuur aangemaakt en verstuurd:", invoice.id);
+            console.log("Moneybird factuur aangemaakt, betaald en verstuurd:", invoice.id);
           }
         }
       }
