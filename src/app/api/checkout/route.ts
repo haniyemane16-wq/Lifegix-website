@@ -3,32 +3,20 @@ import createMollieClient from "@mollie/api-client";
 
 export const dynamic = "force-dynamic";
 
-const PAKKETTEN: Record<string, { eenmalig: number; maandelijks: number }> = {
-  // Website
-  starter:      { eenmalig: 500,  maandelijks: 50 },
-  business:     { eenmalig: 1000, maandelijks: 75 },
-  // AI Agent types
-  ai_faq:       { eenmalig: 300,  maandelijks: 50 },
-  ai_leads:     { eenmalig: 600,  maandelijks: 90 },
-  ai_afspraken: { eenmalig: 900,  maandelijks: 120 },
-  ai_volledig:  { eenmalig: 1500, maandelijks: 175 },
-  // Test
-  test:         { eenmalig: 0.01, maandelijks: 0 },
+const PAKKETTEN: Record<string, { eenmalig: number; maandelijks: number; label: string }> = {
+  starter:      { eenmalig: 500,  maandelijks: 50,  label: "Website Starter" },
+  business:     { eenmalig: 1000, maandelijks: 75,  label: "Website Business" },
+  ai_faq:       { eenmalig: 300,  maandelijks: 50,  label: "FAQ Chatbot" },
+  ai_leads:     { eenmalig: 600,  maandelijks: 90,  label: "Leadopvolging Agent" },
+  ai_afspraken: { eenmalig: 900,  maandelijks: 120, label: "Afspraakplanning Agent" },
+  ai_volledig:  { eenmalig: 1500, maandelijks: 175, label: "Volledige AI Agent" },
+  test:         { eenmalig: 0.01, maandelijks: 0,   label: "Testbetaling" },
 };
 
-const BUNDEL: Record<string, { eenmalig: number; maandelijks: number }> = {
-  starter:  { eenmalig: 750,  maandelijks: 110 },
-  business: { eenmalig: 1200, maandelijks: 135 },
+const BUNDEL: Record<string, { eenmalig: number; maandelijks: number; label: string }> = {
+  starter:  { eenmalig: 750,  maandelijks: 110, label: "Website Starter + AI Agent" },
+  business: { eenmalig: 1200, maandelijks: 135, label: "Website Business + AI Agent" },
 };
-
-function berekenBedrag(pakket: string, aiAgent: boolean): number | null {
-  const p = PAKKETTEN[pakket];
-  if (!p) return null;
-  if (aiAgent && pakket !== "aionly") {
-    return BUNDEL[pakket]?.eenmalig ?? null;
-  }
-  return p.eenmalig;
-}
 
 export async function POST(req: NextRequest) {
   const mollie = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY! });
@@ -54,43 +42,58 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
   }
 
-  const eenmaligBedrag = berekenBedrag(pakket, aiAgent);
-  if (eenmaligBedrag === null) {
-    return NextResponse.json({ error: "Ongeldig pakket." }, { status: 400 });
-  }
+  const p = PAKKETTEN[pakket];
+  if (!p) return NextResponse.json({ error: "Ongeldig pakket." }, { status: 400 });
+
+  const isBundle = aiAgent && (pakket === "starter" || pakket === "business");
+  const gekozenPakket = isBundle ? BUNDEL[pakket] : p;
+  const eenmaligBedrag = gekozenPakket.eenmalig;
+  const maandelijksBedrag = gekozenPakket.maandelijks;
+  const beschrijving = gekozenPakket.label;
+  const heeftAbonnement = maandelijksBedrag > 0;
 
   const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
 
-  const pakketLabel: Record<string, string> = {
-    starter: "Website Starter",
-    business: "Website Business",
-    aionly: "Alleen AI Agent",
-  };
-
-  const description = aiAgent
-    ? `${pakketLabel[pakket] ?? pakket} + AI Agent — ${naam} (${bedrijf || email})`
-    : `${pakketLabel[pakket] ?? pakket} — ${naam} (${bedrijf || email})`;
-
   try {
-    const payment = await mollie.payments.create({
-      amount: {
-        currency: "EUR",
-        value: eenmaligBedrag.toFixed(2),
-      },
-      description,
+    // Maak Mollie klant aan (nodig voor abonnement)
+    let customerId: string | undefined;
+    if (heeftAbonnement) {
+      const customer = await mollie.customers.create({
+        name: naam,
+        email,
+        metadata: { bedrijf, telefoon },
+      });
+      customerId = customer.id;
+    }
+
+    const metadata = {
+      naam,
+      bedrijf,
+      email,
+      telefoon,
+      pakket,
+      aiAgent: String(aiAgent),
+      maandelijksBedrag: String(maandelijksBedrag),
+      beschrijving,
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const paymentParams: any = {
+      amount: { currency: "EUR", value: eenmaligBedrag.toFixed(2) },
+      description: `${beschrijving} — ${naam}${bedrijf ? ` (${bedrijf})` : ""}`,
       redirectUrl: `${origin}/bedankt`,
       webhookUrl: `${origin}/api/checkout/webhook`,
-      metadata: {
-        naam,
-        bedrijf,
-        email,
-        telefoon,
-        pakket,
-        aiAgent: String(aiAgent),
-      },
-    });
+      metadata,
+    };
 
+    if (heeftAbonnement && customerId) {
+      paymentParams.customerId = customerId;
+      paymentParams.sequenceType = "first";
+    }
+
+    const payment = await mollie.payments.create(paymentParams);
     return NextResponse.json({ checkoutUrl: payment.getCheckoutUrl() });
+
   } catch (err: unknown) {
     const asAny = err as Record<string, unknown>;
     const detail = err instanceof Error

@@ -149,10 +149,11 @@ export async function POST(req: NextRequest) {
 
   if (payment.status !== "paid") return new NextResponse(null, { status: 200 });
 
-  const { naam, bedrijf, email, telefoon, pakket, aiAgent } = payment.metadata as Record<string, string>;
+  const { naam, bedrijf, email, telefoon, pakket, aiAgent, maandelijksBedrag, beschrijving: metaBeschrijving } = payment.metadata as Record<string, string>;
   const pakketLabel = PAKKET_LABEL[pakket] ?? pakket;
   const aiLabel = aiAgent === "true" ? " + AI Agent (bundelkorting)" : "";
-  const beschrijving = `${pakketLabel}${aiLabel}`;
+  const beschrijving = metaBeschrijving || `${pakketLabel}${aiLabel}`;
+  const maandelijks = parseFloat(maandelijksBedrag ?? "0");
   // Bevestigingsmail naar klant
   try {
     await resend.emails.send({
@@ -226,6 +227,37 @@ export async function POST(req: NextRequest) {
       }
   } catch (err) {
     console.error("Moneybird factuur error:", err);
+  }
+
+  // Mollie abonnement aanmaken (alleen als er een maandelijks bedrag is)
+  if (maandelijks > 0) {
+    try {
+      const customerId = (payment as Record<string, unknown>).customerId as string | undefined;
+      if (customerId) {
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() + 1);
+        const startDateStr = startDate.toISOString().split("T")[0];
+
+        await mollie.subscriptions.create({
+          customerId,
+          amount: {
+            currency: "EUR",
+            value: maandelijks.toFixed(2),
+          },
+          interval: "1 month",
+          startDate: startDateStr,
+          description: `Maandelijks abonnement — ${beschrijving}`,
+          webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/subscription/webhook`,
+          metadata: { naam, email, pakket, beschrijving },
+        });
+
+        console.log(`Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
+      } else {
+        console.warn("Geen customerId op betaling — abonnement overgeslagen");
+      }
+    } catch (err) {
+      console.error("Mollie abonnement error:", err);
+    }
   }
 
   return new NextResponse(null, { status: 200 });
