@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
         const startDateStr = startDate.toISOString().split("T")[0];
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (mollie.subscriptions as any).create({
+        await (mollie as any).subscription.create({
           customerId,
           amount: {
             currency: "EUR",
