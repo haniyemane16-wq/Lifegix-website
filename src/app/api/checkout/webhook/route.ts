@@ -232,7 +232,8 @@ export async function POST(req: NextRequest) {
   // Mollie abonnement aanmaken (alleen als er een maandelijks bedrag is)
   if (maandelijks > 0) {
     try {
-      const customerId = (payment as Record<string, unknown>).customerId as string | undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const customerId = (payment as any).customerId as string | undefined;
       if (customerId) {
         const startDate = new Date();
         startDate.setMonth(startDate.getMonth() + 1);
