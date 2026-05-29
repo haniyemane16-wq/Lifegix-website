@@ -105,6 +105,8 @@ const AI_PAKKET_IDS: string[] = AI_PAKKETTEN.map((p) => p.id);
 const isAIPakket = (id: PakketId | null): id is AIPakketId =>
   id !== null && AI_PAKKET_IDS.includes(id);
 
+const isTestPakket = (id: PakketId | null) => id === "test" || id === "test_sub";
+
 function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 mt-0.5">
