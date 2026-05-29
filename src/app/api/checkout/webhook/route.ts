@@ -239,8 +239,7 @@ export async function POST(req: NextRequest) {
         startDate.setMonth(startDate.getMonth() + 1);
         const startDateStr = startDate.toISOString().split("T")[0];
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (mollie as any).subscription.create({
+        await mollie.customerSubscriptions.create({
           customerId,
           amount: {
             currency: "EUR",
@@ -250,7 +249,7 @@ export async function POST(req: NextRequest) {
           startDate: startDateStr,
           description: `Maandelijks abonnement — ${beschrijving}`,
           webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/subscription/webhook`,
-          metadata: { naam, email, pakket, beschrijving },
+          metadata: JSON.stringify({ naam, email, pakket, beschrijving }),
         });
 
         console.log(`Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
