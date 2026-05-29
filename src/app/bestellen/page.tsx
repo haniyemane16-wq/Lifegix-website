@@ -99,7 +99,7 @@ const TEST_PAKKET = {
 
 type WebsitePakketId = (typeof WEBSITE_PAKKETTEN)[number]["id"];
 type AIPakketId = (typeof AI_PAKKETTEN)[number]["id"];
-type PakketId = WebsitePakketId | AIPakketId | "test";
+type PakketId = WebsitePakketId | AIPakketId | "test" | "test_sub";
 
 const AI_PAKKET_IDS: string[] = AI_PAKKETTEN.map((p) => p.id);
 const isAIPakket = (id: PakketId | null): id is AIPakketId =>
