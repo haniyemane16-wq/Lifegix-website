@@ -183,44 +183,56 @@ const BRANCH_MULTIPLIER: Record<string, number> = {
 // Website: gemiddeld +3–7% extra omzet via meer online vindbaarheid.
 // AI-agent: gemiddeld +2–5% via snellere opvolging & minder gemiste leads.
 // Beide: combinatie, maar niet simpelweg de som (overlap in effect).
-const SERVICE_META = {
+const SERVICE_META: Record<string, { label: string; upliftMin: number; upliftMax: number; desc: string }> = {
   website: {
     label: "Website",
-    upliftMin: 0.03,
-    upliftMax: 0.07,
+    upliftMin: 0.03, upliftMax: 0.07,
     desc: "Meer klanten via Google & een betere eerste indruk",
   },
-  ai: {
-    label: "AI-agent",
-    upliftMin: 0.02,
-    upliftMax: 0.05,
-    desc: "Automatische opvolging & minder gemiste aanvragen",
+  ai_faq: {
+    label: "FAQ Chatbot",
+    upliftMin: 0.01, upliftMax: 0.03,
+    desc: "Beantwoordt vragen automatisch, minder gemiste leads",
+  },
+  ai_leads: {
+    label: "Leadopvolging Agent",
+    upliftMin: 0.02, upliftMax: 0.05,
+    desc: "Automatische opvolging via e-mail & WhatsApp",
+  },
+  ai_afspraken: {
+    label: "Afspraakplanning Agent",
+    upliftMin: 0.03, upliftMax: 0.06,
+    desc: "24/7 afspraken inplannen zonder telefoontjes",
+  },
+  ai_volledig: {
+    label: "Volledige AI Agent",
+    upliftMin: 0.04, upliftMax: 0.08,
+    desc: "Alles gecombineerd — chat, leads, afspraken",
   },
   both: {
     label: "Website + AI-agent",
-    upliftMin: 0.05,
-    upliftMax: 0.11,
+    upliftMin: 0.05, upliftMax: 0.11,
     desc: "Meer bezoekers én slimmere opvolging gecombineerd",
   },
 };
 
-// Vaste prijzen — zelfde als op de bestelpagina
-const PRICE_TIERS = {
+const PRICE_TIERS: Record<string, { maxOmzet: number; eenmalig: number; maand: number; naam: string }[]> = {
   website: [
     { maxOmzet: 5_000,    eenmalig: 500,   maand: 50,  naam: "Website Starter" },
     { maxOmzet: Infinity, eenmalig: 1_000, maand: 75,  naam: "Website Business" },
   ],
-  ai: [
-    { maxOmzet: Infinity, eenmalig: 300,   maand: 75,  naam: "AI Agent" },
-  ],
+  ai_faq:       [{ maxOmzet: Infinity, eenmalig: 300,   maand: 50,  naam: "FAQ Chatbot" }],
+  ai_leads:     [{ maxOmzet: Infinity, eenmalig: 600,   maand: 90,  naam: "Leadopvolging Agent" }],
+  ai_afspraken: [{ maxOmzet: Infinity, eenmalig: 900,   maand: 120, naam: "Afspraakplanning Agent" }],
+  ai_volledig:  [{ maxOmzet: Infinity, eenmalig: 1_500, maand: 175, naam: "Volledige AI Agent" }],
   both: [
     { maxOmzet: 5_000,    eenmalig: 750,   maand: 110, naam: "Website Starter + AI Agent" },
     { maxOmzet: Infinity, eenmalig: 1_200, maand: 135, naam: "Website Business + AI Agent" },
   ],
 };
 
-function getPricing(dienst: "website" | "ai" | "both", maandomzet: number) {
-  const tiers = PRICE_TIERS[dienst];
+function getPricing(dienst: string, maandomzet: number) {
+  const tiers = PRICE_TIERS[dienst] ?? PRICE_TIERS.website;
   const tier = tiers.find((t) => maandomzet < t.maxOmzet) ?? tiers[tiers.length - 1];
   return {
     eenmalig: tier.eenmalig,
@@ -234,7 +246,7 @@ export default function ROIPage() {
   const [branche, setBranche] = useState("");
   const [klanten, setKlanten] = useState("");
   const [omzetPerKlant, setOmzetPerKlant] = useState("");
-  const [dienst, setDienst] = useState<"website" | "ai" | "both">("website");
+  const [dienst, setDienst] = useState("website");
   const [result, setResult] = useState<{
     huidig: number;
     extraMin: number;
@@ -254,7 +266,7 @@ export default function ROIPage() {
     const o = parseFloat(omzetPerKlant);
     if (!k || !o || k <= 0 || o <= 0) return;
 
-    const meta = SERVICE_META[dienst];
+    const meta = SERVICE_META[dienst] ?? SERVICE_META.website;
     const huidig = k * o;
     const multiplier = BRANCH_MULTIPLIER[branche] ?? 1.0;
 
@@ -349,12 +361,21 @@ export default function ROIPage() {
               <label className="block text-xs font-medium text-white/50 mb-1.5">Gewenste dienst</label>
               <select
                 value={dienst}
-                onChange={(e) => setDienst(e.target.value as "website" | "ai" | "both")}
+                onChange={(e) => setDienst(e.target.value)}
                 className={inputClass}
               >
-                <option value="website" className="bg-[#0a0a0f]">Website</option>
-                <option value="ai" className="bg-[#0a0a0f]">AI-agent</option>
-                <option value="both" className="bg-[#0a0a0f]">Website + AI-agent</option>
+                <optgroup label="Website">
+                  <option value="website" className="bg-[#0a0a0f]">Website (Starter of Business)</option>
+                </optgroup>
+                <optgroup label="AI Agent">
+                  <option value="ai_faq" className="bg-[#0a0a0f]">FAQ Chatbot — €300</option>
+                  <option value="ai_leads" className="bg-[#0a0a0f]">Leadopvolging Agent — €600</option>
+                  <option value="ai_afspraken" className="bg-[#0a0a0f]">Afspraakplanning Agent — €900</option>
+                  <option value="ai_volledig" className="bg-[#0a0a0f]">Volledige AI Agent — €1.500</option>
+                </optgroup>
+                <optgroup label="Combinatie">
+                  <option value="both" className="bg-[#0a0a0f]">Website + AI-agent (20% korting)</option>
+                </optgroup>
               </select>
             </div>
           </div>
