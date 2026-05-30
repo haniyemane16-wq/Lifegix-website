@@ -184,10 +184,15 @@ const BRANCH_MULTIPLIER: Record<string, number> = {
 // AI-agent: gemiddeld +2–5% via snellere opvolging & minder gemiste leads.
 // Beide: combinatie, maar niet simpelweg de som (overlap in effect).
 const SERVICE_META: Record<string, { label: string; upliftMin: number; upliftMax: number; desc: string }> = {
-  website: {
-    label: "Website",
+  website_starter: {
+    label: "Website Starter",
     upliftMin: 0.03, upliftMax: 0.07,
     desc: "Meer klanten via Google & een betere eerste indruk",
+  },
+  website_business: {
+    label: "Website Business",
+    upliftMin: 0.04, upliftMax: 0.09,
+    desc: "Uitgebreide SEO, meer pagina's en hogere conversie",
   },
   ai_faq: {
     label: "FAQ Chatbot",
@@ -217,10 +222,8 @@ const SERVICE_META: Record<string, { label: string; upliftMin: number; upliftMax
 };
 
 const PRICE_TIERS: Record<string, { maxOmzet: number; eenmalig: number; maand: number; naam: string }[]> = {
-  website: [
-    { maxOmzet: 5_000,    eenmalig: 500,   maand: 50,  naam: "Website Starter" },
-    { maxOmzet: Infinity, eenmalig: 1_000, maand: 75,  naam: "Website Business" },
-  ],
+  website_starter: [{ maxOmzet: Infinity, eenmalig: 500,   maand: 50,  naam: "Website Starter" }],
+  website_business: [{ maxOmzet: Infinity, eenmalig: 1_000, maand: 75,  naam: "Website Business" }],
   ai_faq:       [{ maxOmzet: Infinity, eenmalig: 300,   maand: 50,  naam: "FAQ Chatbot" }],
   ai_leads:     [{ maxOmzet: Infinity, eenmalig: 600,   maand: 90,  naam: "Leadopvolging Agent" }],
   ai_afspraken: [{ maxOmzet: Infinity, eenmalig: 900,   maand: 120, naam: "Afspraakplanning Agent" }],
@@ -246,7 +249,7 @@ export default function ROIPage() {
   const [branche, setBranche] = useState("");
   const [klanten, setKlanten] = useState("");
   const [omzetPerKlant, setOmzetPerKlant] = useState("");
-  const [dienst, setDienst] = useState("website");
+  const [dienst, setDienst] = useState("website_starter");
   const [result, setResult] = useState<{
     huidig: number;
     extraMin: number;
@@ -266,7 +269,7 @@ export default function ROIPage() {
     const o = parseFloat(omzetPerKlant);
     if (!k || !o || k <= 0 || o <= 0) return;
 
-    const meta = SERVICE_META[dienst] ?? SERVICE_META.website;
+    const meta = SERVICE_META[dienst] ?? SERVICE_META.website_starter;
     const huidig = k * o;
     const multiplier = BRANCH_MULTIPLIER[branche] ?? 1.0;
 
@@ -365,7 +368,8 @@ export default function ROIPage() {
                 className={inputClass}
               >
                 <optgroup label="Website">
-                  <option value="website" className="bg-[#0a0a0f]">Website (Starter of Business)</option>
+                  <option value="website_starter" className="bg-[#0a0a0f]">Website Starter — €500</option>
+                  <option value="website_business" className="bg-[#0a0a0f]">Website Business — €1.000</option>
                 </optgroup>
                 <optgroup label="AI Agent">
                   <option value="ai_faq" className="bg-[#0a0a0f]">FAQ Chatbot — €300</option>
