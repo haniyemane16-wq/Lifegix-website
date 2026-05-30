@@ -100,7 +100,7 @@ function Hero() {
           warm hout, vol restaurant met gelukkige gasten. Donkere overlay 70% zodat
           tekst leesbaar blijft. Richtlijn: professionele fotograaf, geen stockfotos.
         */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#080e0b]/30 via-[#080e0b]/50 to-[#080e0b]" />
+        {/* Gradient overlay hier wanneer echte foto beschikbaar is */}
       </div>
 
       {/* Urgency badge */}
