@@ -10,16 +10,16 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Lifegix — Websites & AI Automatisering voor Lokale Bedrijven",
+  title: "Lifegix — Websites & AI Automatisering voor Ondernemers",
   description:
-    "Lifegix bouwt professionele websites en AI-automatiseringen voor lokale bedrijven in de regio Warnsveld. Slimmer werken, meer klanten, minder gedoe. Binnen 1–2 weken live.",
+    "Lifegix bouwt professionele websites en AI-automatiseringen voor ondernemers door heel Nederland. Persoonlijk contact, eerlijke prijs, binnen 1–2 weken live.",
   icons: {
     icon: "/favicon.svg",
   },
   openGraph: {
-    title: "Lifegix — Websites & AI Automatisering voor Lokale Bedrijven",
+    title: "Lifegix — Websites & AI Automatisering voor Ondernemers",
     description:
-      "Professionele websites en AI-agents voor lokale ondernemers. Binnen 1–2 weken live. Gevestigd in Warnsveld.",
+      "Professionele websites en AI-agents voor ondernemers door heel Nederland. Persoonlijk contact, eerlijke prijs. Binnen 1–2 weken live.",
     url: "https://lifegix.nl",
     siteName: "Lifegix",
     locale: "nl_NL",

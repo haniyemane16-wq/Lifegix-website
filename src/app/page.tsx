@@ -45,12 +45,11 @@ function Hero() {
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-300">
           AI agents
         </span>{" "}
-        voor lokale bedrijven
+        voor ondernemers
       </h1>
 
       <p className="animate-fade-in-up animation-delay-400 mt-6 max-w-xl text-white/50 text-lg leading-relaxed">
-        Slimmer werken, meer klanten, minder gedoe. Ik help lokale ondernemers
-        in de regio Warnsveld moderniseren met betaalbare technologie.
+        Slimmer werken, meer klanten, minder gedoe. Persoonlijke aanpak, eerlijke prijs — voor elk bedrijf in Nederland.
       </p>
 
       <div className="animate-fade-in-up animation-delay-600 mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center">
@@ -63,7 +62,7 @@ function Hero() {
       </div>
 
       <p className="animate-fade-in-up animation-delay-600 mt-12 text-white/25 text-xs">
-        Gevestigd in Warnsveld · Lokale focus · Persoonlijk contact
+        Gevestigd in Warnsveld · Heel Nederland · Persoonlijk contact
       </p>
     </section>
   );
