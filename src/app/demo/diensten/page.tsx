@@ -768,7 +768,7 @@ function Contact() {
             <p className="text-white font-semibold mb-6">
               Stuur een bericht
             </p>
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-4" action="#">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs text-white/40 mb-1.5">
