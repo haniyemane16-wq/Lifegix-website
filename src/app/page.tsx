@@ -279,6 +279,38 @@ function Pricing() {
             </div>
           ))}
         </div>
+        {/* AI Agent sectie */}
+        <div className="mt-16 pt-16 border-t border-white/10">
+          <div className="text-center mb-10">
+            <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Alleen een AI Agent nodig?</p>
+            <h3 className="text-2xl font-bold text-white">Kies je AI agent type</h3>
+            <p className="mt-3 text-white/50 text-sm">Voor bedrijven die al een website hebben.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { naam: "FAQ Chatbot", prijs: "€300", maand: "€50", desc: "Beantwoordt vaste vragen 24/7" },
+              { naam: "Leadopvolging", prijs: "€600", maand: "€90", desc: "Automatische e-mail/WhatsApp opvolging" },
+              { naam: "Afspraken Agent", prijs: "€900", maand: "€120", desc: "24/7 agenda management" },
+              { naam: "Volledige Agent", prijs: "€1.500", maand: "€175", desc: "Alles gecombineerd, op maat" },
+            ].map((ai) => (
+              <div key={ai.naam} className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col gap-3">
+                <div>
+                  <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-2">{ai.naam}</p>
+                  <div className="flex items-end gap-1">
+                    <span className="text-2xl font-bold text-white">{ai.prijs}</span>
+                    <span className="text-white/40 text-sm mb-1">eenmalig</span>
+                  </div>
+                  <p className="text-violet-300 text-sm font-semibold">+ {ai.maand}<span className="text-white/40 font-normal">/mnd</span></p>
+                  <p className="text-white/40 text-xs mt-2 leading-relaxed">{ai.desc}</p>
+                </div>
+                <Link href="/bestellen" className="mt-auto block text-center py-2.5 rounded-xl text-sm font-semibold bg-white/[0.06] hover:bg-white/10 text-white border border-white/10 transition-colors">
+                  Kies dit pakket →
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <p className="text-center mt-10 text-white/30 text-sm">
           Wil je eerst weten hoeveel je terugverdient?{" "}
           <Link href="/roi" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">Bereken je ROI →</Link>
