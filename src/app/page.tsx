@@ -71,10 +71,10 @@ function Hero() {
 /* ─── Stats ──────────────────────────────────────────────── */
 function Stats() {
   const items = [
-    { value: "5+", label: "Projecten opgeleverd" },
-    { value: "1–2 wkn", label: "Gemiddeld live" },
+    { value: "1–2 wkn", label: "Van start tot live" },
     { value: "24u", label: "Reactietijd" },
-    { value: "100%", label: "Op tijd opgeleverd" },
+    { value: "€500", label: "Startprijs website" },
+    { value: "100%", label: "Vrijgesteld van BTW" },
   ];
   return (
     <div className="border-y border-white/5 bg-white/[0.02] py-6 px-6">
