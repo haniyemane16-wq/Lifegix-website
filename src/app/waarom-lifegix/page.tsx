@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Waarom LifeGix? — De beste keuze voor lokale ondernemers",
+  title: "Waarom LifeGix? — De slimme keuze voor ondernemers",
   description:
-    "Geen grote bureaus, geen wachttijden, geen verborgen kosten. LifeGix bouwt websites en AI agents voor lokale bedrijven — persoonlijk, snel en betaalbaar.",
+    "Geen grote bureaus, geen wachttijden, geen verborgen kosten. LifeGix bouwt websites en AI agents voor ondernemers — persoonlijk, snel en betaalbaar.",
 };
 
 export default function WaaromLifeGixPage() {
@@ -135,60 +135,35 @@ export default function WaaromLifeGixPage() {
           </div>
         </section>
 
-        {/* Social proof */}
+        {/* Eerlijk startersaanbod */}
         <section className="py-16 px-6">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-white">Wat klanten zeggen</h2>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  naam: "Mark van den Berg",
-                  bedrijf: "AutoFix Pro",
-                  tekst: "Binnen twee weken hadden we een strakke website die echt converteert. Klanten vinden ons nu makkelijk via Google en de afsprakenpagina scheelt ons dagelijks tijd.",
-                  dienst: "Website Bouwen",
-                },
-                {
-                  naam: "Lisette Janssen",
-                  bedrijf: "Brasserie De Linde",
-                  tekst: "Precies de uitstraling die we zochten — warm, professioneel en snel. Reserveringen via de site zijn flink gestegen sinds de lancering.",
-                  dienst: "Website Bouwen",
-                },
-                {
-                  naam: "Daan Vermeer",
-                  bedrijf: "Lokale ondernemer",
-                  tekst: "De AI agent pakt nu automatisch klantvragen op via WhatsApp. Ik hoef 's avonds niet meer achter mijn telefoon te zitten. Had dit jaren eerder willen doen.",
-                  dienst: "AI Automatisering",
-                },
-              ].map((r) => (
-                <div key={r.naam} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col gap-4">
-                  <div className="flex gap-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <svg key={i} className="w-4 h-4 text-violet-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-white/60 text-sm leading-relaxed flex-1">&ldquo;{r.tekst}&rdquo;</p>
-                  <div>
-                    <p className="text-white font-semibold text-sm">{r.naam}</p>
-                    <p className="text-white/40 text-xs">{r.bedrijf} · {r.dienst}</p>
-                  </div>
-                </div>
-              ))}
+          <div className="max-w-3xl mx-auto">
+            <div className="p-8 rounded-2xl bg-white/[0.03] border border-white/10 text-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-medium mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+                Net begonnen
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">Eerlijk: ik ben net gestart</h2>
+              <p className="text-white/60 leading-relaxed max-w-xl mx-auto">
+                LifeGix is nieuw. Dat betekent dat ik geen jarenlange reviewlijst kan tonen — maar wél
+                dat jij als een van mijn eerste klanten een scherpe prijs en mijn volledige aandacht krijgt.
+                Tevreden? Dan bouwen we samen aan mijn portfolio en reviews.
+              </p>
+              <Link href="/#contact" className="inline-block mt-7 px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-colors">
+                Word een van mijn eerste klanten →
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Stats */}
+        {/* Stats — eerlijk */}
         <section className="py-12 px-6 border-y border-white/5 bg-white/[0.02]">
           <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
             {[
-              { value: "5+", label: "Projecten opgeleverd" },
-              { value: "1–2 wkn", label: "Gemiddeld live" },
+              { value: "1–2 wkn", label: "Van start tot live" },
               { value: "24u", label: "Reactietijd" },
-              { value: "100%", label: "Op tijd opgeleverd" },
+              { value: "€500", label: "Startprijs website" },
+              { value: "100%", label: "Vrijgesteld van BTW" },
             ].map((s) => (
               <div key={s.label}>
                 <p className="text-3xl font-bold text-violet-300">{s.value}</p>
@@ -209,7 +184,7 @@ export default function WaaromLifeGixPage() {
               {[
                 {
                   q: "Zo goedkoop — is het dan wel goed?",
-                  a: "De prijs is laag omdat ik geen overhead heb — geen kantoor, geen duur team, geen saleskosten. Ik investeer die besparing in kwaliteit en snelheid. Bekijk mijn portfolio: AutoFix Pro en Brasserie De Linde spreken voor zich.",
+                  a: "De prijs is laag omdat ik geen overhead heb — geen kantoor, geen duur team, geen saleskosten. Ik investeer die besparing in kwaliteit en snelheid. Bekijk mijn voorbeeldprojecten om zelf te zien wat ik bouw.",
                 },
                 {
                   q: "Wat als jij ziek bent of stopt?",

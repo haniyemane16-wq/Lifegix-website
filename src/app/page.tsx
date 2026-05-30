@@ -16,7 +16,7 @@ export default function Home() {
       <Pricing />
       <Portfolio />
       <Demos />
-      <Testimonials />
+      <EersteKlanten />
       <FAQAccordion />
       <ContactSection />
       <Footer />
@@ -225,7 +225,7 @@ function Pricing() {
       name: "Website + AI-agent", priceEenmalig: "Vanaf €750", priceMaand: "Vanaf €110",
       desc: "Meer bezoekers én slimmere opvolging. 20% korting op de combinatie.",
       features: ["Alles van Starter of Business", "AI-chatbot op je website", "24/7 automatische klantenservice", "Leads automatisch opvolgen", "Koppelingen met jouw systemen", "Maandelijkse rapportage", "20% combinatiekorting"],
-      cta: "Kies Website + AI", highlight: true, badge: "Meest gekozen",
+      cta: "Kies Website + AI", highlight: true, badge: "Beste deal",
     },
     {
       name: "Website Business", priceEenmalig: "€1.000", priceMaand: "€75",
@@ -324,8 +324,8 @@ function Pricing() {
 function Portfolio() {
   const projects = [
     {
-      title: "AutoFix Pro", category: "Website Bouwen",
-      description: "Professionele website voor een automonteur. Inclusief dienstenoverzicht, transparante prijstabel, klantbeoordelingen, afspraakformulier en FAQ.",
+      title: "AutoFix Pro", category: "Voorbeeldproject",
+      description: "Voorbeeldwebsite voor een autobedrijf. Toont hoe een dienstenoverzicht, transparante prijstabel, afspraakformulier en FAQ eruit kunnen zien.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS"],
       gradient: "from-violet-600/20 via-purple-800/10 to-transparent",
       href: "https://autofixpro-lac.vercel.app",
@@ -343,8 +343,8 @@ function Portfolio() {
       ),
     },
     {
-      title: "Brasserie De Linde", category: "Website Bouwen",
-      description: "Elegante website voor een fine dining restaurant. Met seizoensmenu, reserveringsformulier, chef-profiel, sfeerbeelden en private dining sectie.",
+      title: "Brasserie De Linde", category: "Voorbeeldproject",
+      description: "Voorbeeldwebsite voor een restaurant. Met seizoensmenu, reserveringsformulier, chef-profiel en sfeervolle uitstraling.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS"],
       gradient: "from-emerald-600/20 via-teal-800/10 to-transparent",
       href: "https://brasserie-de-linde.vercel.app",
@@ -369,8 +369,8 @@ function Portfolio() {
       <div className="max-w-6xl mx-auto relative">
         <div className="text-center mb-16">
           <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Portfolio</p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">Eerder gebouwd</h2>
-          <p className="mt-4 text-white/50 max-w-md mx-auto">Een selectie van projecten die ik heb gebouwd.</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">Voorbeeldprojecten</h2>
+          <p className="mt-4 text-white/50 max-w-md mx-auto">Voorbeelden die laten zien wat ik voor jou kan bouwen.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {projects.map((p) => (
@@ -402,12 +402,12 @@ function Portfolio() {
   );
 }
 
-/* ─── Testimonials ───────────────────────────────────────── */
-function Testimonials() {
-  const reviews = [
-    { name: "Mark van den Berg", bedrijf: "AutoFix Pro", tekst: "Binnen twee weken hadden we een strakke website die echt converteert. Klanten vinden ons nu makkelijk via Google en de afsprakenpagina scheelt ons dagelijks tijd.", dienst: "Website Bouwen" },
-    { name: "Lisette Janssen", bedrijf: "Brasserie De Linde", tekst: "Precies de uitstraling die we zochten — warm, professioneel en snel. Reserveringen via de site zijn flink gestegen sinds de lancering.", dienst: "Website Bouwen" },
-    { name: "Daan Vermeer", bedrijf: "Lokale ondernemer", tekst: "De AI agent pakt nu automatisch klantvragen op via WhatsApp. Ik hoef 's avonds niet meer achter mijn telefoon te zitten. Had dit jaren eerder willen doen.", dienst: "AI Automatisering" },
+/* ─── Eerste klanten / oprichtersaanbod ──────────────────── */
+function EersteKlanten() {
+  const voordelen = [
+    { titel: "Scherpe startersprijs", tekst: "Als een van mijn eerste klanten krijg je een extra voordelige prijs — in ruil voor je eerlijke feedback." },
+    { titel: "Persoonlijke aandacht", tekst: "Ik heb nu volop tijd om jouw project tot in de puntjes te verzorgen. Jij krijgt mijn volledige focus." },
+    { titel: "Samen opbouwen", tekst: "Tevreden? Dan mag jouw bedrijf met een review en in mijn portfolio — zo groeien we samen." },
   ];
   return (
     <section className="py-24 px-6 relative">
@@ -415,28 +415,31 @@ function Testimonials() {
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full"
           style={{ background: "radial-gradient(circle, rgba(109,40,217,0.06) 0%, transparent 70%)" }} />
       </div>
-      <div className="max-w-6xl mx-auto relative">
-        <div className="text-center mb-16">
-          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Klanten aan het woord</p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">Wat zeggen onze klanten?</h2>
+      <div className="max-w-4xl mx-auto relative">
+        <div className="text-center mb-12">
+          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Net begonnen</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">Word een van mijn eerste klanten</h2>
+          <p className="mt-4 text-white/50 max-w-xl mx-auto">
+            LifeGix is een frisse start. Dat betekent voor jou: scherpe prijzen, volledige aandacht en een ondernemer die er alles aan doet om jou tevreden te maken.
+          </p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          {reviews.map((r) => (
-            <div key={r.name} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col gap-4">
-              <div className="flex gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <svg key={i} className="w-4 h-4 text-violet-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                  </svg>
-                ))}
+          {voordelen.map((v) => (
+            <div key={v.titel} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10">
+              <div className="w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center mb-4">
+                <svg className="w-4 h-4 text-violet-400" fill="none" viewBox="0 0 16 16">
+                  <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </div>
-              <p className="text-white/60 text-sm leading-relaxed flex-1">&ldquo;{r.tekst}&rdquo;</p>
-              <div>
-                <p className="text-white font-semibold text-sm">{r.name}</p>
-                <p className="text-white/40 text-xs">{r.bedrijf} · {r.dienst}</p>
-              </div>
+              <h3 className="text-white font-semibold mb-2">{v.titel}</h3>
+              <p className="text-white/50 text-sm leading-relaxed">{v.tekst}</p>
             </div>
           ))}
+        </div>
+        <div className="text-center mt-10">
+          <a href="#contact" className="inline-block px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-colors purple-glow">
+            Plan een gratis gesprek →
+          </a>
         </div>
       </div>
     </section>
