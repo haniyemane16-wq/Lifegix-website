@@ -202,55 +202,24 @@ function TrustBar() {
   );
 }
 
-/* ─── Sfeer foto sectie ──────────────────────────────────── */
+/* ─── Sfeer sectie (zonder foto's) ──────────────────────── */
 function FotoSfeer() {
+  const highlights = [
+    { emoji: "🕯️", titel: "Kaarslicht & sfeer", omschrijving: "Elke avond gedekte tafels in het historische pand aan de Grote Markt van Zutphen." },
+    { emoji: "🥩", titel: "Verse ingrediënten", omschrijving: "Dagelijks ingekocht bij lokale boeren en ambachtelijke leveranciers uit de regio." },
+    { emoji: "🍷", titel: "Culinaire beleving", omschrijving: "Van amuse tot dessert — elk gerecht is met zorg samengesteld door chef Pieter Verhagen." },
+  ];
   return (
     <section className="py-16 px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-
-          {/* Grote foto links */}
-          <div className="col-span-2 md:col-span-2 row-span-2 aspect-[4/3] rounded-2xl overflow-hidden relative bg-gradient-to-br from-emerald-950/80 to-[#080e0b] border border-white/6 flex items-end">
-            {/*
-              FOTO 1: Het interieur van het restaurant bij avond — warm kaarslicht,
-              vol gedekte tafels, wijnglazen, lachende gasten op de achtergrond.
-              Sfeervol en luxe maar toegankelijk. Horizontaal formaat 4:3.
-            */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center text-white/15">
-                <div className="text-5xl mb-2">🍽</div>
-                <div className="text-xs">Sfeerfoto interieur · avondlicht · kaarslicht</div>
-              </div>
-            </div>
-            <div className="relative z-10 p-5" style={{ background: "linear-gradient(to top, rgba(8,14,11,0.9) 0%, transparent 100%)" }}>
-              <div className="text-white font-semibold text-sm">De zaal op vrijdagavond</div>
-              <div className="text-white/40 text-xs mt-0.5">Reserveer voor een optimale ervaring</div>
-            </div>
+      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+        {highlights.map((h) => (
+          <div key={h.titel} className="p-8 rounded-2xl border border-white/8 text-center"
+            style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.06) 0%, transparent 70%)" }}>
+            <div className="text-4xl mb-4">{h.emoji}</div>
+            <h3 className="text-white font-semibold mb-2">{h.titel}</h3>
+            <p className="text-white/50 text-sm leading-relaxed">{h.omschrijving}</p>
           </div>
-
-          {/* Kleine foto's */}
-          <div className="aspect-square rounded-2xl overflow-hidden relative bg-gradient-to-br from-amber-950/40 to-[#080e0b] border border-white/6 flex items-center justify-center">
-            {/*
-              FOTO 2: Close-up van de signature entrecôte — mooi gepresenteerd bord,
-              perfect gegrild vlees, jus ernaast, verse kruiden. Donker bord, warme verlichting.
-            */}
-            <div className="text-center text-white/15 px-3">
-              <div className="text-3xl mb-1">🥩</div>
-              <div className="text-[10px]">Entrecôte close-up</div>
-            </div>
-          </div>
-
-          <div className="aspect-square rounded-2xl overflow-hidden relative bg-gradient-to-br from-teal-950/40 to-[#080e0b] border border-white/6 flex items-center justify-center">
-            {/*
-              FOTO 3: Dessertpresentatie — crème brûlée met brandend suiker en vers fruit,
-              elegante witte porseleinen kom op donker houten tafel. Detail, warm licht.
-            */}
-            <div className="text-center text-white/15 px-3">
-              <div className="text-3xl mb-1">🍮</div>
-              <div className="text-[10px]">Crème brûlée · close-up</div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </section>
   );
@@ -426,20 +395,17 @@ function OverOns() {
           {/* Visual side */}
           <div className="order-2 lg:order-1">
             <div className="relative">
-              {/* Chef foto placeholder */}
-              <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-emerald-950/60 to-[#080e0b] border border-white/8 flex items-center justify-center overflow-hidden">
-                {/*
-                  FOTO 4: Portretfoto van chef Pieter Verhagen in de keuken — wit koksjasje,
-                  druk bezig met plating, warme keukenlichten. Authentiek en persoonlijk.
-                  Niet geposeerd — tijdens het werk. Verticaal of 4:3.
-                */}
-                <div className="text-center px-8 text-white/15">
-                  <div className="text-5xl mb-3">👨‍🍳</div>
-                  <p className="text-sm">Chef Pieter Verhagen in de keuken</p>
-                  <p className="text-xs mt-1 text-white/10">Authentieke portretfoto tijdens het platen</p>
+              {/* Chef info card */}
+              <div className="aspect-[4/3] rounded-2xl border border-white/8 flex flex-col items-center justify-center gap-6 px-8 text-center overflow-hidden"
+                style={{ background: "radial-gradient(ellipse at 50% 30%, rgba(16,185,129,0.08) 0%, transparent 70%)" }}>
+                <div className="w-20 h-20 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-4xl">
+                  👨‍🍳
                 </div>
-                <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-emerald-500/25 rounded-tl-sm" />
-                <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-emerald-500/25 rounded-br-sm" />
+                <div>
+                  <p className="text-white font-bold text-lg">Pieter Verhagen</p>
+                  <p className="text-emerald-400 text-sm">Hoofdchef & eigenaar</p>
+                  <p className="text-white/40 text-xs mt-2">15 jaar culinaire ervaring</p>
+                </div>
               </div>
 
               {/* Floating award badge */}
