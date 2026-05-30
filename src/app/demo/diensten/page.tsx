@@ -7,27 +7,59 @@ export const metadata = {
 };
 
 /* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS
+   Palet gebaseerd op premium barbershop research:
+   - #0e0b07  warm diepbruin  (achtergrond)
+   - #c9a84c  antiek goud     (accent — klassiek barber)
+   - #f5f0e8  crème wit       (hoofdtekst)
+   - #8b1a1a  deep red        (tweede accent, bold statements)
+   - #1c1510  kaart achtergrond
+───────────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────────
    DEMO BANNER
 ───────────────────────────────────────────────────────────── */
 function DemoBanner() {
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-orange-500/95 text-white text-center py-2 px-4 text-xs sm:text-sm font-medium">
-      Dit is een demo gemaakt door{" "}
+    <div
+      className="fixed top-0 left-0 right-0 z-50 text-center py-2 px-4 text-xs sm:text-sm font-medium"
+      style={{ background: "#1c1510", color: "#c9a84c", borderBottom: "1px solid rgba(201,168,76,0.2)" }}
+    >
+      Demo gemaakt door{" "}
       <Link
         href="/"
-        className="underline underline-offset-2 hover:text-white/80 font-semibold"
-        style={{ touchAction: "manipulation" }}
+        className="underline underline-offset-2 font-semibold"
+        style={{ touchAction: "manipulation", color: "#c9a84c" }}
       >
         Lifegix
       </Link>{" "}
       — benieuwd naar jouw eigen website?{" "}
       <Link
         href="/#contact"
-        className="underline underline-offset-2 hover:text-white/80 font-semibold"
-        style={{ touchAction: "manipulation" }}
+        className="underline underline-offset-2 font-semibold"
+        style={{ touchAction: "manipulation", color: "#f5f0e8" }}
       >
         Neem contact op →
       </Link>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ORNAMENT — decoratieve horizontale lijn met schaar-icoon
+───────────────────────────────────────────────────────────── */
+function Ornament({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex items-center gap-3 ${className}`}>
+      <div className="flex-1 h-px" style={{ background: "linear-gradient(to right, transparent, rgba(201,168,76,0.4))" }} />
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ color: "#c9a84c" }}>
+        <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="1.2" />
+        <circle cx="4" cy="12" r="2" stroke="currentColor" strokeWidth="1.2" />
+        <line x1="5.5" y1="5.4" x2="14" y2="2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+        <line x1="5.5" y1="10.6" x2="14" y2="14" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+        <circle cx="8" cy="8" r="0.8" fill="currentColor" />
+      </svg>
+      <div className="flex-1 h-px" style={{ background: "linear-gradient(to left, transparent, rgba(201,168,76,0.4))" }} />
     </div>
   );
 }
@@ -37,58 +69,68 @@ function DemoBanner() {
 ───────────────────────────────────────────────────────────── */
 function Navbar() {
   return (
-    <header className="fixed top-8 left-0 right-0 z-40 px-4 sm:px-6">
-      <nav className="max-w-6xl mx-auto flex items-center justify-between h-16 px-4 sm:px-8 rounded-2xl bg-[#0f0f14]/95 border border-white/10 backdrop-blur-sm">
-        {/* Logo */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center flex-shrink-0">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path
-                d="M5 3h8M5 9h8M7 6h4M7 12h4"
-                stroke="white"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-              />
-              <circle cx="9" cy="15" r="1.5" fill="white" />
+    <header
+      className="fixed top-8 left-0 right-0 z-40 px-4 sm:px-6"
+    >
+      <nav
+        className="max-w-5xl mx-auto flex items-center justify-between h-16 px-5 sm:px-8"
+        style={{
+          background: "rgba(14,11,7,0.96)",
+          border: "1px solid rgba(201,168,76,0.18)",
+          borderRadius: "4px",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        {/* Logo — badge stijl */}
+        <div className="flex items-center gap-3">
+          {/* Barber pole mini-icoon */}
+          <div
+            className="w-8 h-8 flex items-center justify-center flex-shrink-0"
+            style={{ border: "1.5px solid rgba(201,168,76,0.5)", borderRadius: "2px" }}
+          >
+            <svg width="14" height="18" viewBox="0 0 14 18" fill="none">
+              <rect x="1" y="1" width="12" height="16" rx="1" stroke="#c9a84c" strokeWidth="1.2" />
+              <path d="M1 5h12M1 9h12M1 13h12" stroke="#8b1a1a" strokeWidth="1.5" />
+              <circle cx="7" cy="9" r="1.2" fill="#c9a84c" />
             </svg>
           </div>
-          <span className="font-bold text-white text-sm sm:text-base leading-tight">
-            Barbershop <span className="text-orange-400">Yazan</span>
-          </span>
+          <div className="flex flex-col leading-tight">
+            <span className="font-serif text-base font-bold" style={{ color: "#f5f0e8", letterSpacing: "0.05em" }}>
+              BARBERSHOP
+            </span>
+            <span className="text-xs font-bold tracking-widest" style={{ color: "#c9a84c", letterSpacing: "0.15em" }}>
+              YAZAN
+            </span>
+          </div>
         </div>
 
-        {/* Nav links — hidden on mobile */}
+        {/* Nav links */}
         <div className="hidden md:flex items-center gap-8">
-          <a
-            href="#diensten"
-            className="text-white/60 hover:text-white text-sm"
-            style={{ touchAction: "manipulation" }}
-          >
-            Diensten
-          </a>
-          <a
-            href="#reviews"
-            className="text-white/60 hover:text-white text-sm"
-            style={{ touchAction: "manipulation" }}
-          >
-            Reviews
-          </a>
-          <a
-            href="#contact"
-            className="text-white/60 hover:text-white text-sm"
-            style={{ touchAction: "manipulation" }}
-          >
-            Contact
-          </a>
+          {(["Diensten", "Reviews", "Contact"] as const).map((label) => (
+            <a
+              key={label}
+              href={`#${label.toLowerCase()}`}
+              className="text-xs tracking-widest font-medium"
+              style={{ touchAction: "manipulation", color: "rgba(245,240,232,0.5)", letterSpacing: "0.12em" }}
+            >
+              {label.toUpperCase()}
+            </a>
+          ))}
         </div>
 
-        {/* CTA — groot genoeg voor mobiel */}
+        {/* CTA */}
         <a
           href="#contact"
-          className="px-4 py-2.5 sm:px-5 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-bold text-xs sm:text-sm"
-          style={{ touchAction: "manipulation" }}
+          className="px-5 py-2.5 text-xs font-bold tracking-widest"
+          style={{
+            touchAction: "manipulation",
+            background: "#c9a84c",
+            color: "#0e0b07",
+            letterSpacing: "0.1em",
+            borderRadius: "2px",
+          }}
         >
-          Afspraak maken →
+          AFSPRAAK
         </a>
       </nav>
     </header>
@@ -96,133 +138,170 @@ function Navbar() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   HERO
+   HERO — editorial, grote typografie, heritage gevoel
 ───────────────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <section className="relative flex flex-col items-center justify-center min-h-screen px-6 pt-36 pb-24 text-center overflow-hidden">
-      {/* Background glow */}
+    <section
+      className="relative flex flex-col items-center justify-center min-h-screen px-6 pt-40 pb-28 text-center overflow-hidden"
+    >
+      {/* Subtiele gouden glow — geen blur class */}
       <div
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none hidden sm:block"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-96 pointer-events-none"
         style={{
-          background:
-            "radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 65%)",
+          background: "radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%)",
         }}
       />
 
-      {/* Google review badge — sterkste trust signal */}
-      <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.06] border border-white/10 text-white text-xs font-medium mb-7">
-        {/* Sterren */}
+      {/* Est. badge — vintage heritage */}
+      <div
+        className="inline-flex items-center gap-3 mb-8 px-5 py-2"
+        style={{
+          border: "1px solid rgba(201,168,76,0.3)",
+          borderRadius: "1px",
+        }}
+      >
+        <div className="w-3 h-px" style={{ background: "#c9a84c" }} />
+        <span
+          className="text-xs font-bold tracking-widest"
+          style={{ color: "#c9a84c", letterSpacing: "0.2em" }}
+        >
+          EST. 2016 · ZUTPHEN
+        </span>
+        <div className="w-3 h-px" style={{ background: "#c9a84c" }} />
+      </div>
+
+      {/* Grote serif headline */}
+      <h1
+        className="max-w-4xl font-serif leading-none tracking-tight"
+        style={{
+          color: "#f5f0e8",
+          fontSize: "clamp(2.8rem, 7vw, 5.5rem)",
+          letterSpacing: "-0.01em",
+          fontWeight: 700,
+        }}
+      >
+        De Knip Die
+        <br />
+        <span style={{ color: "#c9a84c", fontStyle: "italic" }}>
+          Jij Verdient.
+        </span>
+      </h1>
+
+      <Ornament className="mt-8 mb-8 max-w-xs w-full" />
+
+      {/* Subkop */}
+      <p
+        className="max-w-md text-base leading-relaxed"
+        style={{ color: "rgba(245,240,232,0.5)" }}
+      >
+        Al{" "}
+        <span style={{ color: "#f5f0e8", fontWeight: 600 }}>8 jaar</span>{" "}
+        de vertrouwde barbershop van Zutphen.{" "}
+        <span style={{ color: "#f5f0e8", fontWeight: 600 }}>600+ vaste klanten</span>{" "}
+        kiezen elke maand voor vakmanschap.
+      </p>
+
+      {/* Google badge */}
+      <div
+        className="inline-flex items-center gap-2.5 mt-7 px-4 py-2"
+        style={{
+          background: "rgba(201,168,76,0.06)",
+          border: "1px solid rgba(201,168,76,0.15)",
+          borderRadius: "2px",
+        }}
+      >
         <span className="flex gap-0.5">
           {[1, 2, 3, 4, 5].map((i) => (
-            <svg key={i} className="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+            <svg key={i} className="w-3.5 h-3.5" fill="#c9a84c" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
           ))}
         </span>
-        <span className="text-white font-bold">4.9</span>
-        <span className="text-white/50">op Google · 127 reviews</span>
-        <span className="w-1 h-1 rounded-full bg-white/20" />
-        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-        <span className="text-white/50">Nu open</span>
+        <span className="font-bold text-sm" style={{ color: "#f5f0e8" }}>4.9</span>
+        <span className="text-xs" style={{ color: "rgba(245,240,232,0.4)" }}>op Google · 127 reviews</span>
+        <span className="w-px h-3.5" style={{ background: "rgba(201,168,76,0.25)" }} />
+        <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#4ade80" }} />
+        <span className="text-xs" style={{ color: "rgba(245,240,232,0.4)" }}>Nu open</span>
       </div>
 
-      {/* Headline — direct en benefit-driven */}
-      <h1 className="max-w-3xl text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight text-white">
-        De scherpste knip{" "}
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300">
-          in Zutphen
-        </span>
-        {" "}— gegarandeerd.
-      </h1>
-
-      {/* Subtext — concreet en vertrouwenwekkend */}
-      <p className="mt-6 max-w-lg text-white/55 text-lg leading-relaxed">
-        Al <strong className="text-white/80">8 jaar</strong> de kapper van Zutphen. Meer dan{" "}
-        <strong className="text-white/80">600 vaste klanten</strong> kiezen elke maand voor Barbershop Yazan — voor een reden.
-      </p>
-
-      {/* CTA knoppen — groot en duidelijk */}
+      {/* CTA knoppen */}
       <div className="mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-sm sm:max-w-none">
         <a
           href="#contact"
-          className="w-full sm:w-auto px-8 py-4 rounded-xl bg-orange-500 hover:bg-orange-400 font-bold text-base text-white"
+          className="w-full sm:w-auto px-10 py-4 text-sm font-bold tracking-widest"
           style={{
             touchAction: "manipulation",
-            boxShadow: "0 0 40px rgba(249,115,22,0.25)",
+            background: "#c9a84c",
+            color: "#0e0b07",
+            letterSpacing: "0.12em",
+            borderRadius: "2px",
+            boxShadow: "0 0 40px rgba(201,168,76,0.2)",
           }}
         >
-          Maak een afspraak →
+          AFSPRAAK MAKEN
         </a>
-        {/* WhatsApp — converteert goed in NL */}
         <a
           href="https://wa.me/31575123456?text=Hallo%2C%20ik%20wil%20graag%20een%20afspraak%20maken%20bij%20Barbershop%20Yazan."
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full sm:w-auto px-8 py-4 rounded-xl border border-white/15 hover:border-white/30 text-white/80 hover:text-white font-semibold text-base flex items-center justify-center gap-2.5"
-          style={{ touchAction: "manipulation" }}
+          className="w-full sm:w-auto px-10 py-4 text-sm font-semibold tracking-widest flex items-center justify-center gap-2.5"
+          style={{
+            touchAction: "manipulation",
+            border: "1px solid rgba(201,168,76,0.25)",
+            color: "rgba(245,240,232,0.7)",
+            letterSpacing: "0.1em",
+            borderRadius: "2px",
+          }}
         >
-          <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4" fill="#4ade80" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
             <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.122 1.524 5.856L0 24l6.338-1.503A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.785 9.785 0 01-5.003-1.369l-.36-.213-3.732.885.918-3.633-.235-.374A9.77 9.77 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z" />
           </svg>
-          WhatsApp ons
+          WHATSAPP
         </a>
       </div>
 
-      {/* Urgentie + info — onderaan hero */}
-      <div className="mt-12 flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
-        <div className="flex items-center gap-2 text-white/35 text-xs">
-          <svg className="w-3.5 h-3.5 text-orange-500/60" fill="none" viewBox="0 0 24 24">
-            <path d="M12 2v10l4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-          </svg>
-          Vandaag nog een plek beschikbaar
-        </div>
-        <span className="hidden sm:block w-1 h-1 rounded-full bg-white/15" />
-        <p className="text-white/30 text-xs">
-          Laarstraat 9 · Zutphen centrum · Ma–Za 09:00–18:00
-        </p>
-      </div>
+      {/* Adres onderaan */}
+      <p className="mt-10 text-xs tracking-widest" style={{ color: "rgba(245,240,232,0.25)", letterSpacing: "0.15em" }}>
+        LAARSTRAAT 9 · ZUTPHEN CENTRUM · MA–ZA 09:00–18:00
+      </p>
     </section>
   );
 }
 
 /* ─────────────────────────────────────────────────────────────
-   TRUST BAR  (direct na hero — sterkste trust signals)
+   STATS BAR — heritage getallen, geen oranje
 ───────────────────────────────────────────────────────────── */
-function TrustBar() {
-  const items = [
-    {
-      value: "4.9 ★",
-      label: "Google beoordeling",
-      sub: "127 reviews",
-    },
-    {
-      value: "600+",
-      label: "Vaste klanten",
-      sub: "elke maand",
-    },
-    {
-      value: "8 jaar",
-      label: "Ervaring",
-      sub: "in Zutphen",
-    },
-    {
-      value: "Ma–Za",
-      label: "Open",
-      sub: "09:00 – 18:00",
-    },
+function StatsBar() {
+  const stats = [
+    { value: "4.9", label: "Google Score", sub: "127 reviews" },
+    { value: "600+", label: "Vaste Klanten", sub: "per maand" },
+    { value: "8 jaar", label: "Vakmanschap", sub: "in Zutphen" },
+    { value: "Ma–Za", label: "Open", sub: "09:00 – 18:00" },
   ];
 
   return (
-    <div className="border-y border-white/5 bg-white/[0.02] py-8 px-6">
-      <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
-        {items.map((item) => (
-          <div key={item.label} className="flex flex-col gap-0.5">
-            <p className="text-2xl sm:text-3xl font-bold text-orange-400">{item.value}</p>
-            <p className="text-sm text-white/70 font-medium">{item.label}</p>
-            <p className="text-xs text-white/30">{item.sub}</p>
+    <div
+      className="py-10 px-6"
+      style={{
+        borderTop: "1px solid rgba(201,168,76,0.12)",
+        borderBottom: "1px solid rgba(201,168,76,0.12)",
+        background: "rgba(28,21,16,0.5)",
+      }}
+    >
+      <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+        {stats.map((s, i) => (
+          <div key={s.label} className="flex flex-col gap-1">
+            {i > 0 && (
+              <div
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-px h-8 hidden sm:block"
+                style={{ background: "rgba(201,168,76,0.15)" }}
+              />
+            )}
+            <p className="text-3xl font-serif font-bold" style={{ color: "#c9a84c" }}>{s.value}</p>
+            <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "rgba(245,240,232,0.6)", letterSpacing: "0.1em" }}>{s.label}</p>
+            <p className="text-xs" style={{ color: "rgba(245,240,232,0.28)" }}>{s.sub}</p>
           </div>
         ))}
       </div>
@@ -231,82 +310,124 @@ function TrustBar() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   DIENSTEN
+   DIENSTEN — kaarten met antiek goud accent
 ───────────────────────────────────────────────────────────── */
-function ScissorsIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <circle cx="7" cy="7" r="3.5" stroke="#fb923c" strokeWidth="1.6" />
-      <circle cx="7" cy="21" r="3.5" stroke="#fb923c" strokeWidth="1.6" />
-      <line x1="10" y1="9.5" x2="22" y2="4" stroke="#fb923c" strokeWidth="1.6" strokeLinecap="round" />
-      <line x1="10" y1="18.5" x2="22" y2="24" stroke="#fb923c" strokeWidth="1.6" strokeLinecap="round" />
-      <circle cx="14" cy="14" r="1.2" fill="#fb923c" />
-    </svg>
-  );
-}
+type Dienst = {
+  nummer: string;
+  title: string;
+  prijs: string;
+  beschrijving: string;
+  features: string[];
+  popular: boolean;
+  badge: string | null;
+};
 
-function BeardIcon() {
+function DienstKaart({ d }: { d: Dienst }) {
   return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <ellipse cx="14" cy="10" rx="8" ry="6" stroke="#fb923c" strokeWidth="1.6" />
-      <path d="M6 14c0 6 3 10 8 10s8-4 8-10" stroke="#fb923c" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M10 19c1 2 2 3 4 3s3-1 4-3" stroke="#fb923c" strokeWidth="1.4" strokeLinecap="round" />
-      <circle cx="11" cy="10" r="1" fill="#fb923c" />
-      <circle cx="17" cy="10" r="1" fill="#fb923c" />
-    </svg>
-  );
-}
+    <div
+      className="relative flex flex-col gap-5 p-6 sm:p-7"
+      style={{
+        background: d.popular
+          ? "linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(28,21,16,0.9) 100%)"
+          : "#1c1510",
+        border: d.popular ? "1px solid rgba(201,168,76,0.4)" : "1px solid rgba(201,168,76,0.1)",
+        borderRadius: "3px",
+        boxShadow: d.popular ? "0 0 60px rgba(201,168,76,0.08)" : "none",
+      }}
+    >
+      {d.badge && (
+        <div
+          className="absolute -top-3 left-6 px-3 py-1 text-xs font-bold tracking-widest"
+          style={{
+            background: "#c9a84c",
+            color: "#0e0b07",
+            borderRadius: "1px",
+            letterSpacing: "0.1em",
+          }}
+        >
+          {d.badge.toUpperCase()}
+        </div>
+      )}
 
-function ComboIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <circle cx="8" cy="6" r="3" stroke="#fb923c" strokeWidth="1.6" />
-      <circle cx="8" cy="20" r="3" stroke="#fb923c" strokeWidth="1.6" />
-      <line x1="10.5" y1="8" x2="20" y2="4" stroke="#fb923c" strokeWidth="1.6" strokeLinecap="round" />
-      <line x1="10.5" y1="18" x2="20" y2="22" stroke="#fb923c" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M17 9c3 1 5 3 5 5s-2 4-5 5" stroke="#fb923c" strokeWidth="1.6" strokeLinecap="round" />
-      <circle cx="13" cy="13" r="1" fill="#fb923c" />
-    </svg>
-  );
-}
+      {/* Nummer + prijs */}
+      <div className="flex items-start justify-between">
+        <span
+          className="font-serif text-4xl font-bold leading-none"
+          style={{ color: "rgba(201,168,76,0.15)" }}
+        >
+          {d.nummer}
+        </span>
+        <div className="text-right">
+          <p className="font-serif text-2xl font-bold" style={{ color: "#c9a84c" }}>{d.prijs}</p>
+          <p className="text-xs" style={{ color: "rgba(245,240,232,0.25)" }}>incl. btw</p>
+        </div>
+      </div>
 
-function KidIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <circle cx="14" cy="9" r="5" stroke="#fb923c" strokeWidth="1.6" />
-      <path d="M6 24c0-5 3.6-8 8-8s8 3 8 8" stroke="#fb923c" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M11 7.5c1-1 5-1 6 0" stroke="#fb923c" strokeWidth="1.4" strokeLinecap="round" />
-      <circle cx="12" cy="9.5" r="0.8" fill="#fb923c" />
-      <circle cx="16" cy="9.5" r="0.8" fill="#fb923c" />
-    </svg>
-  );
-}
+      {/* Titel + beschrijving */}
+      <div>
+        <h3
+          className="font-serif text-xl font-bold"
+          style={{ color: "#f5f0e8" }}
+        >
+          {d.title}
+        </h3>
+        <p
+          className="mt-2 text-sm leading-relaxed"
+          style={{ color: "rgba(245,240,232,0.48)" }}
+        >
+          {d.beschrijving}
+        </p>
+      </div>
 
-function FadeIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <path d="M4 20 Q14 4 24 20" stroke="#fb923c" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      <path d="M7 20 Q14 8 21 20" stroke="#fb923c" strokeWidth="1" strokeLinecap="round" fill="none" strokeDasharray="1 2" />
-      <line x1="4" y1="22" x2="24" y2="22" stroke="#fb923c" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
+      {/* Features */}
+      <ul className="space-y-2 flex-1">
+        {d.features.map((f) => (
+          <li key={f} className="flex items-center gap-2.5 text-xs" style={{ color: "rgba(245,240,232,0.55)" }}>
+            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+              <path d="M1 4l2.5 2.5L9 1" stroke="#c9a84c" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {f}
+          </li>
+        ))}
+      </ul>
+
+      {/* Scheidingslijn */}
+      <div className="h-px" style={{ background: "rgba(201,168,76,0.12)" }} />
+
+      {/* CTA */}
+      <a
+        href="#contact"
+        className="block text-center py-3 text-xs font-bold tracking-widest"
+        style={{
+          touchAction: "manipulation",
+          background: d.popular ? "#c9a84c" : "transparent",
+          color: d.popular ? "#0e0b07" : "#c9a84c",
+          border: d.popular ? "none" : "1px solid rgba(201,168,76,0.3)",
+          borderRadius: "2px",
+          letterSpacing: "0.12em",
+        }}
+      >
+        {d.popular ? "NU BOEKEN" : "AFSPRAAK MAKEN"}
+      </a>
+    </div>
   );
 }
 
 function Diensten() {
-  const diensten = [
+  const diensten: Dienst[] = [
     {
-      icon: <ScissorsIcon />,
-      title: "Heren knippen",
+      nummer: "01",
+      title: "Heren Knippen",
       prijs: "€18",
       beschrijving:
-        "Klassiek of modern — altijd een scherpe, nette knip die bij jouw gezicht past. Inclusief wassen en föhnen.",
+        "Klassiek of modern — altijd een scherpe, nette knip die past bij jouw gezicht en stijl. Inclusief wassen en föhnen.",
       features: ["Klassiek of modern", "Wassen & föhnen", "Neklijn bijwerken"],
       popular: false,
       badge: null,
     },
     {
-      icon: <BeardIcon />,
-      title: "Baard trimmen",
+      nummer: "02",
+      title: "Baard Trimmen",
       prijs: "€12",
       beschrijving:
         "Jouw baard strak bijgewerkt en in model gebracht. Met warme handdoek en baardbalsem finish.",
@@ -315,27 +436,27 @@ function Diensten() {
       badge: null,
     },
     {
-      icon: <ComboIcon />,
+      nummer: "03",
       title: "Knip + Baard",
       prijs: "€25",
       beschrijving:
-        "Het complete pakket. Knippen én baard in één sessie — door 9 op de 10 klanten gekozen als beste deal.",
+        "Het complete pakket. Knippen én baard in één sessie — door 9 op de 10 klanten gekozen als de beste deal.",
       features: ["Volledig knippen", "Baard bijwerken", "Wassen & stylen"],
       popular: true,
       badge: "Meest gekozen",
     },
     {
-      icon: <FadeIcon />,
-      title: "Fade / Skin fade",
+      nummer: "04",
+      title: "Fade / Skin Fade",
       prijs: "€22",
       beschrijving:
-        "Strakke fade of harde lijn — Yazan is gespecialiseerd in moderne fades die langer goed blijven.",
-      features: ["High, mid of low fade", "Skin fade mogelijk", "Strakke lijn"],
+        "Strakke fade of harde lijn — Yazan is gespecialiseerd in moderne fades die langer mooi blijven.",
+      features: ["High, mid of low fade", "Skin fade mogelijk", "Strakke contourlijn"],
       popular: false,
       badge: null,
     },
     {
-      icon: <KidIcon />,
+      nummer: "05",
       title: "Kinderen",
       prijs: "€12",
       beschrijving:
@@ -348,89 +469,49 @@ function Diensten() {
 
   return (
     <section id="diensten" className="py-24 px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3">
-            Diensten & Prijzen
+      <div className="max-w-5xl mx-auto">
+
+        {/* Sectie header */}
+        <div className="mb-16">
+          <p
+            className="text-xs font-bold tracking-widest mb-3"
+            style={{ color: "#c9a84c", letterSpacing: "0.2em" }}
+          >
+            DIENSTEN & PRIJZEN
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">
-            Alles wat je nodig hebt — eerlijk geprijsd
+          <h2
+            className="font-serif text-4xl sm:text-5xl font-bold leading-tight"
+            style={{ color: "#f5f0e8" }}
+          >
+            Eerlijk vakmanschap.
+            <br />
+            <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Eerlijke prijs.</span>
           </h2>
-          <p className="mt-4 text-white/50 max-w-md mx-auto text-sm">
-            Geen verborgen kosten. Geen gedoe. Wat je ziet is wat je betaalt.
-          </p>
+          <Ornament className="mt-6 max-w-xs" />
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {diensten.map((d) => (
-            <div
-              key={d.title}
-              className={`relative rounded-2xl p-6 border flex flex-col gap-4 ${
-                d.popular
-                  ? "bg-orange-950/30 border-orange-500/40"
-                  : "bg-white/[0.03] border-white/10"
-              }`}
-              style={
-                d.popular
-                  ? { boxShadow: "0 0 50px rgba(249,115,22,0.12)" }
-                  : undefined
-              }
-            >
-              {d.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-bold tracking-wide whitespace-nowrap">
-                  {d.badge}
-                </span>
-              )}
-
-              <div className="flex items-start justify-between">
-                <div>{d.icon}</div>
-                <div className="text-right">
-                  <p className="text-orange-400 text-2xl font-bold">{d.prijs}</p>
-                  <p className="text-white/30 text-xs">incl. btw</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-bold text-white">{d.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed mt-2">
-                  {d.beschrijving}
-                </p>
-              </div>
-
-              <ul className="space-y-2 flex-1">
-                {d.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-xs text-white/60">
-                    <span className="flex-shrink-0 w-3.5 h-3.5 rounded-full bg-orange-500/20 flex items-center justify-center">
-                      <svg className="w-2 h-2 text-orange-400" fill="none" viewBox="0 0 8 8">
-                        <path d="M1 4l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href="#contact"
-                className={`block text-center py-3 rounded-xl font-bold text-sm ${
-                  d.popular
-                    ? "bg-orange-500 hover:bg-orange-400 text-white"
-                    : "bg-white/[0.06] hover:bg-white/10 text-white/80 border border-white/10"
-                }`}
-                style={{ touchAction: "manipulation" }}
-              >
-                {d.popular ? "Nu boeken →" : "Afspraak maken"}
-              </a>
-            </div>
+            <DienstKaart key={d.title} d={d} />
           ))}
         </div>
 
-        {/* Prijzen overzicht tabel — voor snelle referentie */}
-        <div className="mt-10 p-6 rounded-2xl bg-white/[0.02] border border-white/8 max-w-2xl mx-auto">
-          <p className="text-white/40 text-xs font-medium tracking-widest uppercase mb-4 text-center">
-            Volledige prijslijst
+        {/* Prijsoverzicht tabel */}
+        <div
+          className="mt-10 p-6 sm:p-8 max-w-2xl mx-auto"
+          style={{
+            background: "#1c1510",
+            border: "1px solid rgba(201,168,76,0.12)",
+            borderRadius: "3px",
+          }}
+        >
+          <p
+            className="text-xs font-bold tracking-widest mb-5 text-center"
+            style={{ color: "rgba(245,240,232,0.3)", letterSpacing: "0.15em" }}
+          >
+            VOLLEDIGE PRIJSLIJST
           </p>
-          <div className="grid sm:grid-cols-2 gap-2">
+          <div className="space-y-2">
             {[
               { dienst: "Heren knippen", prijs: "€18" },
               { dienst: "Baard trimmen", prijs: "€12" },
@@ -438,18 +519,21 @@ function Diensten() {
               { dienst: "Fade / skin fade", prijs: "€22" },
               { dienst: "Kinderen (t/m 12 jaar)", prijs: "€12" },
               { dienst: "Contouren bijwerken", prijs: "€8" },
-            ].map((item) => (
+            ].map((item, i) => (
               <div
                 key={item.dienst}
-                className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]"
+                className="flex items-center justify-between px-4 py-3"
+                style={{
+                  borderBottom: i < 5 ? "1px solid rgba(201,168,76,0.06)" : "none",
+                }}
               >
-                <span className="text-white/60 text-sm">{item.dienst}</span>
-                <span className="text-orange-400 font-bold text-sm">{item.prijs}</span>
+                <span className="text-sm" style={{ color: "rgba(245,240,232,0.55)" }}>{item.dienst}</span>
+                <span className="font-serif font-bold" style={{ color: "#c9a84c" }}>{item.prijs}</span>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-white/25 text-xs text-center">
-            Pinnen en contant betalen mogelijk. Alle prijzen inclusief btw.
+          <p className="mt-5 text-xs text-center" style={{ color: "rgba(245,240,232,0.2)" }}>
+            Pinnen en contant betalen mogelijk · Alle prijzen inclusief btw
           </p>
         </div>
       </div>
@@ -458,7 +542,7 @@ function Diensten() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   REVIEWS  (voor werkwijze — social proof eerder tonen)
+   REVIEWS
 ───────────────────────────────────────────────────────────── */
 function Reviews() {
   const reviews = [
@@ -467,95 +551,91 @@ function Reviews() {
       tekst:
         "Al jaren klant bij Yazan. Hij weet precies wat ik wil zonder dat ik veel hoef te zeggen. Altijd een strakke knip en een goed gesprek erbij.",
       dienst: "Heren knippen",
-      sterren: 5,
-      via: "Google",
     },
     {
       naam: "Tom van der Berg",
       tekst:
-        "Beste kapper in Zutphen, punt. De combo deal is echt de moeite waard. Knip én baard in één keer netjes — voor een eerlijke prijs.",
+        "Beste kapper in Zutphen, punt. De combo deal is echt de moeite waard. Knip én baard in één keer netjes voor een eerlijke prijs.",
       dienst: "Knip + Baard",
-      sterren: 5,
-      via: "Google",
     },
     {
       naam: "Reza M.",
       tekst:
         "Mijn zoons gaan altijd naar Yazan. Geduldig met kinderen en ze komen altijd blij naar buiten. Aanrader voor alle vaders in de buurt.",
       dienst: "Kinderen",
-      sterren: 5,
-      via: "Google",
     },
   ];
 
   return (
-    <section id="reviews" className="py-24 px-6 relative">
+    <section
+      id="reviews"
+      className="py-24 px-6 relative"
+      style={{
+        background: "linear-gradient(to bottom, transparent, rgba(28,21,16,0.4), transparent)",
+      }}
+    >
+      {/* Subtiele achtergrond glow */}
       <div
-        className="absolute top-1/2 right-0 w-[350px] h-[350px] rounded-full pointer-events-none hidden sm:block"
+        className="absolute top-1/2 right-0 w-96 h-96 pointer-events-none"
         style={{
-          background:
-            "radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 70%)",
+          transform: "translateY(-50%)",
         }}
       />
-      <div className="max-w-6xl mx-auto relative">
-        {/* Header met Google score prominent */}
-        <div className="text-center mb-14">
-          <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3">
-            Wat klanten zeggen
+
+      <div className="max-w-5xl mx-auto relative">
+        <div className="mb-14">
+          <p
+            className="text-xs font-bold tracking-widest mb-3"
+            style={{ color: "#c9a84c", letterSpacing: "0.2em" }}
+          >
+            WAT KLANTEN ZEGGEN
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            127 reviews. Gemiddeld 4.9 sterren.
+          <h2
+            className="font-serif text-4xl sm:text-5xl font-bold"
+            style={{ color: "#f5f0e8" }}
+          >
+            127 reviews.
+            <br />
+            <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Gemiddeld 4.9 ★</span>
           </h2>
-          {/* Google badge */}
-          <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-white/[0.04] border border-white/10">
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" />
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-            </svg>
-            <span className="flex gap-0.5">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <svg key={i} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </span>
-            <span className="text-white font-bold text-sm">4.9</span>
-            <span className="text-white/40 text-sm">op Google</span>
-          </div>
+          <Ornament className="mt-6 max-w-xs" />
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-5">
           {reviews.map((r) => (
             <div
               key={r.naam}
-              className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col gap-4"
+              className="flex flex-col gap-5 p-6"
+              style={{
+                background: "#1c1510",
+                border: "1px solid rgba(201,168,76,0.1)",
+                borderRadius: "3px",
+              }}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex gap-1">
-                  {Array.from({ length: r.sterren }).map((_, i) => (
-                    <svg key={i} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <span className="text-white/25 text-xs flex items-center gap-1">
-                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" />
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                  </svg>
-                  Google
-                </span>
-              </div>
-              <p className="text-white/65 text-sm leading-relaxed flex-1">
-                &ldquo;{r.tekst}&rdquo;
+              {/* Aanhalingstekens decoratief */}
+              <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
+                <path d="M0 20V12C0 5.373 4 1.333 12 0l1.5 2.5C9.167 3.667 7 6 7 9v1h5v10H0zm13 0V12C13 5.373 17 1.333 25 0l1.5 2.5C22.167 3.667 20 6 20 9v1h5v10H13z" fill="rgba(201,168,76,0.2)" />
+              </svg>
+
+              <p className="text-sm leading-relaxed flex-1" style={{ color: "rgba(245,240,232,0.6)" }}>
+                {r.tekst}
               </p>
-              <div>
-                <p className="text-white font-semibold text-sm">{r.naam}</p>
-                <p className="text-white/35 text-xs mt-0.5">{r.dienst}</p>
+
+              <div className="pt-4" style={{ borderTop: "1px solid rgba(201,168,76,0.1)" }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: "#f5f0e8" }}>{r.naam}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "rgba(245,240,232,0.3)" }}>{r.dienst}</p>
+                  </div>
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <svg key={i} className="w-3.5 h-3.5" fill="#c9a84c" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -566,61 +646,70 @@ function Reviews() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   WERKWIJZE
+   WERKWIJZE — groot genummerd, editorial
 ───────────────────────────────────────────────────────────── */
 function Werkwijze() {
   const stappen = [
     {
-      nummer: "01",
-      titel: "Afspraak maken in 1 minuut",
+      nummer: "I",
+      titel: "Afspraak in 1 minuut",
       omschrijving:
-        "Bel ons, stuur een WhatsApp-bericht of vul het formulier hieronder in. We bevestigen dezelfde dag — ook op korte termijn.",
+        "Bel ons, stuur een WhatsApp of vul het formulier in. We bevestigen dezelfde dag — ook op korte termijn.",
     },
     {
-      nummer: "02",
+      nummer: "II",
       titel: "Welkom in de stoel",
       omschrijving:
-        "Yazan bespreekt wat je wilt. Klassiek, modern, fade of een combo — jij bepaalt, wij zorgen voor de perfecte uitvoering.",
+        "Yazan bespreekt wat jij wilt. Klassiek, modern, fade of combo — jij bepaalt, wij zorgen voor de perfecte uitvoering.",
     },
     {
-      nummer: "03",
+      nummer: "III",
       titel: "Tevreden de deur uit",
       omschrijving:
-        "Nette finish, eerlijk advies en een resultaat waar je trots op bent. Vandaar waarom 600+ klanten elke maand terugkomen.",
+        "Nette finish, eerlijk advies en een resultaat om trots op te zijn. Vandaar dat 600+ klanten elke maand terugkomen.",
     },
   ];
 
   return (
-    <section className="py-24 px-6 relative">
-      <div
-        className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full pointer-events-none hidden sm:block"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(249,115,22,0.05) 0%, transparent 70%)",
-        }}
-      />
-      <div className="max-w-6xl mx-auto relative">
-        <div className="text-center mb-16">
-          <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3">
-            Hoe het werkt
+    <section className="py-24 px-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="mb-16">
+          <p
+            className="text-xs font-bold tracking-widest mb-3"
+            style={{ color: "#c9a84c", letterSpacing: "0.2em" }}
+          >
+            HOE HET WERKT
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">
-            Van afspraak tot perfecte knip — in 3 stappen
+          <h2
+            className="font-serif text-4xl sm:text-5xl font-bold"
+            style={{ color: "#f5f0e8" }}
+          >
+            Van afspraak tot
+            <br />
+            <span style={{ color: "#c9a84c", fontStyle: "italic" }}>perfecte knip.</span>
           </h2>
+          <Ornament className="mt-6 max-w-xs" />
         </div>
+
         <div className="grid md:grid-cols-3 gap-6">
           {stappen.map((stap) => (
-            <div
-              key={stap.nummer}
-              className="p-6 sm:p-8 rounded-2xl bg-white/[0.03] border border-white/10"
-            >
-              <div className="text-orange-500/40 text-5xl font-bold font-mono mb-6 leading-none">
+            <div key={stap.nummer} className="relative pl-0">
+              {/* Groot Romeins cijfer als decoratie */}
+              <p
+                className="font-serif text-8xl font-bold leading-none mb-4"
+                style={{ color: "rgba(201,168,76,0.1)" }}
+              >
                 {stap.nummer}
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-3">
+              </p>
+              {/* Gouden streep */}
+              <div className="w-8 h-0.5 mb-4" style={{ background: "#c9a84c" }} />
+              <h3
+                className="font-serif text-xl font-bold mb-3"
+                style={{ color: "#f5f0e8" }}
+              >
                 {stap.titel}
               </h3>
-              <p className="text-white/50 text-sm leading-relaxed">
+              <p className="text-sm leading-relaxed" style={{ color: "rgba(245,240,232,0.48)" }}>
                 {stap.omschrijving}
               </p>
             </div>
@@ -632,48 +721,78 @@ function Werkwijze() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   URGENTIE SECTIE — converteert twijfelaars
+   CTA SECTIE — urgentie, geen oranje maar goud + deep red
 ───────────────────────────────────────────────────────────── */
-function UrgeSection() {
+function CTASection() {
   return (
     <section className="py-12 px-6">
       <div className="max-w-3xl mx-auto">
         <div
-          className="rounded-2xl p-8 sm:p-10 text-center border border-orange-500/25 relative overflow-hidden"
+          className="p-10 sm:p-14 text-center relative overflow-hidden"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(249,115,22,0.08) 0%, rgba(249,115,22,0.02) 60%, transparent 100%)",
+            background: "#1c1510",
+            border: "1px solid rgba(201,168,76,0.25)",
+            borderRadius: "3px",
           }}
         >
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <p className="text-green-400 text-sm font-medium">Nu open — Ma t/m Za 09:00–18:00</p>
+          {/* Corner ornaments */}
+          <div className="absolute top-3 left-3 w-5 h-5" style={{ borderTop: "1.5px solid rgba(201,168,76,0.4)", borderLeft: "1.5px solid rgba(201,168,76,0.4)" }} />
+          <div className="absolute top-3 right-3 w-5 h-5" style={{ borderTop: "1.5px solid rgba(201,168,76,0.4)", borderRight: "1.5px solid rgba(201,168,76,0.4)" }} />
+          <div className="absolute bottom-3 left-3 w-5 h-5" style={{ borderBottom: "1.5px solid rgba(201,168,76,0.4)", borderLeft: "1.5px solid rgba(201,168,76,0.4)" }} />
+          <div className="absolute bottom-3 right-3 w-5 h-5" style={{ borderBottom: "1.5px solid rgba(201,168,76,0.4)", borderRight: "1.5px solid rgba(201,168,76,0.4)" }} />
+
+          <div className="flex items-center justify-center gap-2 mb-5">
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#4ade80" }} />
+            <p className="text-xs font-bold tracking-widest" style={{ color: "#4ade80", letterSpacing: "0.15em" }}>
+              NU OPEN — MA T/M ZA 09:00–18:00
+            </p>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-            Vandaag nog goed verzorgd de deur uit?
+
+          <h2
+            className="font-serif text-3xl sm:text-4xl font-bold mb-4"
+            style={{ color: "#f5f0e8" }}
+          >
+            Vandaag nog verzorgd
+            <br />
+            <span style={{ color: "#c9a84c", fontStyle: "italic" }}>de deur uit?</span>
           </h2>
-          <p className="text-white/50 text-sm mb-8 max-w-md mx-auto">
-            Plekken gaan snel vol — zeker op vrijdag en zaterdag. Boek nu jouw plek voor deze week.
+
+          <Ornament className="mb-5" />
+
+          <p className="text-sm mb-8" style={{ color: "rgba(245,240,232,0.45)" }}>
+            Plekken gaan snel vol — zeker op vrijdag en zaterdag. Boek nu jouw plek.
           </p>
+
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
               href="#contact"
-              className="px-8 py-4 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-bold text-sm"
+              className="px-10 py-4 text-sm font-bold tracking-widest"
               style={{
                 touchAction: "manipulation",
-                boxShadow: "0 0 40px rgba(249,115,22,0.20)",
+                background: "#c9a84c",
+                color: "#0e0b07",
+                letterSpacing: "0.12em",
+                borderRadius: "2px",
+                boxShadow: "0 0 40px rgba(201,168,76,0.18)",
               }}
             >
-              Afspraak maken →
+              AFSPRAAK MAKEN →
             </a>
             <a
               href="tel:+31575123456"
-              className="px-8 py-4 rounded-xl border border-white/15 hover:border-white/30 text-white/80 hover:text-white font-semibold text-sm flex items-center justify-center gap-2"
-              style={{ touchAction: "manipulation" }}
+              className="px-10 py-4 text-sm font-semibold tracking-widest flex items-center justify-center gap-2"
+              style={{
+                touchAction: "manipulation",
+                border: "1px solid rgba(201,168,76,0.25)",
+                color: "rgba(245,240,232,0.7)",
+                letterSpacing: "0.1em",
+                borderRadius: "2px",
+              }}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24">
                 <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C9.6 21 3 14.4 3 6.5c0-.6.4-1 1-1H7.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              Bel direct
+              BEL DIRECT
             </a>
           </div>
         </div>
@@ -699,75 +818,98 @@ function Contact() {
   return (
     <section id="contact" className="py-24 px-6 relative">
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full pointer-events-none hidden sm:block"
+        className="absolute top-1/2 left-1/2 w-full max-w-xl h-96 pointer-events-none"
         style={{
-          background:
-            "radial-gradient(ellipse, rgba(249,115,22,0.06) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(201,168,76,0.04) 0%, transparent 70%)",
+          transform: "translate(-50%, -50%)",
         }}
       />
-      <div className="max-w-6xl mx-auto relative">
-        <div className="text-center mb-16">
-          <p className="text-orange-400 text-sm font-medium tracking-widest uppercase mb-3">
-            Afspraak maken
+      <div className="max-w-5xl mx-auto relative">
+        <div className="mb-16">
+          <p
+            className="text-xs font-bold tracking-widest mb-3"
+            style={{ color: "#c9a84c", letterSpacing: "0.2em" }}
+          >
+            AFSPRAAK MAKEN
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">
-            Plan jouw bezoek
+          <h2
+            className="font-serif text-4xl sm:text-5xl font-bold"
+            style={{ color: "#f5f0e8" }}
+          >
+            Plan jouw bezoek.
           </h2>
-          <p className="mt-4 text-white/50 max-w-md mx-auto text-sm">
-            Vul het formulier in, bel ons of stuur een WhatsApp. We reageren dezelfde dag.
-          </p>
+          <Ornament className="mt-6 max-w-xs" />
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-10 items-start max-w-5xl mx-auto">
-          {/* Info — links */}
-          <div className="space-y-6">
-
-            {/* Quick actions — boven alles */}
+        <div className="grid lg:grid-cols-2 gap-10 items-start">
+          {/* Links — info */}
+          <div className="space-y-5">
+            {/* Bel / WhatsApp knoppen */}
             <div className="grid grid-cols-2 gap-3">
               <a
                 href="tel:+31575123456"
-                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-orange-500/10 border border-orange-500/25 hover:bg-orange-500/15 text-center"
-                style={{ touchAction: "manipulation" }}
+                className="flex flex-col items-center gap-2 p-5 text-center"
+                style={{
+                  touchAction: "manipulation",
+                  background: "#1c1510",
+                  border: "1px solid rgba(201,168,76,0.2)",
+                  borderRadius: "3px",
+                }}
               >
-                <svg className="w-5 h-5 text-orange-400" fill="none" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" style={{ color: "#c9a84c" }}>
                   <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C9.6 21 3 14.4 3 6.5c0-.6.4-1 1-1H7.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span className="text-white font-semibold text-sm">Bel ons</span>
-                <span className="text-orange-400 text-xs">+31 575 123 456</span>
+                <span className="text-sm font-semibold" style={{ color: "#f5f0e8" }}>Bel ons</span>
+                <span className="text-xs" style={{ color: "#c9a84c" }}>+31 575 123 456</span>
               </a>
               <a
                 href="https://wa.me/31575123456?text=Hallo%2C%20ik%20wil%20graag%20een%20afspraak%20maken."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-green-500/10 border border-green-500/25 hover:bg-green-500/15 text-center"
-                style={{ touchAction: "manipulation" }}
+                className="flex flex-col items-center gap-2 p-5 text-center"
+                style={{
+                  touchAction: "manipulation",
+                  background: "#1c1510",
+                  border: "1px solid rgba(74,222,128,0.2)",
+                  borderRadius: "3px",
+                }}
               >
-                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="#4ade80" viewBox="0 0 24 24">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                   <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.122 1.524 5.856L0 24l6.338-1.503A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.785 9.785 0 01-5.003-1.369l-.36-.213-3.732.885.918-3.633-.235-.374A9.77 9.77 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z" />
                 </svg>
-                <span className="text-white font-semibold text-sm">WhatsApp</span>
-                <span className="text-green-400 text-xs">Direct berichten</span>
+                <span className="text-sm font-semibold" style={{ color: "#f5f0e8" }}>WhatsApp</span>
+                <span className="text-xs" style={{ color: "#4ade80" }}>Direct berichten</span>
               </a>
             </div>
 
             {/* Adres */}
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 flex items-start gap-4">
-              <div className="mt-0.5 w-9 h-9 rounded-xl bg-orange-500/15 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24">
+            <div
+              className="p-5 flex items-start gap-4"
+              style={{
+                background: "#1c1510",
+                border: "1px solid rgba(201,168,76,0.1)",
+                borderRadius: "3px",
+              }}
+            >
+              <div
+                className="w-9 h-9 flex items-center justify-center flex-shrink-0 mt-0.5"
+                style={{ border: "1px solid rgba(201,168,76,0.25)", borderRadius: "2px" }}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" style={{ color: "#c9a84c" }}>
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
                   <circle cx="12" cy="9" r="2.5" stroke="currentColor" strokeWidth="1.6" />
                 </svg>
               </div>
               <div>
-                <p className="text-white font-semibold text-sm">Laarstraat 9, Zutphen</p>
-                <p className="text-white/40 text-xs mt-0.5">In het centrum — makkelijk te vinden</p>
+                <p className="text-sm font-semibold" style={{ color: "#f5f0e8" }}>Laarstraat 9, Zutphen</p>
+                <p className="text-xs mt-0.5" style={{ color: "rgba(245,240,232,0.35)" }}>In het centrum — makkelijk te vinden</p>
                 <a
                   href="https://maps.google.com/?q=Laarstraat+9+Zutphen"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-orange-400 text-xs hover:text-orange-300 mt-1.5 inline-block"
-                  style={{ touchAction: "manipulation" }}
+                  className="text-xs mt-1.5 inline-block"
+                  style={{ touchAction: "manipulation", color: "#c9a84c" }}
                 >
                   Route plannen op Google Maps →
                 </a>
@@ -775,75 +917,141 @@ function Contact() {
             </div>
 
             {/* Openingstijden */}
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10">
+            <div
+              className="p-5"
+              style={{
+                background: "#1c1510",
+                border: "1px solid rgba(201,168,76,0.1)",
+                borderRadius: "3px",
+              }}
+            >
               <div className="flex items-center gap-2 mb-4">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <p className="text-white font-semibold text-sm">Openingstijden</p>
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#4ade80" }} />
+                <p className="text-xs font-bold tracking-widest" style={{ color: "rgba(245,240,232,0.6)", letterSpacing: "0.12em" }}>
+                  OPENINGSTIJDEN
+                </p>
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {openingstijden.map((o) => (
                   <li key={o.dag} className="flex items-center justify-between text-sm">
-                    <span className={o.dag === "Zondag" ? "text-white/30" : "text-white/55"}>
+                    <span style={{ color: o.dag === "Zondag" ? "rgba(245,240,232,0.25)" : "rgba(245,240,232,0.55)" }}>
                       {o.dag}
                     </span>
-                    <span className={o.dag === "Zondag" ? "text-white/25" : "text-orange-400 font-medium"}>
+                    <span
+                      className="font-medium"
+                      style={{ color: o.dag === "Zondag" ? "rgba(245,240,232,0.2)" : "#c9a84c" }}
+                    >
                       {o.tijd}
                     </span>
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-white/25 text-xs border-t border-white/5 pt-4">
-                Op vrijdag en zaterdag raden we aan op tijd te boeken — vol = vol.
+              <p
+                className="mt-4 text-xs pt-4"
+                style={{ color: "rgba(245,240,232,0.2)", borderTop: "1px solid rgba(201,168,76,0.06)" }}
+              >
+                Op vrijdag en zaterdag raden we aan op tijd te boeken — vol is vol.
               </p>
             </div>
           </div>
 
-          {/* Formulier — rechts */}
-          <div className="p-6 sm:p-8 rounded-2xl bg-white/[0.03] border border-white/10">
-            <p className="text-white font-bold text-lg mb-1">
-              Afspraak aanvragen
-            </p>
-            <p className="text-white/40 text-sm mb-6">We reageren dezelfde dag — ook via WhatsApp.</p>
+          {/* Rechts — formulier */}
+          <div
+            className="p-6 sm:p-8"
+            style={{
+              background: "#1c1510",
+              border: "1px solid rgba(201,168,76,0.15)",
+              borderRadius: "3px",
+            }}
+          >
+            {/* Formulier header */}
+            <div className="mb-6">
+              <p className="font-serif text-xl font-bold" style={{ color: "#f5f0e8" }}>
+                Afspraak aanvragen
+              </p>
+              <p className="text-xs mt-1" style={{ color: "rgba(245,240,232,0.35)" }}>
+                We reageren dezelfde dag — ook via WhatsApp.
+              </p>
+            </div>
+
             <form className="space-y-4" action="#">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs text-white/40 mb-1.5 font-medium">
-                    Voornaam
+                  <label
+                    className="block text-xs font-bold tracking-widest mb-1.5"
+                    style={{ color: "rgba(245,240,232,0.35)", letterSpacing: "0.1em" }}
+                  >
+                    VOORNAAM
                   </label>
                   <input
                     type="text"
                     placeholder="Ahmed"
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-sm outline-none focus:border-orange-500/50"
+                    className="w-full px-4 py-3 text-sm outline-none"
+                    style={{
+                      background: "rgba(245,240,232,0.04)",
+                      border: "1px solid rgba(201,168,76,0.15)",
+                      borderRadius: "2px",
+                      color: "#f5f0e8",
+                    }}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-white/40 mb-1.5 font-medium">
-                    Achternaam
+                  <label
+                    className="block text-xs font-bold tracking-widest mb-1.5"
+                    style={{ color: "rgba(245,240,232,0.35)", letterSpacing: "0.1em" }}
+                  >
+                    ACHTERNAAM
                   </label>
                   <input
                     type="text"
                     placeholder="de Vries"
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-sm outline-none focus:border-orange-500/50"
+                    className="w-full px-4 py-3 text-sm outline-none"
+                    style={{
+                      background: "rgba(245,240,232,0.04)",
+                      border: "1px solid rgba(201,168,76,0.15)",
+                      borderRadius: "2px",
+                      color: "#f5f0e8",
+                    }}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs text-white/40 mb-1.5 font-medium">
-                  Telefoonnummer
+                <label
+                  className="block text-xs font-bold tracking-widest mb-1.5"
+                  style={{ color: "rgba(245,240,232,0.35)", letterSpacing: "0.1em" }}
+                >
+                  TELEFOONNUMMER
                 </label>
                 <input
                   type="tel"
                   placeholder="06 – 12 34 56 78"
-                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-sm outline-none focus:border-orange-500/50"
+                  className="w-full px-4 py-3 text-sm outline-none"
+                  style={{
+                    background: "rgba(245,240,232,0.04)",
+                    border: "1px solid rgba(201,168,76,0.15)",
+                    borderRadius: "2px",
+                    color: "#f5f0e8",
+                  }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-white/40 mb-1.5 font-medium">
-                  Gewenste dienst
+                <label
+                  className="block text-xs font-bold tracking-widest mb-1.5"
+                  style={{ color: "rgba(245,240,232,0.35)", letterSpacing: "0.1em" }}
+                >
+                  GEWENSTE DIENST
                 </label>
-                <select className="w-full px-4 py-3 rounded-xl bg-[#0f0f14] border border-white/10 text-white/70 text-sm outline-none focus:border-orange-500/50 appearance-none">
+                <select
+                  className="w-full px-4 py-3 text-sm outline-none appearance-none"
+                  style={{
+                    background: "#1c1510",
+                    border: "1px solid rgba(201,168,76,0.15)",
+                    borderRadius: "2px",
+                    color: "rgba(245,240,232,0.6)",
+                  }}
+                >
                   <option value="">Kies een dienst…</option>
                   <option value="knippen">Heren knippen — €18</option>
                   <option value="baard">Baard trimmen — €12</option>
@@ -854,38 +1062,61 @@ function Contact() {
               </div>
 
               <div>
-                <label className="block text-xs text-white/40 mb-1.5 font-medium">
-                  Voorkeur dag & tijd
+                <label
+                  className="block text-xs font-bold tracking-widest mb-1.5"
+                  style={{ color: "rgba(245,240,232,0.35)", letterSpacing: "0.1em" }}
+                >
+                  VOORKEUR DAG & TIJD
                 </label>
                 <input
                   type="text"
                   placeholder="bijv. vrijdag namiddag of zaterdag ochtend"
-                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-sm outline-none focus:border-orange-500/50"
+                  className="w-full px-4 py-3 text-sm outline-none"
+                  style={{
+                    background: "rgba(245,240,232,0.04)",
+                    border: "1px solid rgba(201,168,76,0.15)",
+                    borderRadius: "2px",
+                    color: "#f5f0e8",
+                  }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-white/40 mb-1.5 font-medium">
-                  Extra wensen (optioneel)
+                <label
+                  className="block text-xs font-bold tracking-widest mb-1.5"
+                  style={{ color: "rgba(245,240,232,0.35)", letterSpacing: "0.1em" }}
+                >
+                  EXTRA WENSEN (OPTIONEEL)
                 </label>
                 <textarea
                   rows={2}
                   placeholder="Specifieke stijl of wens? Laat het weten…"
-                  className="w-full px-4 py-3 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-sm outline-none focus:border-orange-500/50 resize-none"
+                  className="w-full px-4 py-3 text-sm outline-none resize-none"
+                  style={{
+                    background: "rgba(245,240,232,0.04)",
+                    border: "1px solid rgba(201,168,76,0.15)",
+                    borderRadius: "2px",
+                    color: "#f5f0e8",
+                  }}
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-bold text-sm"
+                className="w-full py-4 text-sm font-bold tracking-widest"
                 style={{
                   touchAction: "manipulation",
-                  boxShadow: "0 0 30px rgba(249,115,22,0.18)",
+                  background: "#c9a84c",
+                  color: "#0e0b07",
+                  letterSpacing: "0.12em",
+                  borderRadius: "2px",
+                  boxShadow: "0 0 30px rgba(201,168,76,0.15)",
                 }}
               >
-                Afspraak aanvragen →
+                AFSPRAAK AANVRAGEN →
               </button>
-              <p className="text-center text-white/25 text-xs">
+
+              <p className="text-center text-xs" style={{ color: "rgba(245,240,232,0.2)" }}>
                 We reageren binnen enkele uren · Geen kosten voor annuleren
               </p>
             </form>
@@ -897,45 +1128,60 @@ function Contact() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   STICKY MOBILE CTA — enorm effectief op mobiel
+   STICKY MOBIEL CTA
 ───────────────────────────────────────────────────────────── */
 function StickyMobileCTA() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden px-4 pb-4 pt-3"
+    <div
+      className="fixed bottom-0 left-0 right-0 z-40 sm:hidden px-4 pb-4 pt-3"
       style={{
-        background: "linear-gradient(to top, rgba(10,10,15,0.98) 60%, transparent 100%)",
+        background: "linear-gradient(to top, rgba(14,11,7,0.99) 60%, transparent 100%)",
       }}
     >
       <div className="flex gap-2.5">
         <a
           href="tel:+31575123456"
-          className="flex-shrink-0 flex items-center justify-center w-14 h-14 rounded-xl bg-white/[0.08] border border-white/15 text-white"
-          style={{ touchAction: "manipulation" }}
+          className="flex-shrink-0 flex items-center justify-center w-14 h-14"
+          style={{
+            touchAction: "manipulation",
+            background: "#1c1510",
+            border: "1px solid rgba(201,168,76,0.25)",
+            borderRadius: "2px",
+          }}
           aria-label="Bellen"
         >
-          <svg className="w-5 h-5 text-orange-400" fill="none" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" style={{ color: "#c9a84c" }}>
             <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C9.6 21 3 14.4 3 6.5c0-.6.4-1 1-1H7.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </a>
         <a
           href="#contact"
-          className="flex-1 flex items-center justify-center h-14 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-bold text-sm"
+          className="flex-1 flex items-center justify-center h-14 text-sm font-bold tracking-widest"
           style={{
             touchAction: "manipulation",
-            boxShadow: "0 0 30px rgba(249,115,22,0.25)",
+            background: "#c9a84c",
+            color: "#0e0b07",
+            letterSpacing: "0.1em",
+            borderRadius: "2px",
+            boxShadow: "0 0 30px rgba(201,168,76,0.2)",
           }}
         >
-          Afspraak maken →
+          AFSPRAAK →
         </a>
         <a
           href="https://wa.me/31575123456?text=Hallo%2C%20ik%20wil%20graag%20een%20afspraak%20maken."
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-shrink-0 flex items-center justify-center w-14 h-14 rounded-xl bg-green-500/15 border border-green-500/30 text-white"
-          style={{ touchAction: "manipulation" }}
+          className="flex-shrink-0 flex items-center justify-center w-14 h-14"
+          style={{
+            touchAction: "manipulation",
+            background: "#1c1510",
+            border: "1px solid rgba(74,222,128,0.2)",
+            borderRadius: "2px",
+          }}
           aria-label="WhatsApp"
         >
-          <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill="#4ade80" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
             <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.122 1.524 5.856L0 24l6.338-1.503A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.785 9.785 0 01-5.003-1.369l-.36-.213-3.732.885.918-3.633-.235-.374A9.77 9.77 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z" />
           </svg>
@@ -950,26 +1196,34 @@ function StickyMobileCTA() {
 ───────────────────────────────────────────────────────────── */
 function Footer() {
   return (
-    <footer className="border-t border-white/5 py-8 px-6 mt-auto mb-20 sm:mb-0">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-white/30 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded bg-orange-500/60 flex items-center justify-center">
-            <svg width="10" height="10" viewBox="0 0 18 18" fill="none">
-              <path d="M5 3h8M5 9h8M7 6h4M7 12h4" stroke="white" strokeWidth="1.6" strokeLinecap="round" />
-              <circle cx="9" cy="15" r="1.5" fill="white" />
+    <footer
+      className="py-8 px-6 mt-auto mb-20 sm:mb-0"
+      style={{ borderTop: "1px solid rgba(201,168,76,0.1)" }}
+    >
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Logo tekst */}
+        <div className="flex items-center gap-3">
+          <div
+            className="w-6 h-6 flex items-center justify-center flex-shrink-0"
+            style={{ border: "1px solid rgba(201,168,76,0.3)", borderRadius: "2px" }}
+          >
+            <svg width="10" height="12" viewBox="0 0 14 18" fill="none">
+              <rect x="1" y="1" width="12" height="16" rx="1" stroke="#c9a84c" strokeWidth="1.2" />
+              <path d="M1 6h12M1 10h12M1 14h12" stroke="#8b1a1a" strokeWidth="1.2" />
             </svg>
           </div>
-          <span>
+          <span className="text-sm" style={{ color: "rgba(245,240,232,0.3)" }}>
             © {new Date().getFullYear()} Barbershop{" "}
-            <span className="text-orange-500/60">Yazan</span> · Laarstraat 9, Zutphen
+            <span style={{ color: "rgba(201,168,76,0.6)" }}>Yazan</span>{" "}
+            · Laarstraat 9, Zutphen
           </span>
         </div>
-        <span className="text-center text-xs text-white/20">
+        <span className="text-xs" style={{ color: "rgba(245,240,232,0.2)" }}>
           Demo gebouwd door{" "}
           <Link
             href="/"
-            className="text-orange-400/60 hover:text-orange-400 underline underline-offset-2"
-            style={{ touchAction: "manipulation" }}
+            className="underline underline-offset-2"
+            style={{ touchAction: "manipulation", color: "rgba(201,168,76,0.5)" }}
           >
             Lifegix
           </Link>
@@ -980,18 +1234,21 @@ function Footer() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   PAGE (server component)
+   PAGE (server component — geen "use client")
 ───────────────────────────────────────────────────────────── */
 export default function BarbershopYazanDemo() {
   return (
-    <main className="flex flex-col min-h-screen bg-[#0a0a0f]">
+    <main
+      className="flex flex-col min-h-screen"
+      style={{ background: "#0e0b07" }}
+    >
       <DemoBanner />
       <Navbar />
       <Hero />
-      <TrustBar />
+      <StatsBar />
       <Diensten />
       <Reviews />
-      <UrgeSection />
+      <CTASection />
       <Werkwijze />
       <Contact />
       <Footer />
