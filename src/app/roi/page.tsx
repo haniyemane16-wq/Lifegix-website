@@ -285,9 +285,9 @@ export default function ROIPage() {
 
     const aiUplift = {
       faq:       { min: 0.01, max: 0.03, desc: "Minder gemiste vragen, hogere klanttevredenheid" },
-      leads:     { min: 0.02, max: 0.05, desc: "Snellere opvolging = meer conversies uit bestaand verkeer" },
-      afspraken: { min: 0.03, max: 0.06, desc: "24/7 afspraken inplannen, minder no-shows" },
-      volledig:  { min: 0.04, max: 0.09, desc: "Volledige automatisering van leads, vragen en afspraken" },
+      leads:     { min: 0.04, max: 0.09, desc: "Gemiste leads direct opgevolgd — gemiddeld 15-30% meer conversies uit bestaand verkeer" },
+      afspraken: { min: 0.06, max: 0.13, desc: "24/7 boeken = nooit meer een gemiste afspraak, direct meer bezette slots" },
+      volledig:  { min: 0.08, max: 0.16, desc: "Leads + afspraken + vragen volledig geautomatiseerd" },
       geen:      { min: 0,    max: 0,    desc: "" },
     }[aiKeuze];
 
