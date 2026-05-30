@@ -15,6 +15,7 @@ export default function Home() {
       <HowItWorks />
       <Pricing />
       <Portfolio />
+      <Demos />
       <Testimonials />
       <FAQAccordion />
       <ContactSection />
@@ -426,6 +427,110 @@ function ContactSection() {
           </div>
           <ContactForm />
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Demos ──────────────────────────────────────────────── */
+function Demos() {
+  const demos = [
+    {
+      href: "/demo/diensten",
+      naam: "Barbershop Yazan",
+      type: "Kappers & barbiers",
+      beschrijving: "Heritage stijl met warm bruin/goud design. Afspraken, diensten en reviews.",
+      kleur: "#c9a84c",
+      bg: "from-amber-950/30 to-transparent",
+      emoji: "✂️",
+    },
+    {
+      href: "/demo/horeca",
+      naam: "Restaurant De Waag",
+      type: "Horeca & restaurants",
+      beschrijving: "Elegant en sfeervol met serif typografie. Menu, reserveringen en chef-verhaal.",
+      kleur: "#c9a96e",
+      bg: "from-emerald-950/30 to-transparent",
+      emoji: "🍽️",
+    },
+    {
+      href: "/demo/zorg",
+      naam: "FysioFit Zutphen",
+      type: "Zorg & therapeuten",
+      beschrijving: "Professioneel licht design. Behandelingen, vergoeding en team.",
+      kleur: "#3b90c8",
+      bg: "from-blue-950/30 to-transparent",
+      emoji: "🏥",
+    },
+  ];
+
+  return (
+    <section id="demos" className="py-24 px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-6">
+          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">
+            Voorbeelden
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">
+            Zo kan jouw website eruitzien
+          </h2>
+          <p className="mt-4 text-white/50 max-w-xl mx-auto">
+            Dit zijn demo-websites die wij hebben gebouwd. Alles — kleuren, teksten, secties en stijl — passen wij volledig aan op jouw bedrijf en wensen.
+          </p>
+        </div>
+
+        {/* Disclaimer */}
+        <div className="flex items-center justify-center gap-2 mb-12 px-4 py-2.5 rounded-full bg-violet-500/10 border border-violet-500/20 w-fit mx-auto">
+          <svg className="w-4 h-4 text-violet-400 shrink-0" fill="none" viewBox="0 0 16 16">
+            <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM8 5v4M8 10.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+          <span className="text-violet-300 text-sm">Dit zijn demo's — jouw website wordt volledig op maat gemaakt</span>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {demos.map((d) => (
+            <Link
+              key={d.href}
+              href={d.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-white/20 transition-colors block"
+              style={{ touchAction: "manipulation" }}
+            >
+              {/* Header */}
+              <div className={`h-28 bg-gradient-to-br ${d.bg} flex items-center justify-center relative`}>
+                <span className="text-5xl">{d.emoji}</span>
+                <div className="absolute top-3 right-3">
+                  <svg className="w-4 h-4 text-white/30 group-hover:text-white/60 transition-colors" fill="none" viewBox="0 0 14 14">
+                    <path d="M2 12L12 2M12 2H6M12 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-bold text-white text-base">{d.naam}</h3>
+                  <span className="text-xs px-2.5 py-1 rounded-full border"
+                    style={{ color: d.kleur, borderColor: `${d.kleur}40`, background: `${d.kleur}10` }}>
+                    {d.type}
+                  </span>
+                </div>
+                <p className="text-white/50 text-sm leading-relaxed mb-4">{d.beschrijving}</p>
+                <span className="text-sm font-medium transition-colors" style={{ color: d.kleur }}>
+                  Bekijk demo →
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <p className="text-center mt-10 text-white/30 text-sm">
+          Jouw branche staat er niet bij?{" "}
+          <Link href="#contact" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">
+            Neem contact op →
+          </Link>
+        </p>
       </div>
     </section>
   );

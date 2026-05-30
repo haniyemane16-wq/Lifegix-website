@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 const navLinks = [
   { href: "#diensten", label: "Diensten" },
   { href: "#prijzen", label: "Prijzen" },
+  { href: "#demos", label: "Demo's" },
   { href: "/waarom-lifegix", label: "Waarom LifeGix" },
-  { href: "#portfolio", label: "Portfolio" },
   { href: "#contact", label: "Contact" },
 ];
 
