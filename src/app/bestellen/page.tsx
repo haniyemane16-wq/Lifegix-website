@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useTransition, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -157,12 +157,11 @@ export default function BestelPage() {
   const [mounted, setMounted] = useState(false);
   const [stap, setStap] = useState(1);
   const [showAITypes, setShowAITypes] = useState(false);
-  const [isPending, startTransition] = useTransition();
 
   useEffect(() => { setMounted(true); }, []);
 
   const naarStap = useCallback((s: number) => {
-    startTransition(() => setStap(s));
+    setStap(s);
   }, []);
   const [gekozenPakket, setGekozenPakket] = useState<PakketId | null>(null);
   const [metAiAgent, setMetAiAgent] = useState<boolean | null>(null);
@@ -269,8 +268,9 @@ export default function BestelPage() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white">
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-violet-600/8 blur-[140px]" />
+      <div className="fixed inset-0 pointer-events-none overflow-hidden hidden sm:block">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px]"
+          style={{ background: "radial-gradient(ellipse 700px 500px at 50% 0%, rgba(124,58,237,0.08) 0%, transparent 70%)" }} />
       </div>
 
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-md">

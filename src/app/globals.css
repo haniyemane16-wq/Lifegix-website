@@ -23,11 +23,7 @@ a, button, [role="button"] {
   touch-action: manipulation;
 }
 
-/* Content visibility — skip rendering off-screen sections */
-.section-lazy {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 600px;
-}
+/* .section-lazy verwijderd — veroorzaakte Safari 18 rendering bug */
 
 /* Geen hover-animaties op touch-apparaten */
 @media (hover: none) {
@@ -89,6 +85,7 @@ a, button, [role="button"] {
 @media (min-width: 640px) {
   .gradient-border {
     border: none;
+    isolation: isolate; /* iOS Safari compositing fix */
   }
 
   .gradient-border::before {
@@ -102,6 +99,8 @@ a, button, [role="button"] {
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 }
 
