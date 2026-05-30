@@ -276,15 +276,31 @@ export default function ROIPage() {
     const heeftWebsite = websiteKeuze !== "geen";
     const heeftAi = aiKeuze !== "geen";
 
-    const dienstKey = heeftWebsite && heeftAi ? "both"
-      : heeftWebsite ? `website_${websiteKeuze}`
-      : `ai_${aiKeuze}`;
+    // Realistische uplift per component — cumulatief maar met overlap-correctie
+    const websiteUplift = {
+      starter:  { min: 0.03, max: 0.07, desc: "Meer vindbaarheid via Google, professionelere uitstraling" },
+      business: { min: 0.05, max: 0.10, desc: "Uitgebreide SEO, meer pagina's en hogere conversie" },
+      geen:     { min: 0,    max: 0,    desc: "" },
+    }[websiteKeuze];
 
-    const meta = SERVICE_META[dienstKey] ?? SERVICE_META.website_starter;
-    const extraMin = Math.round(huidig * meta.upliftMin * multiplier);
-    const extraMax = Math.round(huidig * meta.upliftMax * multiplier);
+    const aiUplift = {
+      faq:       { min: 0.01, max: 0.03, desc: "Minder gemiste vragen, hogere klanttevredenheid" },
+      leads:     { min: 0.02, max: 0.05, desc: "Snellere opvolging = meer conversies uit bestaand verkeer" },
+      afspraken: { min: 0.03, max: 0.06, desc: "24/7 afspraken inplannen, minder no-shows" },
+      volledig:  { min: 0.04, max: 0.09, desc: "Volledige automatisering van leads, vragen en afspraken" },
+      geen:      { min: 0,    max: 0,    desc: "" },
+    }[aiKeuze];
+
+    // Gecombineerd: AI voegt 80% van zijn waarde toe naast website (overlap)
+    const aiMultiplier = heeftWebsite ? 0.8 : 1;
+    const totalMin = websiteUplift.min + aiUplift.min * aiMultiplier;
+    const totalMax = websiteUplift.max + aiUplift.max * aiMultiplier;
+
+    const extraMin = Math.round(huidig * totalMin * multiplier);
+    const extraMax = Math.round(huidig * totalMax * multiplier);
     const extraMid = (extraMin + extraMax) / 2;
 
+    // Prijzen
     const wp = { starter: { e: 500, m: 50 }, business: { e: 1000, m: 75 }, geen: { e: 0, m: 0 } }[websiteKeuze];
     const ap = { faq: { e: 300, m: 50 }, leads: { e: 600, m: 90 }, afspraken: { e: 900, m: 120 }, volledig: { e: 1500, m: 175 }, geen: { e: 0, m: 0 } }[aiKeuze];
     const korting = heeftWebsite && heeftAi;
@@ -294,15 +310,18 @@ export default function ROIPage() {
 
     const naamDelen = [
       heeftWebsite ? (websiteKeuze === "starter" ? "Website Starter" : "Website Business") : "",
-      heeftAi ? { faq: "FAQ Chatbot", leads: "Leadopvolging", afspraken: "Afspraken Agent", volledig: "Volledige AI Agent" }[aiKeuze] ?? "" : "",
+      heeftAi ? ({ faq: "FAQ Chatbot", leads: "Leadopvolging", afspraken: "Afspraken Agent", volledig: "Volledige AI Agent" } as Record<string, string>)[aiKeuze] ?? "" : "",
     ].filter(Boolean);
-
     const pakketnaam = naamDelen.join(" + ") + (korting ? " (−20%)" : "");
+
+    const descDelen = [websiteUplift.desc, aiUplift.desc].filter(Boolean);
+    const desc = descDelen.join(" · ") || "Meer omzet via betere online aanwezigheid";
+
     const terugverdien = Math.ceil(eenmalig / Math.max(extraMid - maand, 1));
 
     setResult({
       huidig, extraMin, extraMax, terugverdien,
-      label: pakketnaam, desc: meta.desc,
+      label: pakketnaam, desc,
       eenmalig, maand, korting, pakketnaam,
       brancheMultiplier: multiplier,
     });
