@@ -249,7 +249,8 @@ export default function ROIPage() {
   const [branche, setBranche] = useState("");
   const [klanten, setKlanten] = useState("");
   const [omzetPerKlant, setOmzetPerKlant] = useState("");
-  const [dienst, setDienst] = useState("website_starter");
+  const [websiteKeuze, setWebsiteKeuze] = useState<"geen" | "starter" | "business">("starter");
+  const [aiKeuze, setAiKeuze] = useState<"geen" | "faq" | "leads" | "afspraken" | "volledig">("geen");
   const [result, setResult] = useState<{
     huidig: number;
     extraMin: number;
@@ -268,29 +269,41 @@ export default function ROIPage() {
     const k = parseInt(klanten, 10);
     const o = parseFloat(omzetPerKlant);
     if (!k || !o || k <= 0 || o <= 0) return;
+    if (websiteKeuze === "geen" && aiKeuze === "geen") return;
 
-    const meta = SERVICE_META[dienst] ?? SERVICE_META.website_starter;
     const huidig = k * o;
     const multiplier = BRANCH_MULTIPLIER[branche] ?? 1.0;
+    const heeftWebsite = websiteKeuze !== "geen";
+    const heeftAi = aiKeuze !== "geen";
 
+    const dienstKey = heeftWebsite && heeftAi ? "both"
+      : heeftWebsite ? `website_${websiteKeuze}`
+      : `ai_${aiKeuze}`;
+
+    const meta = SERVICE_META[dienstKey] ?? SERVICE_META.website_starter;
     const extraMin = Math.round(huidig * meta.upliftMin * multiplier);
     const extraMax = Math.round(huidig * meta.upliftMax * multiplier);
     const extraMid = (extraMin + extraMax) / 2;
 
-    const { eenmalig, maand, korting, naam: pakketnaam } = getPricing(dienst, huidig);
+    const wp = { starter: { e: 500, m: 50 }, business: { e: 1000, m: 75 }, geen: { e: 0, m: 0 } }[websiteKeuze];
+    const ap = { faq: { e: 300, m: 50 }, leads: { e: 600, m: 90 }, afspraken: { e: 900, m: 120 }, volledig: { e: 1500, m: 175 }, geen: { e: 0, m: 0 } }[aiKeuze];
+    const korting = heeftWebsite && heeftAi;
+    const factor = korting ? 0.8 : 1;
+    const eenmalig = Math.round((wp.e + ap.e) * factor);
+    const maand = Math.round((wp.m + ap.m) * factor);
+
+    const naamDelen = [
+      heeftWebsite ? (websiteKeuze === "starter" ? "Website Starter" : "Website Business") : "",
+      heeftAi ? { faq: "FAQ Chatbot", leads: "Leadopvolging", afspraken: "Afspraken Agent", volledig: "Volledige AI Agent" }[aiKeuze] ?? "" : "",
+    ].filter(Boolean);
+
+    const pakketnaam = naamDelen.join(" + ") + (korting ? " (−20%)" : "");
     const terugverdien = Math.ceil(eenmalig / Math.max(extraMid - maand, 1));
 
     setResult({
-      huidig,
-      extraMin,
-      extraMax,
-      terugverdien,
-      label: meta.label,
-      desc: meta.desc,
-      eenmalig,
-      maand,
-      korting,
-      pakketnaam,
+      huidig, extraMin, extraMax, terugverdien,
+      label: pakketnaam, desc: meta.desc,
+      eenmalig, maand, korting, pakketnaam,
       brancheMultiplier: multiplier,
     });
   };
@@ -348,40 +361,71 @@ export default function ROIPage() {
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-white/50 mb-1.5">
-                Gemiddelde omzet per klant (€)
-              </label>
-              <input
-                type="number" min="1" value={omzetPerKlant}
-                onChange={(e) => setOmzetPerKlant(e.target.value)}
-                placeholder="bijv. 45"
-                className={inputClass}
-              />
+          <div>
+            <label className="block text-xs font-medium text-white/50 mb-1.5">
+              Gemiddelde omzet per klant (€)
+            </label>
+            <input
+              type="number" min="1" value={omzetPerKlant}
+              onChange={(e) => setOmzetPerKlant(e.target.value)}
+              placeholder="bijv. 45"
+              className={inputClass}
+            />
+          </div>
+
+          {/* Website keuze */}
+          <div>
+            <label className="block text-xs font-medium text-white/50 mb-2">
+              Website <span className="text-white/30">(optioneel)</span>
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { val: "geen" as const, label: "Geen", prijs: "" },
+                { val: "starter" as const, label: "Starter", prijs: "€500" },
+                { val: "business" as const, label: "Business", prijs: "€1.000" },
+              ].map((opt) => (
+                <button key={opt.val} type="button"
+                  onClick={() => setWebsiteKeuze(opt.val)}
+                  className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-colors border ${
+                    websiteKeuze === opt.val
+                      ? "bg-violet-600/30 border-violet-500/60 text-white"
+                      : "bg-white/5 border-white/10 text-white/50 hover:text-white/80"
+                  }`}>
+                  <div>{opt.label}</div>
+                  {opt.prijs && <div className="text-xs opacity-70 mt-0.5">{opt.prijs}</div>}
+                </button>
+              ))}
             </div>
-            <div>
-              <label className="block text-xs font-medium text-white/50 mb-1.5">Gewenste dienst</label>
-              <select
-                value={dienst}
-                onChange={(e) => setDienst(e.target.value)}
-                className={inputClass}
-              >
-                <optgroup label="Website">
-                  <option value="website_starter" className="bg-[#0a0a0f]">Website Starter — €500</option>
-                  <option value="website_business" className="bg-[#0a0a0f]">Website Business — €1.000</option>
-                </optgroup>
-                <optgroup label="AI Agent">
-                  <option value="ai_faq" className="bg-[#0a0a0f]">FAQ Chatbot — €300</option>
-                  <option value="ai_leads" className="bg-[#0a0a0f]">Leadopvolging Agent — €600</option>
-                  <option value="ai_afspraken" className="bg-[#0a0a0f]">Afspraakplanning Agent — €900</option>
-                  <option value="ai_volledig" className="bg-[#0a0a0f]">Volledige AI Agent — €1.500</option>
-                </optgroup>
-                <optgroup label="Combinatie">
-                  <option value="both" className="bg-[#0a0a0f]">Website + AI-agent (20% korting)</option>
-                </optgroup>
-              </select>
+          </div>
+
+          {/* AI keuze */}
+          <div>
+            <label className="block text-xs font-medium text-white/50 mb-2">
+              AI Agent <span className="text-white/30">(optioneel)</span>
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              {[
+                { val: "geen" as const, label: "Geen", prijs: "" },
+                { val: "faq" as const, label: "FAQ", prijs: "€300" },
+                { val: "leads" as const, label: "Leads", prijs: "€600" },
+                { val: "afspraken" as const, label: "Afspraken", prijs: "€900" },
+                { val: "volledig" as const, label: "Volledig", prijs: "€1.500" },
+              ].map((opt) => (
+                <button key={opt.val} type="button"
+                  onClick={() => setAiKeuze(opt.val)}
+                  className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-colors border ${
+                    aiKeuze === opt.val
+                      ? "bg-violet-600/30 border-violet-500/60 text-white"
+                      : "bg-white/5 border-white/10 text-white/50 hover:text-white/80"
+                  }`}>
+                  <div>{opt.label}</div>
+                  {opt.prijs && <div className="text-xs opacity-70 mt-0.5">{opt.prijs}</div>}
+                </button>
+              ))}
             </div>
+            {websiteKeuze !== "geen" && aiKeuze !== "geen" && (
+              <p className="mt-2 text-xs text-green-400 font-medium">✓ Bundel — automatisch 20% korting toegepast</p>
+            )}
           </div>
 
           <button
