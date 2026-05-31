@@ -156,11 +156,12 @@ export async function POST(req: NextRequest) {
   const beschrijving = metaBeschrijving || `${pakketLabel}${aiLabel}`;
   const maandelijks = parseFloat(maandelijksBedrag ?? "0");
 
-  // ── Abonnement EERST aanmaken (voordat Moneybird time-out veroorzaakt) ──
+  // ── Abonnement EERST aanmaken ──
+  console.error(`DEBUG abonnement check: maandelijks=${maandelijks}, pakket=${pakket}`);
   if (maandelijks > 0) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const customerId = (payment as any).customerId;
-    console.log(`Abonnement: customerId=${customerId ?? "geen"}, €${maandelijks}/mnd`);
+    console.error(`DEBUG customerId=${customerId ?? "GEEN"}, maandelijks=${maandelijks}`);
     if (customerId) {
       try {
         const startDate = new Date();
