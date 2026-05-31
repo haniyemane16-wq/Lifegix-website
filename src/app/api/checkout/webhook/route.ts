@@ -260,8 +260,15 @@ export async function POST(req: NextRequest) {
       } else {
         console.warn("Geen customerId op betaling — abonnement overgeslagen");
       }
-    } catch (err) {
-      console.error("Mollie abonnement error:", err);
+    } catch (err: unknown) {
+      const e = err as Record<string, unknown>;
+      console.error("Mollie abonnement error:", JSON.stringify({
+        message: e?.message ?? String(err),
+        field: e?.field,
+        statusCode: e?.statusCode,
+        title: e?.title,
+        detail: e?.detail,
+      }));
     }
   }
 
