@@ -106,6 +106,12 @@ export async function POST(req: NextRequest) {
       metadata,
     };
 
+    // Nu SEPA goedgekeurd: directdebit + sequenceType voor mandaat
+    if (heeftAbonnement) {
+      paymentParams.method = "directdebit";
+      paymentParams.sequenceType = "first";
+    }
+
     const payment = await mollie.payments.create(paymentParams);
     return NextResponse.json({ checkoutUrl: payment.getCheckoutUrl() });
 
