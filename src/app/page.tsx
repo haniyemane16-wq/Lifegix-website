@@ -343,16 +343,6 @@ function Voorbeelden() {
       extern: true,
     },
     {
-      naam: "Barbershop Yazan",
-      type: "Kapper & barbier",
-      beschrijving: "Heritage stijl, afspraken via WhatsApp, diensten met prijzen.",
-      emoji: "✂️",
-      kleur: "#c9a84c",
-      bg: "from-amber-950/30 to-transparent",
-      href: "/demo/diensten",
-      extern: false,
-    },
-    {
       naam: "Restaurant De Waag",
       type: "Horeca",
       beschrijving: "Elegant serif design, menu, reserveringen en over ons.",
