@@ -14,10 +14,17 @@ const PAKKETTEN: Record<string, { eenmalig: number; maandelijks: number; label: 
   test_sub:     { eenmalig: 0.01, maandelijks: 0.01, label: "Testbetaling + Abonnement" },
 };
 
-const BUNDEL: Record<string, { eenmalig: number; maandelijks: number; label: string }> = {
-  starter:  { eenmalig: 750,  maandelijks: 110, label: "Website Starter + AI Agent" },
-  business: { eenmalig: 1200, maandelijks: 135, label: "Website Business + AI Agent" },
-};
+// Dynamische bundelberekening op basis van AI type (20% korting)
+function berekenBundel(pakket: string, aiType: string) {
+  const website = PAKKETTEN[pakket];
+  const ai = PAKKETTEN[aiType];
+  if (!website || !ai) return null;
+  return {
+    eenmalig: Math.round((website.eenmalig + ai.eenmalig) * 0.8),
+    maandelijks: Math.round((website.maandelijks + ai.maandelijks) * 0.8),
+    label: `${website.label} + ${ai.label}`,
+  };
+}
 
 export async function POST(req: NextRequest) {
   const mollie = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY! });
@@ -25,6 +32,7 @@ export async function POST(req: NextRequest) {
   let body: {
     pakket: string;
     aiAgent: boolean;
+    aiType?: string;
     naam: string;
     bedrijf: string;
     email: string;
@@ -37,7 +45,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
   }
 
-  const { pakket, aiAgent, naam, bedrijf, email, telefoon } = body;
+  const { pakket, aiAgent, aiType, naam, bedrijf, email, telefoon } = body;
 
   if (!pakket || !naam || !email) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
@@ -46,8 +54,9 @@ export async function POST(req: NextRequest) {
   const p = PAKKETTEN[pakket];
   if (!p) return NextResponse.json({ error: "Ongeldig pakket." }, { status: 400 });
 
-  const isBundle = aiAgent && (pakket === "starter" || pakket === "business");
-  const gekozenPakket = isBundle ? BUNDEL[pakket] : p;
+  const isBundle = aiAgent && (pakket === "starter" || pakket === "business") && aiType;
+  const bundel = isBundle ? berekenBundel(pakket, aiType!) : null;
+  const gekozenPakket = bundel ?? p;
   const eenmaligBedrag = gekozenPakket.eenmalig;
   const maandelijksBedrag = gekozenPakket.maandelijks;
   const beschrijving = gekozenPakket.label;

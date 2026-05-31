@@ -165,6 +165,7 @@ export default function BestelPage() {
   }, []);
   const [gekozenPakket, setGekozenPakket] = useState<PakketId | null>(null);
   const [metAiAgent, setMetAiAgent] = useState<boolean | null>(null);
+  const [gekozenAiType, setGekozenAiType] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -220,6 +221,7 @@ export default function BestelPage() {
         body: JSON.stringify({
           pakket: gekozenPakket,
           aiAgent: metAiAgent ?? false,
+          aiType: gekozenAiType,
           naam,
           bedrijf,
           email,
@@ -454,51 +456,52 @@ export default function BestelPage() {
           </div>
         )}
 
-        {/* ── Stap 2: AI Agent toevoegen (alleen voor website pakketten) ── */}
-        {stap === 2 && !isAIPakket(gekozenPakket) && gekozenPakket !== "test" && (
+        {/* ── Stap 2: Welke AI Agent? (alleen voor website pakketten) ── */}
+        {stap === 2 && !isAIPakket(gekozenPakket) && !isTestPakket(gekozenPakket) && (
           <div>
-            <h2 className="text-lg font-semibold text-white/80 mb-6">
+            <h2 className="text-lg font-semibold text-white/80 mb-2">
               Stap 2 — Wil je een AI Agent erbij?
             </h2>
-            <p className="text-white/50 text-sm mb-8">
-              Een AI Agent beantwoordt automatisch klanten, plant afspraken en werkt 24/7 voor je.
+            <p className="text-white/50 text-sm mb-6">
+              Kies het type dat past bij jouw bedrijf — of sla het over. Je kunt later altijd upgraden.
             </p>
-            <div className="grid gap-4">
-              <button
-                onClick={() => handleAiKeuze(true)}
-                className="relative w-full text-left rounded-2xl p-5 sm:p-6 gradient-border bg-violet-950/30 purple-glow transition-all hover:-translate-y-0.5"
-              >
-                <span className="absolute top-4 right-4 text-xs font-semibold px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/20">
-                  Aanbevolen
-                </span>
-                <h3 className="text-lg font-bold text-white mb-1">Ja, voeg AI Agent toe</h3>
-                <p className="text-sm text-white/50 mb-3">
-                  Automatische klantopvolging, WhatsApp integratie & 24/7 beschikbaar
-                </p>
-                <div className="flex items-center gap-3 line-through text-white/30 text-sm">
-                  <span>+€{AI_EENMALIG} eenmalig</span>
-                  <span>+ €{AI_MAANDELIJKS}/mnd</span>
-                </div>
-                {gekozenPakket && BUNDEL[gekozenPakket] && (() => {
-                  const b = BUNDEL[gekozenPakket]!;
-                  const p = WEBSITE_PAKKETTEN.find((x) => x.id === gekozenPakket)!;
-                  return (
-                    <div className="mt-1 flex items-center gap-2 flex-wrap">
-                      <span className="text-green-400 font-semibold text-sm">
-                        +€{b.eenmalig - p.eenmalig} eenmalig + €{b.maandelijks - p.maandelijks}/mnd
-                      </span>
-                      <span className="text-green-400/70 text-xs">(bundelkorting)</span>
-                    </div>
-                  );
-                })()}
-              </button>
 
-              <button
-                onClick={() => handleAiKeuze(false)}
-                className="w-full text-left rounded-2xl p-5 sm:p-6 gradient-border bg-white/[0.03] hover:bg-white/[0.05] transition-all hover:-translate-y-0.5"
-              >
-                <h3 className="text-lg font-bold text-white mb-1">Nee, alleen de website</h3>
-                <p className="text-sm text-white/50">Je kunt de AI Agent altijd later toevoegen</p>
+            <div className="grid gap-3">
+              {[
+                { id: "ai_faq",       naam: "FAQ Chatbot",           desc: "Beantwoordt vaste vragen 24/7",                    e: 300,  m: 50,  badge: null },
+                { id: "ai_leads",     naam: "Leadopvolging Agent",   desc: "Automatische e-mail & WhatsApp opvolging",         e: 600,  m: 90,  badge: null },
+                { id: "ai_afspraken", naam: "Afspraakplanning Agent",desc: "24/7 agenda management & bevestigingen",           e: 900,  m: 120, badge: "Populair" },
+                { id: "ai_volledig",  naam: "Volledige AI Agent",    desc: "Alles: chat, leads, afspraken & rapportage",       e: 1500, m: 175, badge: null },
+              ].map((ai) => {
+                const websiteP = WEBSITE_PAKKETTEN.find((x) => x.id === gekozenPakket);
+                const kortingE = Math.round((websiteP ? ai.e : 0) * 0.2);
+                const kortingM = Math.round((websiteP ? ai.m : 0) * 0.2);
+                const actiefE = ai.e - kortingE;
+                const actiefM = ai.m - kortingM;
+                return (
+                  <button key={ai.id} onClick={() => { setGekozenAiType(ai.id); handleAiKeuze(true); }}
+                    className="relative w-full text-left rounded-2xl p-5 gradient-border bg-white/[0.03] hover:bg-white/[0.05] transition-all">
+                    {ai.badge && (
+                      <span className="absolute top-4 right-4 text-xs font-semibold px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/20">
+                        {ai.badge}
+                      </span>
+                    )}
+                    <h3 className="text-base font-bold text-white mb-1 pr-20">{ai.naam}</h3>
+                    <p className="text-sm text-white/50 mb-2">{ai.desc}</p>
+                    <div className="flex items-center gap-3 text-sm">
+                      {kortingE > 0 && <span className="line-through text-white/25">+€{ai.e}</span>}
+                      <span className="text-green-400 font-semibold">+€{actiefE} eenmalig</span>
+                      <span className="text-violet-300">+ €{actiefM}/mnd</span>
+                      {kortingE > 0 && <span className="text-green-400/70 text-xs">(20% korting)</span>}
+                    </div>
+                  </button>
+                );
+              })}
+
+              <button onClick={() => { setGekozenAiType(null); handleAiKeuze(false); }}
+                className="w-full text-left rounded-2xl p-5 gradient-border bg-white/[0.03] hover:bg-white/[0.05] transition-all">
+                <h3 className="text-base font-bold text-white mb-1">Nee, alleen de website</h3>
+                <p className="text-sm text-white/50">Je kunt een AI Agent altijd later toevoegen</p>
               </button>
             </div>
 
