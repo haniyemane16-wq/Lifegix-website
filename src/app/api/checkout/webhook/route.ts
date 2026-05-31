@@ -46,11 +46,9 @@ async function getAdministrationId(): Promise<string | null> {
 }
 
 async function findOrCreateContact(adminId: string, naam: string, bedrijf: string, email: string, telefoon: string) {
-  // Zoek bestaand contact op e-mail
   const results = await moneybirdFetch(`${adminId}/contacts?query=${encodeURIComponent(email)}`);
   if (results && results.length > 0) return results[0].id;
 
-  // Maak nieuw contact aan
   const nameParts = naam.trim().split(" ");
   const firstname = nameParts[0] ?? naam;
   const lastname = nameParts.slice(1).join(" ") || "";
@@ -87,7 +85,7 @@ async function createInvoice(
           description: beschrijving,
           price: bedrag,
           amount: "1",
-          tax_rate_id: null, // KOR — geen BTW
+          tax_rate_id: null,
         },
       ],
     },
@@ -95,7 +93,6 @@ async function createInvoice(
 }
 
 async function markAsOpen(adminId: string, invoiceId: string) {
-  // Zet factuur van 'draft' naar 'open' zonder e-mail te sturen
   return moneybirdFetch(`${adminId}/sales_invoices/${invoiceId}/send_invoice`, "PATCH", {
     sales_invoice_sending: {
       delivery_method: "Manual",
@@ -142,7 +139,7 @@ export async function POST(req: NextRequest) {
 
   let payment;
   try {
-    payment = await mollie.payments.get(id);
+    payment = await mollie.payments.get(id, { embed: ["mandate"] });
   } catch (err) {
     console.error("Mollie get payment error:", err);
     return new NextResponse(null, { status: 200 });
@@ -150,41 +147,42 @@ export async function POST(req: NextRequest) {
 
   if (payment.status !== "paid") return new NextResponse(null, { status: 200 });
 
-  const { naam, bedrijf, email, telefoon, pakket, aiAgent, maandelijksBedrag, beschrijving: metaBeschrijving } = payment.metadata as Record<string, string>;
+  const meta = payment.metadata as Record<string, string>;
+  const { naam, bedrijf, email, telefoon, pakket, aiAgent, maandelijksBedrag, beschrijving: metaBeschrijving, customerId } = meta;
   const pakketLabel = PAKKET_LABEL[pakket] ?? pakket;
   const aiLabel = aiAgent === "true" ? " + AI Agent (bundelkorting)" : "";
   const beschrijving = metaBeschrijving || `${pakketLabel}${aiLabel}`;
   const maandelijks = parseFloat(maandelijksBedrag ?? "0");
 
-  // ── Abonnement aanmaken (SEPA directdebit heeft geen timing issue) ──
-  if (maandelijks > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const customerId = (payment as any).customerId;
-    console.log(`Abonnement: customerId=${customerId ?? "geen"}, €${maandelijks}/mnd`);
-    if (customerId) {
-      try {
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() + 1);
-        await mollie.customerSubscriptions.create({
-          customerId,
-          amount: { currency: "EUR", value: maandelijks.toFixed(2) },
-          interval: "1 month",
-          startDate: startDate.toISOString().split("T")[0],
-          description: `Maandelijks abonnement — ${beschrijving}`,
-          webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/subscription/webhook`,
-          metadata: JSON.stringify({ naam, email, pakket }),
-        });
-        console.log(`✅ Abonnement aangemaakt voor ${naam}`);
-      } catch (err: unknown) {
-        const e = err as Record<string, unknown>;
-        console.error("Abonnement error:", JSON.stringify({ message: e?.message ?? String(err), statusCode: e?.statusCode, detail: e?.detail }));
-      }
-    } else {
-      console.warn("Geen customerId — abonnement overgeslagen");
+  // ── Abonnement aanmaken ──
+  if (maandelijks > 0 && customerId) {
+    try {
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() + 1);
+
+      await mollie.customerSubscriptions.create({
+        customerId,
+        amount: { currency: "EUR", value: maandelijks.toFixed(2) },
+        interval: "1 month",
+        startDate: startDate.toISOString().split("T")[0],
+        description: `Maandelijks abonnement — ${beschrijving}`,
+        webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/subscription/webhook`,
+        metadata: JSON.stringify({ naam, email, pakket }),
+      });
+      console.log(`✅ Abonnement aangemaakt voor ${naam} (${customerId})`);
+    } catch (err: unknown) {
+      const e = err as Record<string, unknown>;
+      console.error("Abonnement error:", JSON.stringify({
+        message: e?.message ?? String(err),
+        statusCode: e?.statusCode,
+        detail: e?.detail,
+      }));
     }
+  } else if (maandelijks > 0 && !customerId) {
+    console.warn("⚠️ Geen customerId in metadata — abonnement overgeslagen");
   }
 
-  // Bevestigingsmail naar klant
+  // ── Bevestigingsmail naar klant ──
   try {
     await resend.emails.send({
       from: "Lifegix <hanibal@lifegix.nl>",
@@ -210,7 +208,7 @@ export async function POST(req: NextRequest) {
     console.error("Resend bevestigingsmail error:", err);
   }
 
-  // Notificatie naar Hanibal
+  // ── Notificatie naar Hanibal ──
   try {
     await resend.emails.send({
       from: "Lifegix Bestellingen <hanibal@lifegix.nl>",
@@ -226,6 +224,7 @@ export async function POST(req: NextRequest) {
             ${telefoon ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Telefoon</td><td style="padding: 8px 0;">${telefoon}</td></tr>` : ""}
             <tr><td style="padding: 8px 0; color: #9ca3af;">Pakket</td><td style="padding: 8px 0;">${beschrijving}</td></tr>
             <tr><td style="padding: 8px 0; color: #9ca3af;">Bedrag</td><td style="padding: 8px 0; font-weight: 600;">€${payment.amount.value}</td></tr>
+            ${maandelijks > 0 ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Abonnement</td><td style="padding: 8px 0; color: #a78bfa;">€${maandelijks.toFixed(2)}/mnd — automatisch aangemaakt</td></tr>` : ""}
           </table>
         </div>
       `,
@@ -234,27 +233,27 @@ export async function POST(req: NextRequest) {
     console.error("Resend notificatie error:", err);
   }
 
-  // Moneybird factuur aanmaken
+  // ── Moneybird factuur ──
   try {
-      const adminId = await getAdministrationId();
-      if (adminId) {
-        const contactId = await findOrCreateContact(adminId, naam, bedrijf, email, telefoon);
-        if (contactId) {
-          const invoice = await createInvoice(
-            adminId,
-            contactId,
-            beschrijving,
-            payment.amount.value,
-            `Bestelling lifegix.nl — ${naam}`
-          );
-          if (invoice?.id) {
-            await markAsOpen(adminId, invoice.id);         // 1. draft → open
-            await registerPayment(adminId, invoice.id, payment.amount.value); // 2. betaald
-            await sendInvoice(adminId, invoice.id, email, naam); // 3. e-mail met betaalde factuur
-            console.log("Moneybird factuur aangemaakt, betaald en verstuurd:", invoice.id);
-          }
+    const adminId = await getAdministrationId();
+    if (adminId) {
+      const contactId = await findOrCreateContact(adminId, naam, bedrijf, email, telefoon);
+      if (contactId) {
+        const invoice = await createInvoice(
+          adminId,
+          contactId,
+          beschrijving,
+          payment.amount.value,
+          `Bestelling lifegix.nl — ${naam}`
+        );
+        if (invoice?.id) {
+          await markAsOpen(adminId, invoice.id);
+          await registerPayment(adminId, invoice.id, payment.amount.value);
+          await sendInvoice(adminId, invoice.id, email, naam);
+          console.log("✅ Moneybird factuur aangemaakt:", invoice.id);
         }
       }
+    }
   } catch (err) {
     console.error("Moneybird factuur error:", err);
   }
