@@ -1,4 +1,5 @@
 import Link from "next/link";
+import RestaurantNavbarClient from "./RestaurantNavbar";
 
 /* ─── Metadata ───────────────────────────────────────────── */
 export const metadata = {
@@ -14,7 +15,7 @@ export default function HorecaDemoPage() {
       className="flex flex-col min-h-screen"
       style={{ background: "#0f0a06", color: "#e8ddd0" }}
     >
-      <RestaurantNavbar />
+      <RestaurantNavbarClient />
       <Hero />
       <ErkenningenBalk />
       <SfeerDrieluik />
