@@ -178,17 +178,24 @@ export default function BestelPage() {
   const aiPakket = AI_PAKKETTEN.find((p) => p.id === gekozenPakket);
   const huidigPakket = websitePakket ?? aiPakket ?? (isTestPakket(gekozenPakket) ? TEST_PAKKET : undefined);
 
-  const bundel =
-    gekozenPakket && !isAIPakket(gekozenPakket) && gekozenPakket !== "test" && metAiAgent
-      ? BUNDEL[gekozenPakket] ?? null
-      : null;
+  // Dynamische prijsberekening — zelfde logica als de API
+  const heeftBundel = metAiAgent && websitePakket && gekozenAiType;
+  const gekozenAiPakket = AI_PAKKETTEN.find((p) => p.id === gekozenAiType);
 
-  const totaalEenmalig = bundel
-    ? bundel.eenmalig
-    : (huidigPakket?.eenmalig ?? 0) + (metAiAgent && !isAIPakket(gekozenPakket) ? AI_EENMALIG : 0);
-  const totaalMaandelijks = bundel
-    ? bundel.maandelijks
-    : (huidigPakket?.maandelijks ?? 0) + (metAiAgent && !isAIPakket(gekozenPakket) ? AI_MAANDELIJKS : 0);
+  const totaalEenmalig = heeftBundel && websitePakket && gekozenAiPakket
+    ? Math.round((websitePakket.eenmalig + gekozenAiPakket.eenmalig) * 0.8)
+    : (huidigPakket?.eenmalig ?? 0) + (metAiAgent && aiPakket ? 0 : 0);
+
+  const totaalMaandelijks = heeftBundel && websitePakket && gekozenAiPakket
+    ? Math.round((websitePakket.maandelijks + gekozenAiPakket.maandelijks) * 0.8)
+    : huidigPakket?.maandelijks ?? 0;
+
+  const kortingEenmalig = heeftBundel && websitePakket && gekozenAiPakket
+    ? Math.round((websitePakket.eenmalig + gekozenAiPakket.eenmalig) * 0.2)
+    : 0;
+  const kortingMaandelijks = heeftBundel && websitePakket && gekozenAiPakket
+    ? Math.round((websitePakket.maandelijks + gekozenAiPakket.maandelijks) * 0.2)
+    : 0;
 
   const totalSteps = isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket) ? 2 : 3;
 
@@ -540,24 +547,24 @@ export default function BestelPage() {
                   </div>
                 )}
 
-                {metAiAgent && !isAIPakket(gekozenPakket) && (
+                {metAiAgent && !isAIPakket(gekozenPakket) && gekozenAiPakket && (
                   <>
                     <div className="h-px bg-white/5 my-2" />
                     <div className="flex items-center justify-between">
-                      <span className="text-white">AI Agent</span>
+                      <span className="text-white">{gekozenAiPakket.naam}</span>
                       <div className="text-right">
-                        <span className="text-white font-semibold">€{AI_EENMALIG}</span>
+                        <span className="text-white font-semibold">€{gekozenAiPakket.eenmalig}</span>
                         <span className="text-white/40 text-sm ml-1">eenmalig</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-sm text-white/50">
-                      <span>AI Agent abonnement</span>
-                      <span>€{AI_MAANDELIJKS}/mnd</span>
+                      <span>Abonnement {gekozenAiPakket.naam}</span>
+                      <span>€{gekozenAiPakket.maandelijks}/mnd</span>
                     </div>
-                    {bundel && (
+                    {heeftBundel && kortingEenmalig > 0 && (
                       <div className="flex items-center justify-between text-sm text-green-400 font-medium">
-                        <span>Bundelkorting</span>
-                        <span>−€{bundel.korting} eenmalig / −€{bundel.kortingMaandelijks}/mnd</span>
+                        <span>Bundelkorting (20%)</span>
+                        <span>−€{kortingEenmalig} / −€{kortingMaandelijks}/mnd</span>
                       </div>
                     )}
                   </>
