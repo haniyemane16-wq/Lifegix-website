@@ -155,6 +155,35 @@ export async function POST(req: NextRequest) {
   const aiLabel = aiAgent === "true" ? " + AI Agent (bundelkorting)" : "";
   const beschrijving = metaBeschrijving || `${pakketLabel}${aiLabel}`;
   const maandelijks = parseFloat(maandelijksBedrag ?? "0");
+
+  // ── Abonnement EERST aanmaken (voordat Moneybird time-out veroorzaakt) ──
+  if (maandelijks > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const customerId = (payment as any).customerId;
+    console.log(`Abonnement: customerId=${customerId ?? "geen"}, €${maandelijks}/mnd`);
+    if (customerId) {
+      try {
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() + 1);
+        await mollie.customerSubscriptions.create({
+          customerId,
+          amount: { currency: "EUR", value: maandelijks.toFixed(2) },
+          interval: "1 month",
+          startDate: startDate.toISOString().split("T")[0],
+          description: `Maandelijks abonnement — ${beschrijving}`,
+          webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/subscription/webhook`,
+          metadata: JSON.stringify({ naam, email, pakket }),
+        });
+        console.log(`✅ Abonnement aangemaakt voor ${naam}`);
+      } catch (err: unknown) {
+        const e = err as Record<string, unknown>;
+        console.error("Abonnement error:", JSON.stringify({ message: e?.message ?? String(err), statusCode: e?.statusCode, detail: e?.detail }));
+      }
+    } else {
+      console.warn("Geen customerId — abonnement overgeslagen");
+    }
+  }
+
   // Bevestigingsmail naar klant
   try {
     await resend.emails.send({
