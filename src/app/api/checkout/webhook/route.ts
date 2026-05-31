@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
 
   let payment;
   try {
-    payment = await mollie.payments.get(id, { embed: ["mandate"] });
+  payment = await mollie.payments.get(id);
   } catch (err) {
     console.error("Mollie get payment error:", err);
     return new NextResponse(null, { status: 200 });
