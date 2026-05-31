@@ -324,11 +324,11 @@ function Pricing() {
 function Portfolio() {
   const projects = [
     {
-      title: "Barbershop Yazan", category: "Voorbeeldproject",
-      description: "Voorbeeldwebsite voor een barbershop. Heritage stijl, afspraken via WhatsApp, diensten met prijzen en reviews.",
+      title: "AutoFix Pro", category: "Voorbeeldproject",
+      description: "Voorbeeldwebsite voor een autogarage. Dienstenoverzicht, prijstabel, afspraakformulier en FAQ.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS"],
-      gradient: "from-amber-600/20 via-orange-800/10 to-transparent",
-      href: "/demo/diensten",
+      gradient: "from-violet-600/20 via-purple-800/10 to-transparent",
+      href: "https://autofixpro-lac.vercel.app",
       visual: (
         <svg viewBox="0 0 56 56" fill="none" className="w-14 h-14">
           <rect x="4" y="20" width="48" height="22" rx="5" stroke="#a78bfa" strokeWidth="2"/>
