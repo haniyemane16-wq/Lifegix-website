@@ -259,43 +259,5 @@ export async function POST(req: NextRequest) {
     console.error("Moneybird factuur error:", err);
   }
 
-  // Mollie abonnement aanmaken — mandaat is bevestigd op zelfde moment als betaling
-  if (maandelijks > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const customerId = (payment as any).customerId;
-    console.log(`Abonnement aanmaken: customerId=${customerId}, bedrag=€${maandelijks}`);
-
-    if (customerId) {
-      try {
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() + 1);
-        // Zorg voor geldige datum (bijv. 31 jan → 28 feb)
-        const startDateStr = startDate.toISOString().split("T")[0];
-
-        await mollie.customerSubscriptions.create({
-          customerId,
-          amount: { currency: "EUR", value: maandelijks.toFixed(2) },
-          interval: "1 month",
-          startDate: startDateStr,
-          description: `Maandelijks abonnement — ${beschrijving}`,
-          webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/subscription/webhook`,
-          metadata: JSON.stringify({ naam, email, pakket }),
-        });
-
-        console.log(`✅ Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
-      } catch (err: unknown) {
-        const e = err as Record<string, unknown>;
-        console.error("Abonnement error:", JSON.stringify({
-          message: e?.message ?? String(err),
-          statusCode: e?.statusCode,
-          detail: e?.detail,
-          field: e?.field,
-        }));
-      }
-    } else {
-      console.warn("Geen customerId — abonnement overgeslagen");
-    }
-  }
-
   return new NextResponse(null, { status: 200 });
 }
