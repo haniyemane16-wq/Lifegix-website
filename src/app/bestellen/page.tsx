@@ -184,7 +184,7 @@ export default function BestelPage() {
 
   const totaalEenmalig = heeftBundel && websitePakket && gekozenAiPakket
     ? Math.round((websitePakket.eenmalig + gekozenAiPakket.eenmalig) * 0.8)
-    : (huidigPakket?.eenmalig ?? 0) + (metAiAgent && aiPakket ? 0 : 0);
+    : huidigPakket?.eenmalig ?? 0;
 
   const totaalMaandelijks = heeftBundel && websitePakket && gekozenAiPakket
     ? Math.round((websitePakket.maandelijks + gekozenAiPakket.maandelijks) * 0.8)
