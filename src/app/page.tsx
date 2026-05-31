@@ -343,11 +343,11 @@ function Portfolio() {
       ),
     },
     {
-      title: "Restaurant De Waag", category: "Voorbeeldproject",
-      description: "Voorbeeldwebsite voor een restaurant. Elegant design, menukaart, reserveringsformulier en chef-verhaal.",
+      title: "Brasserie De Linde", category: "Voorbeeldproject",
+      description: "Sfeervol restaurant design met menukaart, reserveringen, fotogalerij en chef-verhaal.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS"],
       gradient: "from-emerald-600/20 via-teal-800/10 to-transparent",
-      href: "/demo/horeca",
+      href: "https://brasserie-de-linde.vercel.app",
       visual: (
         <svg viewBox="0 0 56 56" fill="none" className="w-14 h-14">
           <path d="M28 6c-8 0-14 6-14 14 0 6 3.5 11 8.5 13.5V40h11v-6.5C38.5 31 42 26 42 20c0-8-6-14-14-14z" stroke="#a78bfa" strokeWidth="2" strokeLinejoin="round"/>
@@ -374,7 +374,7 @@ function Portfolio() {
         </div>
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {projects.map((p) => (
-            <Link key={p.title} href={p.href}
+            <a key={p.title} href={p.href} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener noreferrer' : undefined}
               className="group rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-violet-500/50 transition-colors block">
               <div className={`h-32 bg-gradient-to-br ${p.gradient} flex items-center justify-center`}>{p.visual}</div>
               <div className="p-6">
@@ -394,7 +394,7 @@ function Portfolio() {
                   ))}
                 </div>
               </div>
-            </Link>
+            </a>
           ))}
         </div>
       </div>
