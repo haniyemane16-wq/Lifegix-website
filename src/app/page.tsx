@@ -431,6 +431,46 @@ function Voorbeelden() {
   );
 }
 
+/* ─── Eerste klanten ─────────────────────────────────────── */
+function EersteKlanten() {
+  const voordelen = [
+    { titel: "Scherpe startersprijs", tekst: "Als een van mijn eerste klanten krijg je een extra voordelige prijs — in ruil voor je eerlijke feedback." },
+    { titel: "Persoonlijke aandacht", tekst: "Ik heb nu volop tijd om jouw project tot in de puntjes te verzorgen. Jij krijgt mijn volledige focus." },
+    { titel: "Samen opbouwen", tekst: "Tevreden? Dan mag jouw bedrijf met een review in mijn portfolio — zo groeien we samen." },
+  ];
+  return (
+    <section className="py-24 px-6 relative">
+      <div className="max-w-4xl mx-auto relative">
+        <div className="text-center mb-12">
+          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Net begonnen</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">Word een van mijn eerste klanten</h2>
+          <p className="mt-4 text-white/50 max-w-xl mx-auto">
+            LifeGix is een frisse start. Dat betekent voor jou: scherpe prijzen, volledige aandacht en een ondernemer die er alles aan doet om jou tevreden te maken.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {voordelen.map((v) => (
+            <div key={v.titel} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10">
+              <div className="w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center mb-4">
+                <svg className="w-4 h-4 text-violet-400" fill="none" viewBox="0 0 16 16">
+                  <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3 className="text-white font-semibold mb-2">{v.titel}</h3>
+              <p className="text-white/50 text-sm leading-relaxed">{v.tekst}</p>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-10">
+          <a href="#contact" className="inline-block px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-colors purple-glow">
+            Plan een gratis gesprek →
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─── Footer ─────────────────────────────────────────────── */
 function Footer() {
   return (
