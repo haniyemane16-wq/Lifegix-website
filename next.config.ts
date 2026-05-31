@@ -3,8 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   compress: true,
   compiler: {
-    // Behoud console.error voor debugging — verwijder alleen console.log
-    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error", "warn"] } : false,
+    // Tijdelijk alles aan voor debugging abonnement
+    removeConsole: false,
   },
   images: {
     formats: ["image/avif", "image/webp"],
