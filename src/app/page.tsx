@@ -324,11 +324,11 @@ function Pricing() {
 function Portfolio() {
   const projects = [
     {
-      title: "AutoFix Pro", category: "Voorbeeldproject",
-      description: "Voorbeeldwebsite voor een autobedrijf. Toont hoe een dienstenoverzicht, transparante prijstabel, afspraakformulier en FAQ eruit kunnen zien.",
+      title: "Barbershop Yazan", category: "Voorbeeldproject",
+      description: "Voorbeeldwebsite voor een barbershop. Heritage stijl, afspraken via WhatsApp, diensten met prijzen en reviews.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS"],
-      gradient: "from-violet-600/20 via-purple-800/10 to-transparent",
-      href: "https://autofixpro-lac.vercel.app",
+      gradient: "from-amber-600/20 via-orange-800/10 to-transparent",
+      href: "/demo/diensten",
       visual: (
         <svg viewBox="0 0 56 56" fill="none" className="w-14 h-14">
           <rect x="4" y="20" width="48" height="22" rx="5" stroke="#a78bfa" strokeWidth="2"/>
@@ -343,11 +343,11 @@ function Portfolio() {
       ),
     },
     {
-      title: "Brasserie De Linde", category: "Voorbeeldproject",
-      description: "Voorbeeldwebsite voor een restaurant. Met seizoensmenu, reserveringsformulier, chef-profiel en sfeervolle uitstraling.",
+      title: "Restaurant De Waag", category: "Voorbeeldproject",
+      description: "Voorbeeldwebsite voor een restaurant. Elegant design, menukaart, reserveringsformulier en chef-verhaal.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS"],
       gradient: "from-emerald-600/20 via-teal-800/10 to-transparent",
-      href: "https://brasserie-de-linde.vercel.app",
+      href: "/demo/horeca",
       visual: (
         <svg viewBox="0 0 56 56" fill="none" className="w-14 h-14">
           <path d="M28 6c-8 0-14 6-14 14 0 6 3.5 11 8.5 13.5V40h11v-6.5C38.5 31 42 26 42 20c0-8-6-14-14-14z" stroke="#a78bfa" strokeWidth="2" strokeLinejoin="round"/>
@@ -374,7 +374,7 @@ function Portfolio() {
         </div>
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {projects.map((p) => (
-            <a key={p.title} href={p.href} target="_blank" rel="noopener noreferrer"
+            <Link key={p.title} href={p.href}
               className="group rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-violet-500/50 transition-colors block">
               <div className={`h-32 bg-gradient-to-br ${p.gradient} flex items-center justify-center`}>{p.visual}</div>
               <div className="p-6">
@@ -394,7 +394,7 @@ function Portfolio() {
                   ))}
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
