@@ -67,23 +67,7 @@ export async function POST(req: NextRequest) {
   try {
     // Maak Mollie klant aan (nodig voor abonnement)
     let customerId: string | undefined;
-    if (heeftAbonnement) {
-      const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
-      const customer = await mollie.customers.create({
-        name: naam,
-        email,
-        // Sla subscription info op zodat mandate webhook het kan gebruiken
-        metadata: JSON.stringify({
-          bedrijf,
-          telefoon,
-          maandelijksBedrag: String(maandelijksBedrag),
-          beschrijving: gekozenPakket.label,
-          pakket,
-          webhookUrl: `${base}/api/subscription/webhook`,
-        }),
-      });
-      customerId = customer.id;
-    }
+    // Mollie klant aanmaken tijdelijk uitgeschakeld — recurring niet geactiveerd
 
     const metadata = {
       naam,
@@ -105,12 +89,8 @@ export async function POST(req: NextRequest) {
       metadata,
     };
 
-    if (heeftAbonnement && customerId) {
-      paymentParams.customerId = customerId;
-      paymentParams.sequenceType = "first";
-      // SEPA Direct Debit voor subscriptions — mandaat type "directdebit" werkt wél
-      paymentParams.method = "directdebit";
-    }
+    // Recurring payments niet geactiveerd op dit Mollie account
+    // Maandelijks abonnement via Moneybird facturen afhandelen
 
     const payment = await mollie.payments.create(paymentParams);
     return NextResponse.json({ checkoutUrl: payment.getCheckoutUrl() });
