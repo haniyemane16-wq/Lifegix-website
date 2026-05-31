@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ZorgNavbarClient from "./ZorgNavbar";
 
 export const metadata = {
   title: "FysioFit Zutphen — Fysiotherapie | Afspraak binnen 2 dagen",
@@ -15,7 +16,7 @@ const C = {
 export default function ZorgDemoPage() {
   return (
     <main style={{ background: C.bg, color: C.tekst, fontFamily: "system-ui, -apple-system, sans-serif" }}>
-      <ZorgNavbar />
+      <ZorgNavbarClient />
       <Hero />
       <TrustBalk />
       <Behandelingen />
