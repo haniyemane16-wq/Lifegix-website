@@ -65,19 +65,39 @@ export async function POST(req: NextRequest) {
   const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
 
   try {
-    // Maak Mollie klant aan (nodig voor abonnement)
-    let customerId: string | undefined;
-    // Mollie klant aanmaken tijdelijk uitgeschakeld — recurring niet geactiveerd
+    let subscriptionId: string | undefined;
+
+    // Abonnement aanmaken VOOR de betaling — geen sequenceType nodig op payment
+    if (heeftAbonnement) {
+      try {
+        const customer = await mollie.customers.create({ name: naam, email });
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() + 1);
+
+        const sub = await mollie.customerSubscriptions.create({
+          customerId: customer.id,
+          amount: { currency: "EUR", value: maandelijksBedrag.toFixed(2) },
+          interval: "1 month",
+          startDate: startDate.toISOString().split("T")[0],
+          description: `Maandelijks abonnement — ${beschrijving}`,
+          webhookUrl: `${origin}/api/subscription/webhook`,
+          metadata: JSON.stringify({ naam, email, pakket }),
+        });
+        subscriptionId = sub.id;
+        console.log(`Abonnement aangemaakt: ${sub.id}`);
+      } catch (subErr: unknown) {
+        const e = subErr as Record<string, unknown>;
+        console.error("Abonnement aanmaken mislukt:", e?.message ?? String(subErr));
+        // Doorgaan met betaling ook als abonnement mislukt
+      }
+    }
 
     const metadata = {
-      naam,
-      bedrijf,
-      email,
-      telefoon,
-      pakket,
+      naam, bedrijf, email, telefoon, pakket,
       aiAgent: String(aiAgent),
       maandelijksBedrag: String(maandelijksBedrag),
       beschrijving,
+      subscriptionId: subscriptionId ?? "",
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,9 +108,6 @@ export async function POST(req: NextRequest) {
       webhookUrl: `${origin}/api/checkout/webhook`,
       metadata,
     };
-
-    // Recurring payments niet geactiveerd op dit Mollie account
-    // Maandelijks abonnement via Moneybird facturen afhandelen
 
     const payment = await mollie.payments.create(paymentParams);
     return NextResponse.json({ checkoutUrl: payment.getCheckoutUrl() });
