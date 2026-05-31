@@ -68,10 +68,19 @@ export async function POST(req: NextRequest) {
     // Maak Mollie klant aan (nodig voor abonnement)
     let customerId: string | undefined;
     if (heeftAbonnement) {
+      const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
       const customer = await mollie.customers.create({
         name: naam,
         email,
-        metadata: { bedrijf, telefoon },
+        // Sla subscription info op zodat mandate webhook het kan gebruiken
+        metadata: JSON.stringify({
+          bedrijf,
+          telefoon,
+          maandelijksBedrag: String(maandelijksBedrag),
+          beschrijving: gekozenPakket.label,
+          pakket,
+          webhookUrl: `${base}/api/subscription/webhook`,
+        }),
       });
       customerId = customer.id;
     }

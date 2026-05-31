@@ -230,52 +230,35 @@ export async function POST(req: NextRequest) {
     console.error("Moneybird factuur error:", err);
   }
 
-  // Mollie abonnement aanmaken (alleen als er een maandelijks bedrag is)
-  console.log(`Abonnement check: maandelijks=${maandelijks}, pakket=${pakket}`);
+  // Abonnement wordt aangemaakt via mandate webhook (/api/mandate/webhook)
+  // wanneer het mandaat "valid" wordt — dat lost de race condition op
   if (maandelijks > 0) {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const paymentAny = payment as any;
-      const customerId = paymentAny.customerId ?? paymentAny._links?.customer?.href?.split("/").pop();
-      console.log(`CustomerId gevonden: ${customerId}`);
-      if (customerId) {
-        // Wacht tot mandaat bevestigd is (race condition fix)
-        const mandates = await mollie.customerMandates.page({ customerId });
-        const geldigMandaat = mandates.find((m: any) => m.status === "valid");
-        if (!geldigMandaat) {
-          console.warn(`Geen geldig mandaat voor ${customerId} — abonnement overgeslagen`);
-        } else {
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() + 1);
-        const startDateStr = startDate.toISOString().split("T")[0];
+    console.log(`Maandelijks bedrag €${maandelijks} — abonnement via mandate webhook`);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const customerId = (payment as any).customerId;
+    console.log(`CustomerId: ${customerId ?? "niet gevonden"}`);
 
-        await mollie.customerSubscriptions.create({
-          customerId,
-          amount: {
-            currency: "EUR",
-            value: maandelijks.toFixed(2),
-          },
-          interval: "1 month",
-          startDate: startDateStr,
-          description: `Maandelijks abonnement — ${beschrijving}`,
-          webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/subscription/webhook`,
-          metadata: JSON.stringify({ naam, email, pakket, beschrijving }),
+    if (customerId) {
+      try {
+        // Stel mandate webhook in op de klant zodat Mollie ons belt bij bevestiging
+        const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (mollie.customers as any).update(customerId, {
+          metadata: JSON.stringify({
+            maandelijksBedrag: String(maandelijks),
+            beschrijving,
+            pakket,
+            webhookUrl: `${base}/api/subscription/webhook`,
+          }),
         });
-
-        console.log(`Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
-        } // einde geldigMandaat check
-      } else {
-        console.warn("Geen customerId op betaling — abonnement overgeslagen");
+        console.log(`Klant ${customerId} metadata bijgewerkt voor mandate webhook`);
+      } catch (err: unknown) {
+        const e = err as Record<string, unknown>;
+        console.error("Klant update error:", JSON.stringify({
+          message: e?.message ?? String(err),
+          detail: e?.detail,
+        }));
       }
-    } catch (err: unknown) {
-      const e = err as Record<string, unknown>;
-      console.error("Mollie abonnement error:", JSON.stringify({
-        message: e?.message ?? String(err),
-        field: e?.field,
-        statusCode: e?.statusCode,
-        title: e?.title,
-        detail: e?.detail,
-      }));
     }
   }
 
