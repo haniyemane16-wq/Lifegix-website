@@ -231,10 +231,13 @@ export async function POST(req: NextRequest) {
   }
 
   // Mollie abonnement aanmaken (alleen als er een maandelijks bedrag is)
+  console.log(`Abonnement check: maandelijks=${maandelijks}, pakket=${pakket}`);
   if (maandelijks > 0) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const customerId = (payment as any).customerId as string | undefined;
+      const paymentAny = payment as any;
+      const customerId = paymentAny.customerId ?? paymentAny._links?.customer?.href?.split("/").pop();
+      console.log(`CustomerId gevonden: ${customerId}`);
       if (customerId) {
         const startDate = new Date();
         startDate.setMonth(startDate.getMonth() + 1);
