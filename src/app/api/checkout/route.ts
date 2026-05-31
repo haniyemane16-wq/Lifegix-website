@@ -14,7 +14,6 @@ const PAKKETTEN: Record<string, { eenmalig: number; maandelijks: number; label: 
   test_sub:     { eenmalig: 0.01, maandelijks: 0.01, label: "Testbetaling + Abonnement" },
 };
 
-// Dynamische bundelberekening op basis van AI type (20% korting)
 function berekenBundel(pakket: string, aiType: string) {
   const website = PAKKETTEN[pakket];
   const ai = PAKKETTEN[aiType];
@@ -65,9 +64,12 @@ export async function POST(req: NextRequest) {
   const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
 
   try {
-    // Maak Mollie klant aan (nodig voor abonnement)
-    let customerId: string | undefined;
-    // Mollie klant aanmaken tijdelijk uitgeschakeld — recurring niet geactiveerd
+    // Maak Mollie klant aan (vereist voor abonnement)
+    const customer = await mollie.customers.create({
+      name: naam,
+      email: email,
+      metadata: { bedrijf, telefoon },
+    });
 
     const metadata = {
       naam,
@@ -78,6 +80,7 @@ export async function POST(req: NextRequest) {
       aiAgent: String(aiAgent),
       maandelijksBedrag: String(maandelijksBedrag),
       beschrijving,
+      customerId: customer.id,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -87,10 +90,14 @@ export async function POST(req: NextRequest) {
       redirectUrl: `${origin}/bedankt`,
       webhookUrl: `${origin}/api/checkout/webhook`,
       metadata,
+      customerId: customer.id,
     };
 
-    // Recurring payments niet geactiveerd op dit Mollie account
-    // Maandelijks abonnement via Moneybird facturen afhandelen
+    // Alleen sequenceType "first" toevoegen als er een abonnement is
+    // GEEN method vastleggen — klant kiest zelf (iDEAL ondersteunt geen recurring)
+    if (heeftAbonnement) {
+      paymentParams.sequenceType = "first";
+    }
 
     const payment = await mollie.payments.create(paymentParams);
     return NextResponse.json({ checkoutUrl: payment.getCheckoutUrl() });
