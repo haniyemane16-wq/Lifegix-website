@@ -108,6 +108,8 @@ export async function POST(req: NextRequest) {
     if (heeftAbonnement && customerId) {
       paymentParams.customerId = customerId;
       paymentParams.sequenceType = "first";
+      // SEPA Direct Debit voor subscriptions — mandaat type "directdebit" werkt wél
+      paymentParams.method = "directdebit";
     }
 
     const payment = await mollie.payments.create(paymentParams);

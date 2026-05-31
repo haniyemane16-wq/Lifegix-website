@@ -156,12 +156,11 @@ export async function POST(req: NextRequest) {
   const beschrijving = metaBeschrijving || `${pakketLabel}${aiLabel}`;
   const maandelijks = parseFloat(maandelijksBedrag ?? "0");
 
-  // ── Abonnement EERST aanmaken ──
-  console.error(`DEBUG abonnement check: maandelijks=${maandelijks}, pakket=${pakket}`);
+  // ── Abonnement aanmaken (SEPA directdebit heeft geen timing issue) ──
   if (maandelijks > 0) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const customerId = (payment as any).customerId;
-    console.error(`DEBUG customerId=${customerId ?? "GEEN"}, maandelijks=${maandelijks}`);
+    console.log(`Abonnement: customerId=${customerId ?? "geen"}, €${maandelijks}/mnd`);
     if (customerId) {
       try {
         const startDate = new Date();
