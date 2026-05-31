@@ -263,6 +263,7 @@ export async function POST(req: NextRequest) {
         });
 
         console.log(`Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
+        } // einde geldigMandaat check
       } else {
         console.warn("Geen customerId op betaling — abonnement overgeslagen");
       }
