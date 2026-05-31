@@ -14,8 +14,7 @@ export default function Home() {
       <Services />
       <HowItWorks />
       <Pricing />
-      <Portfolio />
-      <Demos />
+      <Voorbeelden />
       <EersteKlanten />
       <FAQAccordion />
       <ContactSection />
@@ -321,241 +320,103 @@ function Pricing() {
 }
 
 /* ─── Portfolio ──────────────────────────────────────────── */
-function Portfolio() {
-  const projects = [
+function Voorbeelden() {
+  const items = [
     {
-      title: "AutoFix Pro", category: "Voorbeeldproject",
-      description: "Voorbeeldwebsite voor een autogarage. Dienstenoverzicht, prijstabel, afspraakformulier en FAQ.",
-      tech: ["Next.js", "TypeScript", "Tailwind CSS"],
-      gradient: "from-violet-600/20 via-purple-800/10 to-transparent",
+      naam: "AutoFix Pro",
+      type: "Autogarage",
+      beschrijving: "Dienstenoverzicht, prijstabel, afspraakformulier en FAQ.",
+      emoji: "🔧",
+      kleur: "#f97316",
+      bg: "from-orange-950/30 to-transparent",
       href: "https://autofixpro-lac.vercel.app",
-      visual: (
-        <svg viewBox="0 0 56 56" fill="none" className="w-14 h-14">
-          <rect x="4" y="20" width="48" height="22" rx="5" stroke="#a78bfa" strokeWidth="2"/>
-          <path d="M10 20l5-10h26l5 10" stroke="#a78bfa" strokeWidth="2" strokeLinejoin="round"/>
-          <circle cx="15" cy="42" r="5" fill="#0a0a0f" stroke="#a78bfa" strokeWidth="2"/>
-          <circle cx="41" cy="42" r="5" fill="#0a0a0f" stroke="#a78bfa" strokeWidth="2"/>
-          <circle cx="15" cy="42" r="2" fill="#7c3aed"/><circle cx="41" cy="42" r="2" fill="#7c3aed"/>
-          <rect x="22" y="26" width="12" height="8" rx="2" fill="#7c3aed" opacity="0.4"/>
-          <line x1="4" y1="32" x2="8" y2="32" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="48" y1="32" x2="52" y2="32" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
-      ),
+      extern: true,
     },
     {
-      title: "Brasserie De Linde", category: "Voorbeeldproject",
-      description: "Sfeervol restaurant design met menukaart, reserveringen, fotogalerij en chef-verhaal.",
-      tech: ["Next.js", "TypeScript", "Tailwind CSS"],
-      gradient: "from-emerald-600/20 via-teal-800/10 to-transparent",
-      href: "https://brasserie-de-linde.vercel.app",
-      visual: (
-        <svg viewBox="0 0 56 56" fill="none" className="w-14 h-14">
-          <path d="M28 6c-8 0-14 6-14 14 0 6 3.5 11 8.5 13.5V40h11v-6.5C38.5 31 42 26 42 20c0-8-6-14-14-14z" stroke="#a78bfa" strokeWidth="2" strokeLinejoin="round"/>
-          <rect x="22" y="40" width="12" height="4" rx="1.5" fill="#7c3aed" opacity="0.5"/>
-          <rect x="20" y="44" width="16" height="3" rx="1.5" fill="#7c3aed" opacity="0.4"/>
-          <line x1="28" y1="14" x2="28" y2="26" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="22" y1="18" x2="28" y2="14" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
-          <line x1="34" y1="18" x2="28" y2="14" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
-      ),
-    },
-  ];
-  return (
-    <section id="portfolio" className="pt-12 pb-24 px-6 relative">
-      <div className="absolute inset-0 pointer-events-none hidden sm:block">
-        <div className="absolute top-1/2 right-0 w-[350px] h-[350px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(109,40,217,0.08) 0%, transparent 70%)" }} />
-      </div>
-      <div className="max-w-6xl mx-auto relative">
-        <div className="text-center mb-16">
-          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Portfolio</p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">Voorbeeldprojecten</h2>
-          <p className="mt-4 text-white/50 max-w-md mx-auto">Voorbeelden die laten zien wat ik voor jou kan bouwen.</p>
-        </div>
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {projects.map((p) => (
-            <a key={p.title} href={p.href} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="group rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-violet-500/50 transition-colors block">
-              <div className={`h-32 bg-gradient-to-br ${p.gradient} flex items-center justify-center`}>{p.visual}</div>
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-bold text-white">{p.title}</h3>
-                    <svg className="w-3.5 h-3.5 text-violet-400/60 group-hover:text-violet-400 transition-colors" fill="none" viewBox="0 0 14 14">
-                      <path d="M2 12L12 2M12 2H6M12 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/20">{p.category}</span>
-                </div>
-                <p className="text-white/50 text-sm leading-relaxed mb-5">{p.description}</p>
-                <div className="flex flex-wrap gap-2">
-                  {p.tech.map((t) => (
-                    <span key={t} className="text-xs px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/60">{t}</span>
-                  ))}
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Eerste klanten / oprichtersaanbod ──────────────────── */
-function EersteKlanten() {
-  const voordelen = [
-    { titel: "Scherpe startersprijs", tekst: "Als een van mijn eerste klanten krijg je een extra voordelige prijs — in ruil voor je eerlijke feedback." },
-    { titel: "Persoonlijke aandacht", tekst: "Ik heb nu volop tijd om jouw project tot in de puntjes te verzorgen. Jij krijgt mijn volledige focus." },
-    { titel: "Samen opbouwen", tekst: "Tevreden? Dan mag jouw bedrijf met een review en in mijn portfolio — zo groeien we samen." },
-  ];
-  return (
-    <section className="py-24 px-6 relative">
-      <div className="absolute inset-0 pointer-events-none hidden sm:block">
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(109,40,217,0.06) 0%, transparent 70%)" }} />
-      </div>
-      <div className="max-w-4xl mx-auto relative">
-        <div className="text-center mb-12">
-          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Net begonnen</p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">Word een van mijn eerste klanten</h2>
-          <p className="mt-4 text-white/50 max-w-xl mx-auto">
-            LifeGix is een frisse start. Dat betekent voor jou: scherpe prijzen, volledige aandacht en een ondernemer die er alles aan doet om jou tevreden te maken.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {voordelen.map((v) => (
-            <div key={v.titel} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10">
-              <div className="w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center mb-4">
-                <svg className="w-4 h-4 text-violet-400" fill="none" viewBox="0 0 16 16">
-                  <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3 className="text-white font-semibold mb-2">{v.titel}</h3>
-              <p className="text-white/50 text-sm leading-relaxed">{v.tekst}</p>
-            </div>
-          ))}
-        </div>
-        <div className="text-center mt-10">
-          <a href="#contact" className="inline-block px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-colors purple-glow">
-            Plan een gratis gesprek →
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Contact sectie header + form ──────────────────────── */
-function ContactSection() {
-  return (
-    <section id="contact" className="py-24 px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Contact</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">Klaar om te beginnen?</h2>
-            <p className="mt-4 text-white/50">
-              Stuur een bericht en ik reageer binnen 24 uur. Het eerste gesprek is altijd gratis en vrijblijvend.
-            </p>
-          </div>
-          <ContactForm />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Demos ──────────────────────────────────────────────── */
-function Demos() {
-  const demos = [
-    {
-      href: "/demo/diensten",
-      naam: "Barbershop Yazan",
-      type: "Kappers & barbiers",
-      beschrijving: "Heritage stijl met warm bruin/goud design. Afspraken, diensten en reviews.",
-      kleur: "#c9a84c",
-      bg: "from-amber-950/30 to-transparent",
-      emoji: "✂️",
-    },
-    {
-      href: "/demo/horeca",
-      naam: "Restaurant De Waag",
-      type: "Horeca & restaurants",
-      beschrijving: "Elegant en sfeervol met serif typografie. Menu, reserveringen en chef-verhaal.",
+      naam: "Brasserie De Linde",
+      type: "Restaurant",
+      beschrijving: "Menukaart, reserveringen, fotogalerij en chef-verhaal.",
+      emoji: "🍽️",
       kleur: "#c9a96e",
       bg: "from-emerald-950/30 to-transparent",
-      emoji: "🍽️",
+      href: "https://brasserie-de-linde.vercel.app",
+      extern: true,
     },
     {
-      href: "/demo/zorg",
+      naam: "Barbershop Yazan",
+      type: "Kapper & barbier",
+      beschrijving: "Heritage stijl, afspraken via WhatsApp, diensten met prijzen.",
+      emoji: "✂️",
+      kleur: "#c9a84c",
+      bg: "from-amber-950/30 to-transparent",
+      href: "/demo/diensten",
+      extern: false,
+    },
+    {
+      naam: "Restaurant De Waag",
+      type: "Horeca",
+      beschrijving: "Elegant serif design, menu, reserveringen en over ons.",
+      emoji: "🥩",
+      kleur: "#10b981",
+      bg: "from-teal-950/30 to-transparent",
+      href: "/demo/horeca",
+      extern: false,
+    },
+    {
       naam: "FysioFit Zutphen",
-      type: "Zorg & therapeuten",
-      beschrijving: "Professioneel licht design. Behandelingen, vergoeding en team.",
+      type: "Fysiotherapeut",
+      beschrijving: "Licht professioneel design, behandelingen, vergoeding en team.",
+      emoji: "🏥",
       kleur: "#3b90c8",
       bg: "from-blue-950/30 to-transparent",
-      emoji: "🏥",
+      href: "/demo/zorg",
+      extern: false,
     },
   ];
 
   return (
-    <section id="demos" className="py-24 px-6">
+    <section id="voorbeelden" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-6">
-          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">
-            Voorbeelden
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">
-            Zo kan jouw website eruitzien
-          </h2>
+          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Voorbeelden</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white">Zo kan jouw website eruitzien</h2>
           <p className="mt-4 text-white/50 max-w-xl mx-auto">
-            Dit zijn demo-websites die wij hebben gebouwd. Alles — kleuren, teksten, secties en stijl — passen wij volledig aan op jouw bedrijf en wensen.
+            Alles — kleuren, teksten, secties en stijl — passen wij volledig aan op jouw bedrijf en wensen.
           </p>
         </div>
 
-        {/* Disclaimer */}
-        <div className="flex items-center justify-center gap-2 mb-12 px-4 py-2.5 rounded-full bg-violet-500/10 border border-violet-500/20 w-fit mx-auto">
+        <div className="flex items-center justify-center gap-2 mb-10 px-4 py-2.5 rounded-full bg-violet-500/10 border border-violet-500/20 w-fit mx-auto">
           <svg className="w-4 h-4 text-violet-400 shrink-0" fill="none" viewBox="0 0 16 16">
             <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM8 5v4M8 10.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
           <span className="text-violet-300 text-sm">Dit zijn demo's — jouw website wordt volledig op maat gemaakt</span>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {demos.map((d) => (
-            <Link
-              key={d.href}
-              href={d.href}
-              target="_blank"
-              rel="noopener noreferrer"
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {items.map((d) => (
+            <a key={d.naam} href={d.href}
+              target={d.extern ? "_blank" : undefined}
+              rel={d.extern ? "noopener noreferrer" : undefined}
               className="group rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-white/20 transition-colors block"
-              style={{ touchAction: "manipulation" }}
-            >
-              {/* Header */}
-              <div className={`h-28 bg-gradient-to-br ${d.bg} flex items-center justify-center relative`}>
-                <span className="text-5xl">{d.emoji}</span>
-                <div className="absolute top-3 right-3">
-                  <svg className="w-4 h-4 text-white/30 group-hover:text-white/60 transition-colors" fill="none" viewBox="0 0 14 14">
-                    <path d="M2 12L12 2M12 2H6M12 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+              style={{ touchAction: "manipulation" }}>
+              <div className={`h-24 bg-gradient-to-br ${d.bg} flex items-center justify-center relative`}>
+                <span className="text-4xl">{d.emoji}</span>
+                <svg className="absolute top-3 right-3 w-4 h-4 text-white/20 group-hover:text-white/50 transition-colors" fill="none" viewBox="0 0 14 14">
+                  <path d="M2 12L12 2M12 2H6M12 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </div>
-
-              {/* Content */}
               <div className="p-5">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-bold text-white text-base">{d.naam}</h3>
-                  <span className="text-xs px-2.5 py-1 rounded-full border"
+                  <span className="text-xs px-2 py-1 rounded-full border shrink-0 ml-2"
                     style={{ color: d.kleur, borderColor: `${d.kleur}40`, background: `${d.kleur}10` }}>
                     {d.type}
                   </span>
                 </div>
-                <p className="text-white/50 text-sm leading-relaxed mb-4">{d.beschrijving}</p>
-                <span className="text-sm font-medium transition-colors" style={{ color: d.kleur }}>
-                  Bekijk demo →
-                </span>
+                <p className="text-white/50 text-sm leading-relaxed mb-3">{d.beschrijving}</p>
+                <span className="text-sm font-medium" style={{ color: d.kleur }}>Bekijk demo →</span>
               </div>
-            </Link>
+            </a>
           ))}
         </div>
 
