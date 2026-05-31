@@ -431,6 +431,24 @@ function Voorbeelden() {
   );
 }
 
+/* ─── Contact sectie ─────────────────────────────────────── */
+function ContactSection() {
+  return (
+    <section id="contact" className="py-24 px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Contact</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white">Klaar om te beginnen?</h2>
+            <p className="mt-4 text-white/50">Stuur een bericht en ik reageer binnen 24 uur. Het eerste gesprek is altijd gratis en vrijblijvend.</p>
+          </div>
+          <ContactForm />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─── Eerste klanten ─────────────────────────────────────── */
 function EersteKlanten() {
   const voordelen = [
