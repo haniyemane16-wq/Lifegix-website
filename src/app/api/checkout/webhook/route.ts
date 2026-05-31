@@ -230,35 +230,41 @@ export async function POST(req: NextRequest) {
     console.error("Moneybird factuur error:", err);
   }
 
-  // Abonnement wordt aangemaakt via mandate webhook (/api/mandate/webhook)
-  // wanneer het mandaat "valid" wordt — dat lost de race condition op
+  // Mollie abonnement aanmaken — mandaat is bevestigd op zelfde moment als betaling
   if (maandelijks > 0) {
-    console.log(`Maandelijks bedrag €${maandelijks} — abonnement via mandate webhook`);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const customerId = (payment as any).customerId;
-    console.log(`CustomerId: ${customerId ?? "niet gevonden"}`);
+    console.log(`Abonnement aanmaken: customerId=${customerId}, bedrag=€${maandelijks}`);
 
     if (customerId) {
       try {
-        // Stel mandate webhook in op de klant zodat Mollie ons belt bij bevestiging
-        const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (mollie.customers as any).update(customerId, {
-          metadata: JSON.stringify({
-            maandelijksBedrag: String(maandelijks),
-            beschrijving,
-            pakket,
-            webhookUrl: `${base}/api/subscription/webhook`,
-          }),
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() + 1);
+        // Zorg voor geldige datum (bijv. 31 jan → 28 feb)
+        const startDateStr = startDate.toISOString().split("T")[0];
+
+        await mollie.customerSubscriptions.create({
+          customerId,
+          amount: { currency: "EUR", value: maandelijks.toFixed(2) },
+          interval: "1 month",
+          startDate: startDateStr,
+          description: `Maandelijks abonnement — ${beschrijving}`,
+          webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/subscription/webhook`,
+          metadata: JSON.stringify({ naam, email, pakket }),
         });
-        console.log(`Klant ${customerId} metadata bijgewerkt voor mandate webhook`);
+
+        console.log(`✅ Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
       } catch (err: unknown) {
         const e = err as Record<string, unknown>;
-        console.error("Klant update error:", JSON.stringify({
+        console.error("Abonnement error:", JSON.stringify({
           message: e?.message ?? String(err),
+          statusCode: e?.statusCode,
           detail: e?.detail,
+          field: e?.field,
         }));
       }
+    } else {
+      console.warn("Geen customerId — abonnement overgeslagen");
     }
   }
 
