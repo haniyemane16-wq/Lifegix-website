@@ -156,8 +156,11 @@ export async function POST(req: NextRequest) {
 
   // ── Abonnement aanmaken ──
   if (maandelijks > 0 && customerId) {
-    try {
-      const startDate = new Date();
+  try {
+    // Wacht 2 seconden zodat mandaat bevestigd is
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    const startDate = new Date();
       startDate.setMonth(startDate.getMonth() + 1);
 
       await mollie.customerSubscriptions.create({
