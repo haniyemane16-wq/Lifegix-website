@@ -14,7 +14,6 @@ const PAKKETTEN: Record<string, { eenmalig: number; maandelijks: number; label: 
   test_sub:     { eenmalig: 0.01, maandelijks: 0.01, label: "Testbetaling + Abonnement" },
 };
 
-// Dynamische bundelberekening op basis van AI type (20% korting)
 function berekenBundel(pakket: string, aiType: string) {
   const website = PAKKETTEN[pakket];
   const ai = PAKKETTEN[aiType];
@@ -61,13 +60,12 @@ export async function POST(req: NextRequest) {
   const maandelijksBedrag = gekozenPakket.maandelijks;
   const beschrijving = gekozenPakket.label;
   const heeftAbonnement = maandelijksBedrag > 0;
-
   const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
 
   try {
     let subscriptionId: string | undefined;
 
-    // Abonnement aanmaken VOOR de betaling — geen sequenceType nodig op payment
+    // Abonnement aanmaken VOOR de betaling — geen sequenceType nodig op de payment
     if (heeftAbonnement) {
       try {
         const customer = await mollie.customers.create({ name: naam, email });
@@ -88,7 +86,6 @@ export async function POST(req: NextRequest) {
       } catch (subErr: unknown) {
         const e = subErr as Record<string, unknown>;
         console.error("Abonnement aanmaken mislukt:", e?.message ?? String(subErr));
-        // Doorgaan met betaling ook als abonnement mislukt
       }
     }
 
