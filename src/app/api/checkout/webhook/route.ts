@@ -239,6 +239,12 @@ export async function POST(req: NextRequest) {
       const customerId = paymentAny.customerId ?? paymentAny._links?.customer?.href?.split("/").pop();
       console.log(`CustomerId gevonden: ${customerId}`);
       if (customerId) {
+        // Wacht tot mandaat bevestigd is (race condition fix)
+        const mandates = await mollie.customerMandates.page({ customerId });
+        const geldigMandaat = mandates.find((m: any) => m.status === "valid");
+        if (!geldigMandaat) {
+          console.warn(`Geen geldig mandaat voor ${customerId} — abonnement overgeslagen`);
+        } else {
         const startDate = new Date();
         startDate.setMonth(startDate.getMonth() + 1);
         const startDateStr = startDate.toISOString().split("T")[0];
