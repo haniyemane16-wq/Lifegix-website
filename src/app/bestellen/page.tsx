@@ -167,6 +167,7 @@ export default function BestelPage() {
   const [metAiAgent, setMetAiAgent] = useState<boolean | null>(null);
   const [gekozenAiType, setGekozenAiType] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [iban, setIban] = useState("");
   const [error, setError] = useState("");
 
   const [naam, setNaam] = useState("");
@@ -233,6 +234,7 @@ export default function BestelPage() {
           bedrijf,
           email,
           telefoon,
+          iban: iban.replace(/\s/g, "").toUpperCase(),
         }),
       });
 
@@ -642,6 +644,27 @@ export default function BestelPage() {
                   />
                 </div>
               </div>
+
+              {/* IBAN — alleen tonen als er een maandelijks bedrag is */}
+              {totaalMaandelijks > 0 && (
+                <div>
+                  <label className="block text-sm text-white/60 mb-1.5">
+                    IBAN <span className="text-violet-400">*</span>
+                    <span className="text-white/30 ml-2 text-xs font-normal">Voor automatische maandelijkse betaling</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={iban}
+                    onChange={(e) => setIban(e.target.value)}
+                    placeholder="NL91 ABNA 0417 1643 00"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/25 focus:outline-none focus:border-violet-500/60 focus:bg-white/[0.07] transition-all text-sm font-mono"
+                  />
+                  <p className="text-white/30 text-xs mt-1.5">
+                    Jouw bankrekening waarvan €{totaalMaandelijks}/mnd wordt afgeschreven
+                  </p>
+                </div>
+              )}
 
               {error && (
                 <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">

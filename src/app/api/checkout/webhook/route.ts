@@ -152,14 +152,11 @@ export async function POST(req: NextRequest) {
   if (payment.status !== "paid") return new NextResponse(null, { status: 200 });
 
   // ── Bepaal of dit een eerste of herhalende betaling is ──
-  // sequenceType "first"     = klant heeft zojuist de eerste iDEAL betaling gedaan
-  // sequenceType "recurring" = automatische maandelijkse SEPA afschrijving
-  // sequenceType "oneoff"    = losse betaling zonder abonnement
-  const sequenceType = payment.sequenceType ?? "oneoff";
-  const isEersteBetaling = sequenceType === "first" || sequenceType === "oneoff";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sequenceType = (payment as any).sequenceType ?? "oneoff";
   const isHerhaalbetaling = sequenceType === "recurring";
 
-  // Bij herhalende betalingen hoeven we niets te doen (geen mail, geen factuur, geen nieuw abonnement)
+  // Bij herhalende SEPA-afschrijvingen: geen mail, factuur of abonnement aanmaken
   if (isHerhaalbetaling) {
     console.log(`ℹ️ Herhaalbetaling ontvangen voor payment ${id} — geen actie nodig`);
     return new NextResponse(null, { status: 200 });
@@ -176,7 +173,7 @@ export async function POST(req: NextRequest) {
     aiAgent,
     maandelijksBedrag,
     beschrijving: metaBeschrijving,
-    customerId,
+    iban,
   } = meta;
 
   const pakketLabel = PAKKET_LABEL[pakket] ?? pakket;
@@ -184,34 +181,43 @@ export async function POST(req: NextRequest) {
   const beschrijving = metaBeschrijving || `${pakketLabel}${aiLabel}`;
   const maandelijks = parseFloat(maandelijksBedrag ?? "0");
 
-  // ── Abonnement aanmaken (alleen na eerste iDEAL betaling met customerId) ──
-  if (maandelijks > 0 && customerId && sequenceType === "first") {
+  // ── Abonnement aanmaken via IBAN (Copilot approach: klant vult IBAN in formulier) ──
+  if (maandelijks > 0 && iban) {
     try {
-      // Controleer of er een geldig of pending mandaat is voordat we het abonnement aanmaken
-      const mandatesPage = await mollie.customerMandates.page({ customerId });
+      // Stap 1: Mollie klant aanmaken
+      const customer = await mollie.customers.create({ name: naam, email });
+      const customerId = customer.id;
+
+      // Stap 2: SEPA mandaat aanmaken met IBAN
+      const nameParts = naam.trim().split(" ");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const heeftMandaat = mandatesPage.some(
-        (m: any) => m.status === "valid" || m.status === "pending"
-      );
+      await (mollie.customerMandates as any).create({
+        customerId,
+        method: "directdebit",
+        consumerName: naam,
+        consumerAccount: iban,
+        signatureDate: new Date().toISOString().split("T")[0],
+      });
+      console.log(`✅ SEPA mandaat aangemaakt voor ${naam}`);
 
-      if (!heeftMandaat) {
-        console.warn(`⚠️ Geen geldig mandaat voor ${naam} (${customerId}) — abonnement overgeslagen`);
-      } else {
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() + 1);
+      // Stap 3: Wacht even zodat mandaat verwerkt is
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-        await mollie.customerSubscriptions.create({
-          customerId,
-          amount: { currency: "EUR", value: maandelijks.toFixed(2) },
-          interval: "1 month",
-          startDate: startDate.toISOString().split("T")[0],
-          description: `Maandelijks abonnement — ${beschrijving}`,
-          // Hardcoded URL — nooit afhankelijk van request headers
-          webhookUrl: `${BASE_URL}/api/checkout/webhook`,
-          metadata: JSON.stringify({ naam, email, pakket }),
-        });
-        console.log(`✅ Abonnement aangemaakt voor ${naam} (${customerId})`);
-      }
+      // Stap 4: Subscription aanmaken
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() + 1);
+
+      await mollie.customerSubscriptions.create({
+        customerId,
+        amount: { currency: "EUR", value: maandelijks.toFixed(2) },
+        interval: "1 month",
+        startDate: startDate.toISOString().split("T")[0],
+        description: `Maandelijks abonnement — ${beschrijving}`,
+        webhookUrl: `${BASE_URL}/api/subscription/webhook`,
+        metadata: JSON.stringify({ naam, email, pakket }),
+      });
+      console.log(`✅ Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
+      void nameParts;
     } catch (err: unknown) {
       const e = err as Record<string, unknown>;
       console.error("Abonnement error:", JSON.stringify({
@@ -220,8 +226,8 @@ export async function POST(req: NextRequest) {
         detail: e?.detail,
       }));
     }
-  } else if (maandelijks > 0 && !customerId) {
-    console.warn("⚠️ Geen customerId in metadata — abonnement overgeslagen");
+  } else if (maandelijks > 0 && !iban) {
+    console.warn("⚠️ Geen IBAN in metadata — abonnement overgeslagen");
   }
 
   // ── Bevestigingsmail naar klant ──

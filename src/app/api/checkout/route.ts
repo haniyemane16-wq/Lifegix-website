@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
     bedrijf: string;
     email: string;
     telefoon: string;
+    iban?: string;
   };
 
   try {
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
   }
 
-  const { pakket, aiAgent, aiType, naam, bedrijf, email, telefoon } = body;
+  const { pakket, aiAgent, aiType, naam, bedrijf, email, telefoon, iban } = body;
 
   if (!pakket || !naam || !email) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
@@ -62,48 +63,29 @@ export async function POST(req: NextRequest) {
   const heeftAbonnement = maandelijksBedrag > 0;
   const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
 
-  try {
-    // Klant aanmaken in Mollie (vereist voor mandaat + abonnement)
-    let customerId: string | undefined;
-    if (heeftAbonnement) {
-      const customer = await mollie.customers.create({
-        name: naam,
-        email,
-        metadata: { bedrijf, telefoon },
-      });
-      customerId = customer.id;
-    }
+  // Valideer IBAN als abonnement
+  if (heeftAbonnement && !iban) {
+    return NextResponse.json({ error: "IBAN is verplicht voor een maandelijks abonnement." }, { status: 400 });
+  }
 
+  try {
     const metadata = {
-      naam,
-      bedrijf,
-      email,
-      telefoon,
-      pakket,
+      naam, bedrijf, email, telefoon, pakket,
       aiAgent: String(aiAgent),
       maandelijksBedrag: String(maandelijksBedrag),
       beschrijving,
-      customerId: customerId ?? "",
+      iban: iban ?? "",
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const paymentParams: any = {
+    // Gewone betaling — geen sequenceType, klant kiest zelf betaalmethode
+    const payment = await mollie.payments.create({
       amount: { currency: "EUR", value: eenmaligBedrag.toFixed(2) },
       description: `${beschrijving} — ${naam}${bedrijf ? ` (${bedrijf})` : ""}`,
       redirectUrl: `${origin}/bedankt`,
       webhookUrl: `${origin}/api/checkout/webhook`,
       metadata,
-    };
+    });
 
-    if (heeftAbonnement && customerId) {
-      // iDEAL als betaalmethode zodat klant zelf actief betaalt (SEPA ondersteunt dit niet)
-      // sequenceType "first" legt tegelijk een mandaat vast voor toekomstige SEPA-afschrijvingen
-      paymentParams.method = "ideal";
-      paymentParams.sequenceType = "first";
-      paymentParams.customerId = customerId;
-    }
-
-    const payment = await mollie.payments.create(paymentParams);
     return NextResponse.json({ checkoutUrl: payment.getCheckoutUrl() });
 
   } catch (err: unknown) {
