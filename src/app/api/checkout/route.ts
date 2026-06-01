@@ -63,10 +63,14 @@ export async function POST(req: NextRequest) {
   const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
 
   try {
-    // Klant aanmaken voor recurring betaling (vereist door Mollie voor directdebit)
+    // Klant aanmaken (vereist voor SEPA recurring)
     let customerId: string | undefined;
     if (heeftAbonnement) {
-      const customer = await mollie.customers.create({ name: naam, email });
+      const customer = await mollie.customers.create({
+        name: naam,
+        email,
+        metadata: { bedrijf, telefoon },
+      });
       customerId = customer.id;
     }
 
@@ -87,11 +91,12 @@ export async function POST(req: NextRequest) {
       metadata,
     };
 
-    // SEPA directdebit + sequenceType + customerId voor mandaat
+    // SEPA Direct Debit voor abonnementen — exact zoals Mollie docs voorschrijven
     if (heeftAbonnement && customerId) {
       paymentParams.method = "directdebit";
       paymentParams.sequenceType = "first";
       paymentParams.customerId = customerId;
+      paymentParams.billingAddress = { email };
     }
 
     const payment = await mollie.payments.create(paymentParams);
