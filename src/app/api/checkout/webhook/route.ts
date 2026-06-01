@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
         interval: "1 month",
         startDate: startDate.toISOString().split("T")[0],
         description: `Maandelijks abonnement — ${beschrijving}`,
-        webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/subscription/webhook`,
+        webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/checkout/webhook`,
         metadata: JSON.stringify({ naam, email, pakket }),
       });
       console.log(`✅ Abonnement aangemaakt voor ${naam} (${customerId})`);
