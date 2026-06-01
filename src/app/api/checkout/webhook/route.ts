@@ -5,6 +5,7 @@ import { Resend } from "resend";
 export const dynamic = "force-dynamic";
 
 const TO_EMAIL = "lifegix.contact@gmail.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
 
 const PAKKET_LABEL: Record<string, string> = {
   starter:      "Website Starter",
@@ -126,6 +127,7 @@ export async function POST(req: NextRequest) {
   const mollie = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY! });
   const resend = new Resend(process.env.RESEND_API_KEY);
 
+  // ── Parse webhook body ──
   let id: string;
   try {
     const body = await req.text();
@@ -137,42 +139,78 @@ export async function POST(req: NextRequest) {
 
   if (!id) return new NextResponse(null, { status: 200 });
 
+  // ── Haal payment op ──
   let payment;
   try {
-  payment = await mollie.payments.get(id);
+    payment = await mollie.payments.get(id);
   } catch (err) {
     console.error("Mollie get payment error:", err);
     return new NextResponse(null, { status: 200 });
   }
 
+  // Altijd 200 teruggeven aan Mollie, ook als betaling niet afgerond is
   if (payment.status !== "paid") return new NextResponse(null, { status: 200 });
 
+  // ── Bepaal of dit een eerste of herhalende betaling is ──
+  // sequenceType "first"     = klant heeft zojuist de eerste iDEAL betaling gedaan
+  // sequenceType "recurring" = automatische maandelijkse SEPA afschrijving
+  // sequenceType "oneoff"    = losse betaling zonder abonnement
+  const sequenceType = payment.sequenceType ?? "oneoff";
+  const isEersteBetaling = sequenceType === "first" || sequenceType === "oneoff";
+  const isHerhaalbetaling = sequenceType === "recurring";
+
+  // Bij herhalende betalingen hoeven we niets te doen (geen mail, geen factuur, geen nieuw abonnement)
+  if (isHerhaalbetaling) {
+    console.log(`ℹ️ Herhaalbetaling ontvangen voor payment ${id} — geen actie nodig`);
+    return new NextResponse(null, { status: 200 });
+  }
+
+  // Vanaf hier: alleen eerste betalingen of losse betalingen
   const meta = payment.metadata as Record<string, string>;
-  const { naam, bedrijf, email, telefoon, pakket, aiAgent, maandelijksBedrag, beschrijving: metaBeschrijving, customerId } = meta;
+  const {
+    naam,
+    bedrijf,
+    email,
+    telefoon,
+    pakket,
+    aiAgent,
+    maandelijksBedrag,
+    beschrijving: metaBeschrijving,
+    customerId,
+  } = meta;
+
   const pakketLabel = PAKKET_LABEL[pakket] ?? pakket;
   const aiLabel = aiAgent === "true" ? " + AI Agent (bundelkorting)" : "";
   const beschrijving = metaBeschrijving || `${pakketLabel}${aiLabel}`;
   const maandelijks = parseFloat(maandelijksBedrag ?? "0");
 
-  // ── Abonnement aanmaken ──
-  if (maandelijks > 0 && customerId) {
-  try {
-    // Wacht 2 seconden zodat mandaat bevestigd is
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    const startDate = new Date();
-      startDate.setMonth(startDate.getMonth() + 1);
+  // ── Abonnement aanmaken (alleen na eerste iDEAL betaling met customerId) ──
+  if (maandelijks > 0 && customerId && sequenceType === "first") {
+    try {
+      // Controleer of er een geldig of pending mandaat is voordat we het abonnement aanmaken
+      const mandates = await mollie.customerMandates.list({ customerId });
+      const heeftMandaat = mandates.some(
+        (m) => m.status === "valid" || m.status === "pending"
+      );
 
-      await mollie.customerSubscriptions.create({
-        customerId,
-        amount: { currency: "EUR", value: maandelijks.toFixed(2) },
-        interval: "1 month",
-        startDate: startDate.toISOString().split("T")[0],
-        description: `Maandelijks abonnement — ${beschrijving}`,
-        webhookUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl"}/api/checkout/webhook`,
-        metadata: JSON.stringify({ naam, email, pakket }),
-      });
-      console.log(`✅ Abonnement aangemaakt voor ${naam} (${customerId})`);
+      if (!heeftMandaat) {
+        console.warn(`⚠️ Geen geldig mandaat voor ${naam} (${customerId}) — abonnement overgeslagen`);
+      } else {
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() + 1);
+
+        await mollie.customerSubscriptions.create({
+          customerId,
+          amount: { currency: "EUR", value: maandelijks.toFixed(2) },
+          interval: "1 month",
+          startDate: startDate.toISOString().split("T")[0],
+          description: `Maandelijks abonnement — ${beschrijving}`,
+          // Hardcoded URL — nooit afhankelijk van request headers
+          webhookUrl: `${BASE_URL}/api/checkout/webhook`,
+          metadata: JSON.stringify({ naam, email, pakket }),
+        });
+        console.log(`✅ Abonnement aangemaakt voor ${naam} (${customerId})`);
+      }
     } catch (err: unknown) {
       const e = err as Record<string, unknown>;
       console.error("Abonnement error:", JSON.stringify({
@@ -223,7 +261,7 @@ export async function POST(req: NextRequest) {
           <table style="width: 100%; border-collapse: collapse;">
             <tr><td style="padding: 8px 0; color: #9ca3af; width: 120px;">Naam</td><td style="padding: 8px 0; font-weight: 600;">${naam}</td></tr>
             ${bedrijf ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Bedrijf</td><td style="padding: 8px 0;">${bedrijf}</td></tr>` : ""}
-            <tr><td style="padding: 8px 0; color: #9ca3af;">E-mail</td><td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #a78bfa;">${email}</a></td></tr>
+            <tr><td style="padding: 8px 0; color: #9ca3af;">E-mail</td><td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #a78bfa;">${email}</td></tr>
             ${telefoon ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Telefoon</td><td style="padding: 8px 0;">${telefoon}</td></tr>` : ""}
             <tr><td style="padding: 8px 0; color: #9ca3af;">Pakket</td><td style="padding: 8px 0;">${beschrijving}</td></tr>
             <tr><td style="padding: 8px 0; color: #9ca3af;">Bedrag</td><td style="padding: 8px 0; font-weight: 600;">€${payment.amount.value}</td></tr>
