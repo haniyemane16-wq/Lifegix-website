@@ -188,9 +188,10 @@ export async function POST(req: NextRequest) {
   if (maandelijks > 0 && customerId && sequenceType === "first") {
     try {
       // Controleer of er een geldig of pending mandaat is voordat we het abonnement aanmaken
-      const mandates = await mollie.customerMandates.list({ customerId });
-      const heeftMandaat = mandates.some(
-        (m) => m.status === "valid" || m.status === "pending"
+      const mandatesPage = await mollie.customerMandates.page({ customerId });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const heeftMandaat = mandatesPage.some(
+        (m: any) => m.status === "valid" || m.status === "pending"
       );
 
       if (!heeftMandaat) {
