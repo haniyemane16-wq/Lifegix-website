@@ -213,7 +213,6 @@ export async function POST(req: NextRequest) {
         interval: "1 month",
         startDate: startDate.toISOString().split("T")[0],
         description: `Maandelijks abonnement — ${beschrijving}`,
-        webhookUrl: `${BASE_URL}/api/subscription/webhook`,
         metadata: JSON.stringify({ naam, email, pakket }),
       });
       console.log(`✅ Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
