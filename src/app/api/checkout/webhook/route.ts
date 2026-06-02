@@ -207,16 +207,13 @@ export async function POST(req: NextRequest) {
       const startDate = new Date();
       startDate.setMonth(startDate.getMonth() + 1);
 
-      const subscriptionWebhookUrl = "https://lifegix.nl/api/subscription/webhook";
-      console.log(`Subscription webhook URL: "${subscriptionWebhookUrl}"`);
-
       await mollie.customerSubscriptions.create({
         customerId,
         amount: { currency: "EUR", value: maandelijks.toFixed(2) },
         interval: "1 month",
         startDate: startDate.toISOString().split("T")[0],
         description: `Maandelijks abonnement — ${beschrijving}`,
-        webhookUrl: subscriptionWebhookUrl,
+        webhookUrl: "https://lifegix.nl/api/subscription/webhook",
         metadata: JSON.stringify({ naam, email, pakket }),
       });
       console.log(`✅ Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
