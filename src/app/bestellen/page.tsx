@@ -97,6 +97,14 @@ const TEST_PAKKET = {
   features: [] as string[],
 } as const;
 
+const TEST_SUB_PAKKET = {
+  id: "test_sub",
+  naam: "🧪 Testbetaling + Abonnement",
+  eenmalig: 0.01,
+  maandelijks: 0.01,
+  features: [] as string[],
+} as const;
+
 type WebsitePakketId = (typeof WEBSITE_PAKKETTEN)[number]["id"];
 type AIPakketId = (typeof AI_PAKKETTEN)[number]["id"];
 type PakketId = WebsitePakketId | AIPakketId | "test" | "test_sub";
@@ -177,7 +185,10 @@ export default function BestelPage() {
 
   const websitePakket = WEBSITE_PAKKETTEN.find((p) => p.id === gekozenPakket);
   const aiPakket = AI_PAKKETTEN.find((p) => p.id === gekozenPakket);
-  const huidigPakket = websitePakket ?? aiPakket ?? (isTestPakket(gekozenPakket) ? TEST_PAKKET : undefined);
+  const huidigPakket = websitePakket ?? aiPakket ?? (
+    gekozenPakket === "test_sub" ? TEST_SUB_PAKKET :
+    gekozenPakket === "test" ? TEST_PAKKET : undefined
+  );
 
   // Dynamische prijsberekening — zelfde logica als de API
   const heeftBundel = metAiAgent && websitePakket && gekozenAiType;
