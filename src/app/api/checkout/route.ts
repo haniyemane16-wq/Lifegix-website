@@ -11,7 +11,7 @@ const PAKKETTEN: Record<string, { eenmalig: number; maandelijks: number; label: 
   ai_afspraken: { eenmalig: 900,  maandelijks: 120, label: "Afspraakplanning Agent" },
   ai_volledig:  { eenmalig: 1500, maandelijks: 175, label: "Volledige AI Agent" },
   test:         { eenmalig: 0.01, maandelijks: 0,   label: "Testbetaling" },
-  test_sub:     { eenmalig: 0.01, maandelijks: 0.01, label: "Testbetaling + Abonnement" },
+  test_sub:     { eenmalig: 0.01, maandelijks: 0.03, label: "Testbetaling + Abonnement" },
 };
 
 function berekenBundel(pakket: string, aiType: string) {

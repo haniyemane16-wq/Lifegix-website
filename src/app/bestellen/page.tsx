@@ -101,7 +101,7 @@ const TEST_SUB_PAKKET = {
   id: "test_sub",
   naam: "🧪 Testbetaling + Abonnement",
   eenmalig: 0.01,
-  maandelijks: 0.01,
+  maandelijks: 0.03,
   features: [] as string[],
 } as const;
 
