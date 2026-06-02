@@ -24,34 +24,27 @@ export async function POST(req: NextRequest) {
   let payment;
   try {
     payment = await mollie.payments.get(id);
-  } catch {
+  } catch (err) {
+    console.error("Subscription webhook — payment ophalen mislukt:", err);
     return new NextResponse(null, { status: 200 });
   }
 
   if (payment.status !== "paid") return new NextResponse(null, { status: 200 });
 
-  const { naam, email, beschrijving } = (payment.metadata ?? {}) as Record<string, string>;
+  const meta = (payment.metadata ?? {}) as Record<string, string>;
+  const { naam, pakket } = meta;
 
-  // Notificatie naar Hanibal
+  console.log(`Maandelijkse incasso ontvangen: ${naam} (${pakket}) - EUR ${payment.amount.value}`);
+
   try {
     await resend.emails.send({
       from: "Lifegix Bestellingen <hanibal@lifegix.nl>",
       to: TO_EMAIL,
-      subject: `Maandelijkse betaling ontvangen — ${naam ?? email}`,
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #0a0a0f; color: #ededed; border-radius: 12px;">
-          <h2 style="color: #a78bfa; margin-bottom: 16px;">Maandelijkse betaling ontvangen</h2>
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr><td style="padding: 8px 0; color: #9ca3af; width: 120px;">Naam</td><td style="padding: 8px 0; font-weight: 600;">${naam ?? "—"}</td></tr>
-            <tr><td style="padding: 8px 0; color: #9ca3af;">E-mail</td><td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #a78bfa;">${email ?? "—"}</a></td></tr>
-            <tr><td style="padding: 8px 0; color: #9ca3af;">Pakket</td><td style="padding: 8px 0;">${beschrijving ?? "—"}</td></tr>
-            <tr><td style="padding: 8px 0; color: #9ca3af;">Bedrag</td><td style="padding: 8px 0; font-weight: 600;">€${payment.amount.value}</td></tr>
-          </table>
-        </div>
-      `,
+      subject: `Maandelijkse incasso ontvangen - ${naam ?? "onbekend"}`,
+      html: `<div style="font-family:sans-serif;padding:24px;background:#0a0a0f;color:#ededed;border-radius:12px;"><h2 style="color:#22c55e;">Automatische incasso geslaagd</h2><p><strong>Naam:</strong> ${naam ?? "—"}</p><p><strong>Pakket:</strong> ${pakket ?? "—"}</p><p><strong>Bedrag:</strong> EUR ${payment.amount.value}</p><p style="color:#9ca3af;font-size:13px;">Payment ID: ${id}</p></div>`,
     });
   } catch (err) {
-    console.error("Subscription notificatie error:", err);
+    console.error("Subscription webhook mail error:", err);
   }
 
   return new NextResponse(null, { status: 200 });
