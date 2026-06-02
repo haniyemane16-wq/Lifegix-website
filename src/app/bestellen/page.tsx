@@ -176,6 +176,7 @@ export default function BestelPage() {
   const [gekozenAiType, setGekozenAiType] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [iban, setIban] = useState("");
+  const [akkoord, setAkkoord] = useState(false);
   const [error, setError] = useState("");
 
   const [naam, setNaam] = useState("");
@@ -229,6 +230,10 @@ export default function BestelPage() {
   async function handleBestellen(e: React.FormEvent) {
     e.preventDefault();
     if (!gekozenPakket || !naam || !email) return;
+    if (!akkoord) {
+      setError("Je moet akkoord gaan met de algemene voorwaarden en het privacybeleid.");
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -676,6 +681,41 @@ export default function BestelPage() {
                   </p>
                 </div>
               )}
+
+              {/* Akkoord checkbox */}
+              <div className="flex items-start gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => { setAkkoord(!akkoord); setError(""); }}
+                  className={`mt-0.5 w-5 h-5 rounded shrink-0 border flex items-center justify-center transition-all ${
+                    akkoord
+                      ? "bg-violet-600 border-violet-600"
+                      : "bg-white/5 border-white/20 hover:border-violet-500/60"
+                  }`}
+                  aria-checked={akkoord}
+                  role="checkbox"
+                >
+                  {akkoord && (
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M2.5 6l2.5 2.5 4.5-5" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </button>
+                <p className="text-sm text-white/50 leading-relaxed">
+                  Ik ga akkoord met de{" "}
+                  <Link href="/voorwaarden" target="_blank" className="text-violet-400 hover:underline">
+                    algemene voorwaarden
+                  </Link>{" "}
+                  en het{" "}
+                  <Link href="/privacy" target="_blank" className="text-violet-400 hover:underline">
+                    privacybeleid
+                  </Link>
+                  {totaalMaandelijks > 0 && (
+                    <span>, inclusief de SEPA-machtiging voor automatische maandelijkse incasso</span>
+                  )}
+                  .
+                </p>
+              </div>
 
               {error && (
                 <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
