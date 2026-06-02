@@ -6,6 +6,11 @@ export const dynamic = "force-dynamic";
 
 const TO_EMAIL = "lifegix.contact@gmail.com";
 
+// Mollie valideert de webhook URL met een GET request
+export async function GET() {
+  return new NextResponse(null, { status: 200 });
+}
+
 export async function POST(req: NextRequest) {
   const mollie = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY! });
   const resend = new Resend(process.env.RESEND_API_KEY);
