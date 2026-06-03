@@ -404,7 +404,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Notion CRM ──
-  if (pakket !== "test" && pakket !== "test_sub") {
+  if (true) {
     try {
       await addNotionKlant({
         naam,
