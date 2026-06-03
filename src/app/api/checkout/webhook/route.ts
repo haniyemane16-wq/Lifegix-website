@@ -18,6 +18,75 @@ const PAKKET_LABEL: Record<string, string> = {
   test_sub:     "Testbetaling + Abonnement",
 };
 
+const NOTION_DB_ID = "0c3905c4-262b-435a-be94-431c1e80d12c";
+
+const PAKKET_NAAR_NOTION: Record<string, string> = {
+  starter:      "Website Starter",
+  business:     "Website Business",
+  ai_faq:       "AI FAQ",
+  ai_leads:     "AI Leads",
+  ai_afspraken: "AI Afspraken",
+  ai_volledig:  "AI Volledig",
+};
+
+/* ─── Notion helper ─────────────────────────────────────── */
+
+async function addNotionKlant(data: {
+  naam: string;
+  bedrijf: string;
+  email: string;
+  telefoon: string;
+  pakket: string;
+  aiAgent: boolean;
+  eenmalig: number;
+  maandelijks: number;
+  mollieKlantId?: string;
+  moneybirdFactuurId?: string;
+}) {
+  const token = process.env.NOTION_API_KEY;
+  if (!token) { console.warn("⚠️ NOTION_API_KEY niet ingesteld"); return; }
+
+  // Pakket label bepalen
+  let notionPakket = PAKKET_NAAR_NOTION[data.pakket] ?? null;
+  if (data.aiAgent && (data.pakket === "starter" || data.pakket === "business")) {
+    notionPakket = data.pakket === "starter" ? "Bundel Starter" : "Bundel Business";
+  }
+
+  const properties: Record<string, unknown> = {
+    "Bedrijfsnaam":        { title: [{ text: { content: data.bedrijf || data.naam } }] },
+    "Contactpersoon":      { rich_text: [{ text: { content: data.naam } }] },
+    "E-mail":              { email: data.email },
+    "Telefoon":            data.telefoon ? { phone_number: data.telefoon } : undefined,
+    "Eenmalig bedrag":     { number: data.eenmalig },
+    "Maandelijks bedrag":  { number: data.maandelijks },
+    "Abonnement":          { checkbox: data.maandelijks > 0 },
+    "Status":              { select: { name: "🔨 In bouw" } },
+    "Klant sinds":         { date: { start: new Date().toISOString().split("T")[0] } },
+    "Mollie klant ID":     data.mollieKlantId ? { rich_text: [{ text: { content: data.mollieKlantId } }] } : undefined,
+    "Moneybird factuur ID": data.moneybirdFactuurId ? { rich_text: [{ text: { content: data.moneybirdFactuurId } }] } : undefined,
+  };
+  if (notionPakket) properties["Pakket"] = { select: { name: notionPakket } };
+
+  // Verwijder undefined velden
+  Object.keys(properties).forEach(k => properties[k] === undefined && delete properties[k]);
+
+  const res = await fetch("https://api.notion.com/v1/pages", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "Notion-Version": "2022-06-28",
+    },
+    body: JSON.stringify({ parent: { database_id: NOTION_DB_ID }, properties }),
+  });
+
+  if (!res.ok) {
+    console.error("Notion klant aanmaken mislukt:", res.status, await res.text());
+  } else {
+    console.log(`✅ Notion klant aangemaakt: ${data.bedrijf || data.naam}`);
+  }
+}
+
 /* ─── Moneybird helpers ─────────────────────────────────── */
 
 async function moneybirdFetch(path: string, method = "GET", body?: object) {
@@ -308,6 +377,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Moneybird factuur ──
+  let moneybirdFactuurId: string | undefined;
   try {
     const adminId = await getAdministrationId();
     if (adminId) {
@@ -324,12 +394,33 @@ export async function POST(req: NextRequest) {
           await markAsOpen(adminId, invoice.id);
           await registerPayment(adminId, invoice.id, payment.amount.value);
           await sendInvoice(adminId, invoice.id, email, naam);
+          moneybirdFactuurId = String(invoice.id);
           console.log("✅ Moneybird factuur aangemaakt:", invoice.id);
         }
       }
     }
   } catch (err) {
     console.error("Moneybird factuur error:", err);
+  }
+
+  // ── Notion CRM ──
+  if (pakket !== "test" && pakket !== "test_sub") {
+    try {
+      await addNotionKlant({
+        naam,
+        bedrijf,
+        email,
+        telefoon,
+        pakket,
+        aiAgent: meta.aiAgent === "true",
+        eenmalig: parseFloat(payment.amount.value),
+        maandelijks,
+        mollieKlantId: (payment as any).customerId ?? undefined,
+        moneybirdFactuurId,
+      });
+    } catch (err) {
+      console.error("Notion CRM error:", err);
+    }
   }
 
   return new NextResponse(null, { status: 200 });
