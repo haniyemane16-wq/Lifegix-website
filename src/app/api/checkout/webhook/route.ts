@@ -251,11 +251,13 @@ export async function POST(req: NextRequest) {
   const maandelijks = parseFloat(maandelijksBedrag ?? "0");
 
   // ── Abonnement aanmaken via IBAN (Copilot approach: klant vult IBAN in formulier) ──
+  let mollieKlantId: string | undefined;
   if (maandelijks > 0 && iban) {
     try {
       // Stap 1: Mollie klant aanmaken
       const customer = await mollie.customers.create({ name: naam, email });
       const customerId = customer.id;
+      mollieKlantId = customerId;
 
       // Stap 2: SEPA mandaat aanmaken met IBAN
       const nameParts = naam.trim().split(" ");
@@ -415,7 +417,7 @@ export async function POST(req: NextRequest) {
         aiAgent: meta.aiAgent === "true",
         eenmalig: parseFloat(payment.amount.value),
         maandelijks,
-        mollieKlantId: (payment as any).customerId ?? undefined,
+        mollieKlantId,
         moneybirdFactuurId,
       });
     } catch (err) {
