@@ -18,7 +18,7 @@ const PAKKET_LABEL: Record<string, string> = {
   test_sub:     "Testbetaling + Abonnement",
 };
 
-const NOTION_DB_ID = "0c3905c4-262b-435a-be94-431c1e80d12c";
+const NOTION_DB_ID = "fe296bbb-465c-4506-9df2-c1e92ef6c8b7";
 
 const PAKKET_NAAR_NOTION: Record<string, string> = {
   starter:      "Website Starter",
