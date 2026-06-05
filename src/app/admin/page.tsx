@@ -29,6 +29,63 @@ const FLOW_STEPS = [
   { nr: "06", title: "Klant bestelt via /bestellen", desc: "Betaling via Mollie, bevestiging via webhook" },
 ];
 
+function ReviewMailForm({ adminKey }: { adminKey: string }) {
+  const [naam, setNaam] = useState("");
+  const [email, setEmail] = useState("");
+  const [pakket, setPakket] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  async function verstuur() {
+    if (!email || !naam) return;
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/review-mail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+        body: JSON.stringify({ naam, email, pakket }),
+      });
+      setStatus(res.ok ? "sent" : "error");
+      if (res.ok) { setNaam(""); setEmail(""); setPakket(""); }
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return (
+    <section>
+      <h2 className="text-lg font-semibold text-white mb-1">Review-mail versturen ⭐</h2>
+      <p className="text-white/40 text-sm mb-4">Stuur dit als de website van de klant live is. Ze krijgen een mail met een link naar jouw Google review pagina.</p>
+      <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-4">
+        <div className="grid sm:grid-cols-3 gap-3">
+          <div>
+            <label className="text-xs text-white/40 mb-1 block">Naam klant</label>
+            <input value={naam} onChange={e => setNaam(e.target.value)} placeholder="bijv. Jan de Vries"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50" />
+          </div>
+          <div>
+            <label className="text-xs text-white/40 mb-1 block">E-mailadres klant</label>
+            <input value={email} onChange={e => setEmail(e.target.value)} placeholder="klant@email.nl" type="email"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50" />
+          </div>
+          <div>
+            <label className="text-xs text-white/40 mb-1 block">Pakket (optioneel)</label>
+            <input value={pakket} onChange={e => setPakket(e.target.value)} placeholder="bijv. Website Starter"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <button onClick={verstuur} disabled={status === "sending" || !email || !naam}
+            className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors">
+            {status === "sending" ? "Versturen..." : "⭐ Stuur review-mail"}
+          </button>
+          {status === "sent" && <p className="text-green-400 text-sm">✅ Mail verstuurd!</p>}
+          {status === "error" && <p className="text-red-400 text-sm">❌ Er ging iets mis. Probeer opnieuw.</p>}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AdminInner() {
   const params = useSearchParams();
   const key = params.get("key");
@@ -145,6 +202,9 @@ function AdminInner() {
             ))}
           </div>
         </section>
+
+        {/* Review mail */}
+        <ReviewMailForm adminKey={key ?? ""} />
 
         {/* n8n setup */}
         <section>
