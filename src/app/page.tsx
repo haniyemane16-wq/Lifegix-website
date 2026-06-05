@@ -72,7 +72,7 @@ function Stats() {
   const items = [
     { value: "1–2 wkn", label: "Van start tot live" },
     { value: "24u", label: "Reactietijd" },
-    { value: "€499", label: "Startprijs website" },
+    { value: "€500", label: "Startprijs website" },
     { value: "100%", label: "Vrijgesteld van BTW" },
   ];
   return (
@@ -151,8 +151,8 @@ function Services() {
               <p className="text-violet-400 text-sm mt-1">{s.tagline}</p>
               <p className="mt-4 text-white/50 text-sm leading-relaxed">{s.description}</p>
               <div className="mt-6">
-                <p className="text-2xl font-bold text-white">{s.title === "Website Bouwen" ? "Vanaf €499" : "Vanaf €299"}</p>
-                <p className="mt-1 text-xs text-white/40">{s.title === "Website Bouwen" ? "eenmalig + €49/mnd" : "eenmalig + €74/mnd"}</p>
+                <p className="text-2xl font-bold text-white">{s.title === "Website Bouwen" ? "Vanaf €500" : "Vanaf €300"}</p>
+                <p className="mt-1 text-xs text-white/40">{s.title === "Website Bouwen" ? "eenmalig + €50/mnd" : "eenmalig + €75/mnd"}</p>
                 <a href="#prijzen" className="mt-3 inline-block text-sm font-medium text-violet-400 hover:text-violet-300 transition-colors">Bekijk alle pakketten →</a>
               </div>
               <ul className="mt-6 space-y-2.5">
@@ -215,19 +215,19 @@ function HowItWorks() {
 function Pricing() {
   const pakketten = [
     {
-      name: "Website Starter", priceEenmalig: "€499", priceMaand: "€49",
+      name: "Website Starter", priceEenmalig: "€500", priceMaand: "€50",
       desc: "Perfect voor kleine bedrijven die online zichtbaar willen worden.",
       features: ["Op maat ontworpen website", "Tot 5 pagina's", "Mobielvriendelijk & snel", "SEO-basis geoptimaliseerd", "Contactformulier", "SSL-beveiliging inbegrepen", "Oplevering in 1–2 weken"],
       cta: "Start met Starter", highlight: false, badge: null,
     },
     {
-      name: "Website + AI-agent", priceEenmalig: "Vanaf €749", priceMaand: "Vanaf €109",
+      name: "Website + AI-agent", priceEenmalig: "Vanaf €750", priceMaand: "Vanaf €110",
       desc: "Meer bezoekers én slimmere opvolging. 20% korting op de combinatie.",
       features: ["Alles van Starter of Business", "AI-chatbot op je website", "24/7 automatische klantenservice", "Leads automatisch opvolgen", "Koppelingen met jouw systemen", "Maandelijkse rapportage", "20% combinatiekorting"],
       cta: "Kies Website + AI", highlight: true, badge: "Beste deal",
     },
     {
-      name: "Website Business", priceEenmalig: "€999", priceMaand: "€74",
+      name: "Website Business", priceEenmalig: "€1.000", priceMaand: "€75",
       desc: "Voor groeiende bedrijven met meer wensen en hogere ambities.",
       features: ["Op maat ontworpen website", "Onbeperkt aantal pagina's", "Mobielvriendelijk & snel", "Uitgebreide SEO-optimalisatie", "Afspraak- of boekingssysteem", "Prioriteit support", "Oplevering in 2–3 weken"],
       cta: "Start met Business", highlight: false, badge: null,
@@ -287,10 +287,10 @@ function Pricing() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { naam: "FAQ Chatbot", prijs: "€299", maand: "€49", desc: "Beantwoordt vaste vragen 24/7" },
-              { naam: "Leadopvolging", prijs: "€599", maand: "€89", desc: "Automatische e-mail/WhatsApp opvolging" },
-              { naam: "Afspraken Agent", prijs: "€899", maand: "€119", desc: "24/7 agenda management" },
-              { naam: "Volledige Agent", prijs: "€1.499", maand: "€174", desc: "Alles gecombineerd, op maat" },
+              { naam: "FAQ Chatbot", prijs: "€300", maand: "€50", desc: "Beantwoordt vaste vragen 24/7" },
+              { naam: "Leadopvolging", prijs: "€600", maand: "€90", desc: "Automatische e-mail/WhatsApp opvolging" },
+              { naam: "Afspraken Agent", prijs: "€900", maand: "€120", desc: "24/7 agenda management" },
+              { naam: "Volledige Agent", prijs: "€1.500", maand: "€175", desc: "Alles gecombineerd, op maat" },
             ].map((ai) => (
               <div key={ai.naam} className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col gap-3">
                 <div>

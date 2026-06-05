@@ -9,16 +9,16 @@ const WEBSITE_PAKKETTEN = [
   {
     id: "starter",
     naam: "Website Starter",
-    eenmalig: 499,
-    maandelijks: 49,
+    eenmalig: 500,
+    maandelijks: 50,
     features: ["1 pagina", "Contactformulier", "SEO basis", "Mobielvriendelijk"],
     highlighted: false,
   },
   {
     id: "business",
     naam: "Website Business",
-    eenmalig: 999,
-    maandelijks: 74,
+    eenmalig: 1000,
+    maandelijks: 75,
     features: ["5 pagina's", "SEO volledig", "Google Analytics", "Contactformulier"],
     highlighted: true,
   },
@@ -30,8 +30,8 @@ const AI_PAKKETTEN = [
     id: "ai_faq",
     naam: "FAQ Chatbot",
     tagline: "Beantwoordt vaste vragen 24/7",
-    eenmalig: 299,
-    maandelijks: 49,
+    eenmalig: 300,
+    maandelijks: 50,
     features: [
       "Veelgestelde vragen automatisch",
       "Website integratie",
@@ -43,8 +43,8 @@ const AI_PAKKETTEN = [
     id: "ai_leads",
     naam: "Leadopvolging Agent",
     tagline: "Volgt leads automatisch op",
-    eenmalig: 599,
-    maandelijks: 89,
+    eenmalig: 600,
+    maandelijks: 90,
     features: [
       "Automatische e-mail/WhatsApp opvolging",
       "Lead kwalificatie",
@@ -56,8 +56,8 @@ const AI_PAKKETTEN = [
     id: "ai_afspraken",
     naam: "Afspraakplanning Agent",
     tagline: "Plant afspraken automatisch in",
-    eenmalig: 899,
-    maandelijks: 119,
+    eenmalig: 900,
+    maandelijks: 120,
     features: [
       "24/7 agenda management",
       "Automatische bevestigingen",
@@ -69,8 +69,8 @@ const AI_PAKKETTEN = [
     id: "ai_volledig",
     naam: "Volledige AI Agent",
     tagline: "Alles in één, volledig op maat",
-    eenmalig: 1499,
-    maandelijks: 174,
+    eenmalig: 1500,
+    maandelijks: 175,
     features: [
       "Chat + leads + afspraken",
       "Multi-channel (web, WhatsApp, e-mail)",
@@ -81,12 +81,12 @@ const AI_PAKKETTEN = [
   },
 ] as const;
 
-const AI_EENMALIG = 599;
-const AI_MAANDELIJKS = 89;
+const AI_EENMALIG = 600;
+const AI_MAANDELIJKS = 90;
 
 const BUNDEL: Record<string, { eenmalig: number; maandelijks: number; korting: number; kortingMaandelijks: number }> = {
-  starter:  { eenmalig: 749,  maandelijks: 109, korting: 50, kortingMaandelijks: 15 },
-  business: { eenmalig: 1199, maandelijks: 134, korting: 75, kortingMaandelijks: 15 },
+  starter:  { eenmalig: 750,  maandelijks: 110, korting: 50, kortingMaandelijks: 15 },
+  business: { eenmalig: 1200, maandelijks: 135, korting: 75, kortingMaandelijks: 15 },
 };
 
 const TEST_PAKKET = {
@@ -397,7 +397,7 @@ export default function BestelPage() {
                         <h3 className="text-lg font-bold text-white">Alleen AI Agent</h3>
                       </div>
                       <p className="text-sm text-white/50 mt-1">
-                        4 types beschikbaar — vanaf €299 eenmalig
+                        4 types beschikbaar — vanaf €300 eenmalig
                       </p>
                     </div>
                     <svg className="w-5 h-5 text-violet-400 shrink-0" fill="none" viewBox="0 0 20 20">

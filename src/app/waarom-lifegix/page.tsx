@@ -62,10 +62,10 @@ export default function WaaromLifeGixPage() {
             </div>
             <div className="grid md:grid-cols-3 gap-4">
               {[
-                { label: "Prijs website", bureau: "€3.000 – €10.000", lifegix: "Vanaf €499", win: true },
+                { label: "Prijs website", bureau: "€3.000 – €10.000", lifegix: "Vanaf €500", win: true },
                 { label: "Doorlooptijd", bureau: "6 – 12 weken", lifegix: "1 – 2 weken", win: true },
                 { label: "Contact", bureau: "Accountmanager → designer → developer", lifegix: "Direct met de bouwer", win: true },
-                { label: "AI agent", bureau: "€5.000 – €25.000", lifegix: "Vanaf €299", win: true },
+                { label: "AI agent", bureau: "€5.000 – €25.000", lifegix: "Vanaf €300", win: true },
                 { label: "Aanpassingen", bureau: "Aparte offerte per wijziging", lifegix: "Inbegrepen in abonnement", win: true },
                 { label: "Persoonlijk", bureau: "Nummer in een systeem", lifegix: "Jij kent mij, ik ken jou", win: true },
               ].map((row) => (
@@ -110,7 +110,7 @@ export default function WaaromLifeGixPage() {
                 {
                   nr: "03",
                   titel: "Ver onder de marktprijs — zelfde kwaliteit",
-                  tekst: "Bureaus vragen €3.000 tot €10.000 voor een website. Ik vraag vanaf €499. Niet omdat ik minder lever — maar omdat ik geen kantoor, geen salesteam en geen overhead heb. Die besparing geef ik direct aan jou door.",
+                  tekst: "Bureaus vragen €3.000 tot €10.000 voor een website. Ik vraag vanaf €500. Niet omdat ik minder lever — maar omdat ik geen kantoor, geen salesteam en geen overhead heb. Die besparing geef ik direct aan jou door.",
                 },
                 {
                   nr: "04",
@@ -162,7 +162,7 @@ export default function WaaromLifeGixPage() {
             {[
               { value: "1–2 wkn", label: "Van start tot live" },
               { value: "24u", label: "Reactietijd" },
-              { value: "€499", label: "Startprijs website" },
+              { value: "€500", label: "Startprijs website" },
               { value: "100%", label: "Vrijgesteld van BTW" },
             ].map((s) => (
               <div key={s.label}>

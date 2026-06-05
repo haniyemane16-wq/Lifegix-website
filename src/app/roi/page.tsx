@@ -400,8 +400,8 @@ export default function ROIPage() {
             <div className="grid grid-cols-3 gap-2">
               {[
                 { val: "geen" as const, label: "Geen", prijs: "" },
-                { val: "starter" as const, label: "Starter", prijs: "€499" },
-                { val: "business" as const, label: "Business", prijs: "€999" },
+                { val: "starter" as const, label: "Starter", prijs: "€500" },
+                { val: "business" as const, label: "Business", prijs: "€1.000" },
               ].map((opt) => (
                 <button key={opt.val} type="button"
                   onClick={() => setWebsiteKeuze(opt.val)}
@@ -425,10 +425,10 @@ export default function ROIPage() {
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
               {[
                 { val: "geen" as const, label: "Geen", prijs: "" },
-                { val: "faq" as const, label: "FAQ", prijs: "€299" },
-                { val: "leads" as const, label: "Leads", prijs: "€599" },
-                { val: "afspraken" as const, label: "Afspraken", prijs: "€899" },
-                { val: "volledig" as const, label: "Volledig", prijs: "€1.499" },
+                { val: "faq" as const, label: "FAQ", prijs: "€300" },
+                { val: "leads" as const, label: "Leads", prijs: "€600" },
+                { val: "afspraken" as const, label: "Afspraken", prijs: "€900" },
+                { val: "volledig" as const, label: "Volledig", prijs: "€1.500" },
               ].map((opt) => (
                 <button key={opt.val} type="button"
                   onClick={() => setAiKeuze(opt.val)}
