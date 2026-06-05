@@ -332,8 +332,8 @@ export async function POST(req: NextRequest) {
           <div style="padding: 16px; background: #0d1a0d; border-radius: 8px; border-left: 3px solid #22c55e; margin-bottom: 24px;">
             <p style="color: #9ca3af; margin: 0 0 6px 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;">Maandelijks abonnement — actief</p>
             <p style="margin: 0; font-weight: 600; font-size: 15px;">€${maandelijks.toFixed(2)} per maand</p>
-            <p style="margin: 6px 0 0 0; color: #9ca3af; font-size: 13px;">Eerste afschrijving: <strong style="color: #ededed;">${nextMonthStr}</strong></p>
-            <p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 13px;">Daarna elke maand automatisch via SEPA-incasso van jouw rekening.</p>
+            <p style="margin: 6px 0 0 0; color: #9ca3af; font-size: 13px;">Eerste afschrijving: <strong style="color: #ededed;">${nextMonthStr}</strong> — daarna elke maand op dezelfde datum.</p>
+            <p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 13px;">Alle afschrijvingen gaan automatisch via SEPA-incasso van jouw rekening.</p>
             <p style="margin: 8px 0 0 0; color: #22c55e; font-size: 13px;">✓ Abonnement succesvol aangemaakt</p>
           </div>
           ` : ""}
