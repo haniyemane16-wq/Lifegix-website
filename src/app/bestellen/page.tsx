@@ -7,6 +7,14 @@ import Link from "next/link";
 /* ─── Website pakketten ─────────────────────────────────── */
 const WEBSITE_PAKKETTEN = [
   {
+    id: "visitekaartje",
+    naam: "Website Visitekaartje",
+    eenmalig: 249,
+    maandelijks: 25,
+    features: ["1 pagina", "Contactformulier", "Mobielvriendelijk", "Live in 3 dagen"],
+    highlighted: false,
+  },
+  {
     id: "starter",
     naam: "Website Starter",
     eenmalig: 500,

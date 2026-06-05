@@ -72,7 +72,7 @@ function Stats() {
   const items = [
     { value: "1–2 wkn", label: "Van start tot live" },
     { value: "24u", label: "Reactietijd" },
-    { value: "€500", label: "Startprijs website" },
+    { value: "€249", label: "Startprijs website" },
     { value: "100%", label: "Vrijgesteld van BTW" },
   ];
   return (
@@ -151,8 +151,8 @@ function Services() {
               <p className="text-violet-400 text-sm mt-1">{s.tagline}</p>
               <p className="mt-4 text-white/50 text-sm leading-relaxed">{s.description}</p>
               <div className="mt-6">
-                <p className="text-2xl font-bold text-white">{s.title === "Website Bouwen" ? "Vanaf €500" : "Vanaf €300"}</p>
-                <p className="mt-1 text-xs text-white/40">{s.title === "Website Bouwen" ? "eenmalig + €50/mnd" : "eenmalig + €75/mnd"}</p>
+                <p className="text-2xl font-bold text-white">{s.title === "Website Bouwen" ? "Vanaf €249" : "Vanaf €300"}</p>
+                <p className="mt-1 text-xs text-white/40">{s.title === "Website Bouwen" ? "eenmalig + €25/mnd" : "eenmalig + €50/mnd"}</p>
                 <a href="#prijzen" className="mt-3 inline-block text-sm font-medium text-violet-400 hover:text-violet-300 transition-colors">Bekijk alle pakketten →</a>
               </div>
               <ul className="mt-6 space-y-2.5">
@@ -214,6 +214,12 @@ function HowItWorks() {
 /* ─── Pricing ────────────────────────────────────────────── */
 function Pricing() {
   const pakketten = [
+    {
+      name: "Website Visitekaartje", priceEenmalig: "€249", priceMaand: "€25",
+      desc: "Snel online met een professionele 1-pagina website. Live in 3 dagen.",
+      features: ["1 pagina op maat", "Contactformulier", "Mobielvriendelijk & snel", "SSL-beveiliging inbegrepen", "Live in 3 dagen"],
+      cta: "Start met Visitekaartje", highlight: false, badge: "Nieuw",
+    },
     {
       name: "Website Starter", priceEenmalig: "€500", priceMaand: "€50",
       desc: "Perfect voor kleine bedrijven die online zichtbaar willen worden.",

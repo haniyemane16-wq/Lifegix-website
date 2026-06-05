@@ -8,7 +8,7 @@ const items = [
   },
   {
     q: "Wat kost een website?",
-    a: "Websites starten vanaf €500 eenmalig plus €50 per maand voor hosting, onderhoud en support. Gebruik de ROI-calculator voor een berekening op maat op basis van jouw situatie.",
+    a: "Websites starten vanaf €249 eenmalig plus €25 per maand voor hosting, onderhoud en support. Gebruik de ROI-calculator voor een berekening op maat op basis van jouw situatie.",
   },
   {
     q: "Heb ik technische kennis nodig?",

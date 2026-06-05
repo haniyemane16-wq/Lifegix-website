@@ -8,6 +8,7 @@ const TO_EMAIL = "lifegix.contact@gmail.com";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
 
 const PAKKET_LABEL: Record<string, string> = {
+  visitekaartje: "Website Visitekaartje",
   starter:      "Website Starter",
   business:     "Website Business",
   ai_faq:       "FAQ Chatbot",
@@ -21,6 +22,7 @@ const PAKKET_LABEL: Record<string, string> = {
 const NOTION_DB_ID = "fe296bbb-465c-4506-9df2-c1e92ef6c8b7";
 
 const PAKKET_NAAR_NOTION: Record<string, string> = {
+  visitekaartje: "Website Visitekaartje",
   starter:      "Website Starter",
   business:     "Website Business",
   ai_faq:       "AI FAQ",
