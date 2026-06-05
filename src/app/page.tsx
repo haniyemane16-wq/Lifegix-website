@@ -72,7 +72,7 @@ function Stats() {
   const items = [
     { value: "1–2 wkn", label: "Van start tot live" },
     { value: "24u", label: "Reactietijd" },
-    { value: "€249", label: "Startprijs website" },
+    { value: "€149", label: "Startprijs website" },
     { value: "100%", label: "Vrijgesteld van BTW" },
   ];
   return (
@@ -215,10 +215,10 @@ function HowItWorks() {
 function Pricing() {
   const pakketten = [
     {
-      name: "Website Visitekaartje", priceEenmalig: "€249", priceMaand: "€25",
+      name: "Website Visitekaartje", priceEenmalig: "€149", priceMaand: "€25",
       desc: "Snel online met een professionele 1-pagina website. Live in 3 dagen.",
       features: ["1 pagina op maat", "Contactformulier", "Mobielvriendelijk & snel", "SSL-beveiliging inbegrepen", "Live in 3 dagen"],
-      cta: "Start met Visitekaartje", highlight: false, badge: "Nieuw",
+      cta: "Start met Visitekaartje", highlight: false, badge: "🎉 Nog 5 plekken",
     },
     {
       name: "Website Starter", priceEenmalig: "€500", priceMaand: "€50",

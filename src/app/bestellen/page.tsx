@@ -4,12 +4,18 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+/* ─── Oprichtingskorting ─────────────────────────────────── */
+// Zet ACTIE_PLEKKEN op 0 om de actie te beëindigen
+const ACTIE_PLEKKEN = 5;
+const ACTIE_PRIJS = 149;
+const ACTIE_ACTIEF = ACTIE_PLEKKEN > 0;
+
 /* ─── Website pakketten ─────────────────────────────────── */
 const WEBSITE_PAKKETTEN = [
   {
     id: "visitekaartje",
     naam: "Website Visitekaartje",
-    eenmalig: 249,
+    eenmalig: ACTIE_ACTIEF ? ACTIE_PRIJS : 249,
     maandelijks: 25,
     features: ["1 pagina", "Contactformulier", "Mobielvriendelijk", "Live in 3 dagen"],
     highlighted: false,
@@ -361,7 +367,15 @@ export default function BestelPage() {
                                 Aanbevolen
                               </span>
                             )}
+                            {p.id === "visitekaartje" && ACTIE_ACTIEF && (
+                              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-green-500/20 text-green-300 border border-green-500/20">
+                                🎉 Oprichtingskorting
+                              </span>
+                            )}
                           </div>
+                          {p.id === "visitekaartje" && ACTIE_ACTIEF && (
+                            <p className="mt-1 text-xs text-green-400">Nog {ACTIE_PLEKKEN} van de 5 plekken beschikbaar</p>
+                          )}
                           <ul className="mt-3 space-y-1.5">
                             {p.features.map((f) => (
                               <li key={f} className="flex items-start gap-2 text-sm text-white/60">
@@ -372,6 +386,9 @@ export default function BestelPage() {
                           </ul>
                         </div>
                         <div className="sm:text-right shrink-0">
+                          {p.id === "visitekaartje" && ACTIE_ACTIEF && (
+                            <div className="text-sm text-white/40 line-through mb-0.5">€249</div>
+                          )}
                           <div className="text-2xl font-bold text-white">€{p.eenmalig}</div>
                           <div className="text-xs text-white/40">eenmalig</div>
                           <div className="mt-1 text-sm font-medium text-violet-300">
