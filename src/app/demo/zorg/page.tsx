@@ -27,8 +27,8 @@ export default function ZorgDemoPage() {
       <Afspraak />
       <ZorgFooter />
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full text-xs pointer-events-none select-none"
-        style={{ background: "rgba(15,23,42,0.85)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)" }}>
-        Demo door <span style={{ color: "#60a5fa", fontWeight: 600 }}>Lifegix</span> — niet een echte website
+        style={{ background: "#ffffff", color: "#374151", border: "1px solid #e5e7eb", boxShadow: "0 2px 8px rgba(0,0,0,0.15)", whiteSpace: "nowrap" }}>
+        Demo door <span style={{ color: "#7c3aed", fontWeight: 700 }}>Lifegix</span> — niet een echte website
       </div>
     </main>
   );

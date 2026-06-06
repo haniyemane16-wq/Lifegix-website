@@ -22,25 +22,10 @@ export const metadata = {
 function DemoBanner() {
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-50 text-center py-2 px-4 text-xs sm:text-sm font-medium"
-      style={{ background: "#1c1510", color: "#c9a84c", borderBottom: "1px solid rgba(201,168,76,0.2)" }}
+      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full text-xs pointer-events-none select-none"
+      style={{ background: "#ffffff", color: "#374151", border: "1px solid #e5e7eb", boxShadow: "0 2px 8px rgba(0,0,0,0.15)", whiteSpace: "nowrap" }}
     >
-      Demo gemaakt door{" "}
-      <Link
-        href="/"
-        className="underline underline-offset-2 font-semibold"
-        style={{ touchAction: "manipulation", color: "#c9a84c" }}
-      >
-        Lifegix
-      </Link>{" "}
-      — benieuwd naar jouw eigen website?{" "}
-      <Link
-        href="/#contact"
-        className="underline underline-offset-2 font-semibold"
-        style={{ touchAction: "manipulation", color: "#f5f0e8" }}
-      >
-        Neem contact op →
-      </Link>
+      Demo door <span style={{ color: "#7c3aed", fontWeight: 700 }}>Lifegix</span> — niet een echte website
     </div>
   );
 }
