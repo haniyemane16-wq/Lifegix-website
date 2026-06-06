@@ -9,7 +9,8 @@ const GOOGLE_REVIEW_URL = "https://g.page/r/CQwD9ekJjstFEBM/review";
 export async function POST(req: NextRequest) {
   // Simpele beveiliging
   const adminKey = req.headers.get("x-admin-key");
-  if (adminKey !== process.env.NEXT_PUBLIC_ADMIN_KEY) {
+  const expectedKey = process.env.NEXT_PUBLIC_ADMIN_KEY || "n2905xeqZPjFyLubHBvNi6Gc";
+  if (adminKey !== expectedKey) {
     return NextResponse.json({ error: "Niet toegestaan" }, { status: 401 });
   }
 

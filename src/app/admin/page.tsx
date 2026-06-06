@@ -89,10 +89,9 @@ function ReviewMailForm({ adminKey }: { adminKey: string }) {
 function AdminInner() {
   const params = useSearchParams();
   const key = params.get("key");
-  const adminKey = process.env.NEXT_PUBLIC_ADMIN_KEY; // wordt leeg als niet ingesteld
+  const adminKey = process.env.NEXT_PUBLIC_ADMIN_KEY || "n2905xeqZPjFyLubHBvNi6Gc";
 
-  // Check key — als NEXT_PUBLIC_ADMIN_KEY niet is ingesteld, altijd toegang
-  const authorized = !adminKey || key === adminKey;
+  const authorized = key === adminKey;
 
   if (!authorized) {
     return (
