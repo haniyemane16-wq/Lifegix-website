@@ -29,40 +29,66 @@ export default function Home() {
 function Hero() {
   return (
     <section className="relative flex flex-col items-center justify-center min-h-screen px-6 pt-24 pb-16 text-center overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none hidden sm:block">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)" }} />
+      {/* Background glows */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(124,58,237,0.13) 0%, transparent 65%)" }} />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 70%)" }} />
       </div>
 
       <div className="animate-fade-in-up mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-medium">
         <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-        Beschikbaar voor nieuwe klanten
+        Beschikbaar voor nieuwe klanten · Warnsveld &amp; heel Nederland
       </div>
 
       <h1 className="animate-fade-in-up animation-delay-200 max-w-3xl text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight text-white">
-        Ik bouw websites en{" "}
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-300">
-          AI agents
-        </span>{" "}
-        voor ondernemers
+        Ik bouw websites die{" "}
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-300 to-violet-400">
+          klanten opleveren
+        </span>
       </h1>
 
-      <p className="animate-fade-in-up animation-delay-400 mt-6 max-w-xl text-white/50 text-lg leading-relaxed">
-        Slimmer werken, meer klanten, minder gedoe. Persoonlijke aanpak, eerlijke prijs — voor elk bedrijf in Nederland.
+      <p className="animate-fade-in-up animation-delay-400 mt-6 max-w-xl text-white/55 text-lg leading-relaxed">
+        Professioneel, mobielvriendelijk en binnen 1–2 weken live. Met AI-automatisering zodat jij je kunt focussen op ondernemen.
       </p>
 
       <div className="animate-fade-in-up animation-delay-600 mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center">
-        <a href="#contact" className="px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-colors purple-glow">
+        <a href="#contact" className="px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all duration-200 purple-glow hover:scale-[1.02]">
           Plan een gratis gesprek →
         </a>
-        <a href="#diensten" className="px-7 py-3.5 rounded-xl border border-white/10 hover:border-white/20 text-white/70 hover:text-white font-medium text-sm transition-colors">
-          Bekijk diensten ↓
+        <a href="#voorbeelden" className="px-7 py-3.5 rounded-xl border border-white/10 hover:border-violet-500/40 text-white/70 hover:text-white font-medium text-sm transition-all duration-200">
+          Bekijk voorbeelden ↓
         </a>
       </div>
 
-      <p className="animate-fade-in-up animation-delay-600 mt-12 text-white/25 text-xs">
-        Gevestigd in Warnsveld · Heel Nederland · Persoonlijk contact
-      </p>
+      {/* Social proof balk */}
+      <div className="animate-fade-in-up animation-delay-600 mt-14 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 text-sm text-white/35">
+        <div className="flex items-center gap-2">
+          <div className="flex">
+            {[...Array(5)].map((_, i) => (
+              <svg key={i} className="w-4 h-4" fill="#f59e0b" viewBox="0 0 16 16">
+                <path d="M8 1l1.8 3.6L14 5.3l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.7z"/>
+              </svg>
+            ))}
+          </div>
+          <span>Eerlijk & persoonlijk</span>
+        </div>
+        <span className="hidden sm:block w-px h-4 bg-white/10" />
+        <div className="flex items-center gap-1.5">
+          <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 16 16">
+            <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span>Vrijgesteld van BTW</span>
+        </div>
+        <span className="hidden sm:block w-px h-4 bg-white/10" />
+        <div className="flex items-center gap-1.5">
+          <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 16 16">
+            <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span>Geen verborgen kosten</span>
+        </div>
+      </div>
     </section>
   );
 }
@@ -70,18 +96,20 @@ function Hero() {
 /* ─── Stats ──────────────────────────────────────────────── */
 function Stats() {
   const items = [
-    { value: "1–2 wkn", label: "Van start tot live" },
-    { value: "24u", label: "Reactietijd" },
-    { value: "€149", label: "Startprijs website" },
-    { value: "100%", label: "Vrijgesteld van BTW" },
+    { icon: "⚡", value: "1–2 wkn", label: "Van start tot live" },
+    { icon: "💬", value: "24u", label: "Reactietijd" },
+    { icon: "💶", value: "€149", label: "Startprijs website" },
+    { icon: "✅", value: "100%", label: "Vrijgesteld van BTW" },
   ];
   return (
-    <div className="border-y border-white/5 bg-white/[0.02] py-6 px-6">
+    <div className="border-y border-white/[0.06] py-8 px-6"
+      style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.04) 0%, rgba(10,10,15,0) 50%, rgba(16,185,129,0.03) 100%)" }}>
       <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
         {items.map((item) => (
-          <div key={item.label}>
-            <p className="text-2xl font-bold text-violet-300">{item.value}</p>
-            <p className="mt-1 text-xs text-white/40">{item.label}</p>
+          <div key={item.label} className="flex flex-col items-center gap-1">
+            <span className="text-xl mb-1">{item.icon}</span>
+            <p className="text-2xl sm:text-3xl font-bold text-white">{item.value}</p>
+            <p className="text-xs text-white/40 mt-0.5">{item.label}</p>
           </div>
         ))}
       </div>
@@ -92,7 +120,7 @@ function Stats() {
 /* ─── Services ───────────────────────────────────────────── */
 function Services() {
   const WebIcon = () => (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
       <rect x="2" y="5" width="28" height="22" rx="4" stroke="#a78bfa" strokeWidth="1.8"/>
       <line x1="2" y1="11" x2="30" y2="11" stroke="#a78bfa" strokeWidth="1.8"/>
       <circle cx="7" cy="8" r="1.2" fill="#7c3aed"/><circle cx="11" cy="8" r="1.2" fill="#7c3aed"/><circle cx="15" cy="8" r="1.2" fill="#7c3aed"/>
@@ -103,7 +131,7 @@ function Services() {
     </svg>
   );
   const BotIcon = () => (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
       <rect x="6" y="10" width="20" height="16" rx="4" stroke="#a78bfa" strokeWidth="1.8"/>
       <circle cx="12" cy="18" r="2" fill="#7c3aed"/><circle cx="20" cy="18" r="2" fill="#7c3aed"/>
       <line x1="16" y1="4" x2="16" y2="10" stroke="#a78bfa" strokeWidth="1.8" strokeLinecap="round"/>
@@ -119,7 +147,9 @@ function Services() {
       title: "Website Bouwen",
       tagline: "Snel online, professioneel en vindbaar",
       description: "Een moderne website die 24/7 voor jouw bedrijf werkt. Ontworpen voor conversie, geoptimaliseerd voor Google en gebouwd om lang mee te gaan.",
-      features: ["Volledig op maat ontworpen", "Mobielvriendelijk (responsive)", "SEO-geoptimaliseerd", "Snel en veilig (SSL)", "Contactformulier", "Google Analytics"],
+      features: ["Volledig op maat ontworpen", "Mobielvriendelijk (responsive)", "SEO-geoptimaliseerd", "Snel en veilig (SSL)", "Contactformulier inbegrepen", "Google Analytics"],
+      price: "Vanaf €249",
+      priceNote: "eenmalig + €25/mnd",
       highlighted: false,
     },
     {
@@ -128,6 +158,8 @@ function Services() {
       tagline: "Laat AI het zware werk doen",
       description: "Van automatische klantreacties tot slimme planningssystemen — ik bouw AI-agents die repetitieve taken voor jou overnemen.",
       features: ["Persoonlijke AI-assistent", "Automatische klantopvolging", "Afspraakplanning via AI", "WhatsApp / e-mail integratie", "24/7 beschikbaar", "Maandelijkse rapportage"],
+      price: "Vanaf €300",
+      priceNote: "eenmalig + €50/mnd",
       highlighted: true,
     },
   ];
@@ -142,34 +174,42 @@ function Services() {
         </div>
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {services.map((s) => (
-            <div key={s.title} className={`relative rounded-2xl p-5 sm:p-8 gradient-border ${s.highlighted ? "bg-violet-950/30 purple-glow" : "bg-white/[0.03]"}`}>
+            <div key={s.title} className={`relative rounded-2xl p-6 sm:p-8 gradient-border flex flex-col ${s.highlighted ? "bg-violet-950/40 purple-glow" : "bg-white/[0.03]"}`}>
               {s.highlighted && (
                 <span className="absolute top-4 right-4 text-xs font-semibold px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/20">Populair</span>
               )}
-              <div className="mb-4">{s.icon}</div>
-              <h3 className="text-xl font-bold text-white">{s.title}</h3>
-              <p className="text-violet-400 text-sm mt-1">{s.tagline}</p>
-              <p className="mt-4 text-white/50 text-sm leading-relaxed">{s.description}</p>
-              <div className="mt-6">
-                <p className="text-2xl font-bold text-white">{s.title === "Website Bouwen" ? "Vanaf €249" : "Vanaf €300"}</p>
-                <p className="mt-1 text-xs text-white/40">{s.title === "Website Bouwen" ? "eenmalig + €25/mnd" : "eenmalig + €50/mnd"}</p>
-                <a href="#prijzen" className="mt-3 inline-block text-sm font-medium text-violet-400 hover:text-violet-300 transition-colors">Bekijk alle pakketten →</a>
+              <div className="flex items-center gap-3 mb-5">
+                <div className={`p-2.5 rounded-xl ${s.highlighted ? "bg-violet-500/20" : "bg-violet-500/10"}`}>
+                  {s.icon}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">{s.title}</h3>
+                  <p className="text-violet-400 text-xs mt-0.5">{s.tagline}</p>
+                </div>
               </div>
-              <ul className="mt-6 space-y-2.5">
+              <p className="text-white/50 text-sm leading-relaxed mb-5">{s.description}</p>
+              <ul className="space-y-2.5 mb-6 flex-1">
                 {s.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2.5 text-sm text-white/70">
-                    <span className="flex-shrink-0 w-4 h-4 rounded-full bg-violet-500/20 flex items-center justify-center">
-                      <svg className="w-2.5 h-2.5 text-violet-400" fill="none" viewBox="0 0 10 10">
-                        <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </span>
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-white/75">
+                    <svg className="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 16 16">
+                      <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                     {f}
                   </li>
                 ))}
               </ul>
-              <a href="#contact" className={`mt-8 block text-center py-3 rounded-xl font-semibold text-sm transition-colors ${s.highlighted ? "bg-violet-600 hover:bg-violet-500 text-white" : "bg-white/5 hover:bg-white/10 text-white/80"}`}>
-                Interesse? Neem contact op →
-              </a>
+              <div className="pt-5 border-t border-white/[0.08]">
+                <p className="text-2xl font-bold text-white">{s.price}</p>
+                <p className="mt-0.5 text-xs text-white/40">{s.priceNote}</p>
+                <div className="flex gap-3 mt-4">
+                  <a href="#contact" className={`flex-1 block text-center py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${s.highlighted ? "bg-violet-600 hover:bg-violet-500 text-white" : "bg-white/[0.06] hover:bg-white/10 text-white/80 border border-white/10"}`}>
+                    Interesse →
+                  </a>
+                  <a href="#prijzen" className="px-4 py-3 rounded-xl text-sm text-violet-400 hover:text-violet-300 border border-violet-500/20 hover:border-violet-500/40 transition-colors">
+                    Prijzen
+                  </a>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -181,30 +221,41 @@ function Services() {
 /* ─── How It Works ───────────────────────────────────────── */
 function HowItWorks() {
   const steps = [
-    { number: "01", title: "Gesprek", description: "We plannen een kort gesprek (15–30 min) om jouw wensen, doelen en budget te bespreken. Geen verplichtingen." },
-    { number: "02", title: "Bouwen", description: "Je ontvangt een helder voorstel. Na akkoord start ik direct met bouwen — binnen 1–2 weken live." },
-    { number: "03", title: "Live", description: "Jouw website of AI-systeem gaat live. Ik blijf beschikbaar voor vragen, aanpassingen en uitbreidingen." },
+    { number: "01", emoji: "☕", title: "Gesprek", description: "We plannen een kort gesprek (15–30 min) om jouw wensen, doelen en budget te bespreken. Geen verplichtingen, altijd gratis." },
+    { number: "02", emoji: "🔨", title: "Bouwen", description: "Je ontvangt een helder voorstel. Na akkoord start ik direct — website binnen 1–2 weken live, AI-agent in overleg." },
+    { number: "03", emoji: "🚀", title: "Live", description: "Jouw website gaat live. Ik blijf beschikbaar voor aanpassingen, vragen en uitbreidingen — ook na oplevering." },
   ];
   return (
-    <section id="werkwijze" className="py-24 pb-12 px-6 relative">
-      <div className="absolute inset-0 pointer-events-none hidden sm:block">
-        <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(109,40,217,0.08) 0%, transparent 70%)" }} />
-      </div>
+    <section id="werkwijze" className="py-24 px-6 relative">
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "linear-gradient(180deg, transparent 0%, rgba(109,40,217,0.04) 50%, transparent 100%)" }} />
       <div className="max-w-6xl mx-auto relative">
         <div className="text-center mb-16">
           <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Werkwijze</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white">Hoe werkt het?</h2>
-          <p className="mt-4 text-white/50 max-w-md mx-auto">Simpel, transparant en zonder gedoe. Van eerste contact tot live in 3 stappen.</p>
+          <p className="mt-4 text-white/50 max-w-md mx-auto">Simpel, transparant en zonder gedoe — in 3 stappen.</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {steps.map((step) => (
-            <div key={step.number} className="relative p-5 sm:p-8 rounded-2xl bg-white/[0.06] border border-white/10">
-              <div className="text-violet-400/60 text-5xl font-bold font-mono mb-6 leading-none">{step.number}</div>
+        <div className="grid md:grid-cols-3 gap-6 relative">
+          {/* Connecting line on desktop */}
+          <div className="hidden md:block absolute top-12 left-[calc(16.67%+16px)] right-[calc(16.67%+16px)] h-px"
+            style={{ background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.3) 20%, rgba(124,58,237,0.3) 80%, transparent)" }} />
+          {steps.map((step, i) => (
+            <div key={step.number} className="relative p-6 sm:p-8 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:border-violet-500/20 transition-colors">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-full bg-violet-500/15 border border-violet-500/20 flex items-center justify-center text-violet-400 text-sm font-bold flex-shrink-0">
+                  {step.number}
+                </div>
+                <span className="text-2xl">{step.emoji}</span>
+              </div>
               <h3 className="text-lg font-semibold mb-3 text-white">{step.title}</h3>
               <p className="text-white/50 text-sm leading-relaxed">{step.description}</p>
             </div>
           ))}
+        </div>
+        <div className="text-center mt-10">
+          <a href="#contact" className="inline-flex items-center gap-2 text-sm text-violet-400 hover:text-violet-300 transition-colors">
+            Plan nu een gratis gesprek →
+          </a>
         </div>
       </div>
     </section>
@@ -215,77 +266,107 @@ function HowItWorks() {
 function Pricing() {
   const pakketten = [
     {
-      name: "Website Visitekaartje", priceEenmalig: "€149", priceMaand: "€25",
+      name: "Website Visitekaartje", priceEenmalig: "€149", originalPrice: "€249", priceMaand: "€25",
       desc: "Snel online met een professionele 1-pagina website. Live in 3 dagen.",
-      features: ["1 pagina op maat", "Contactformulier", "Mobielvriendelijk & snel", "SSL-beveiliging inbegrepen", "Live in 3 dagen"],
-      cta: "Start met Visitekaartje", highlight: false, badge: "🎉 Nog 5 plekken",
+      features: ["1 pagina op maat", "Contactformulier", "Mobielvriendelijk & snel", "SSL-beveiliging", "Live in 3 dagen"],
+      cta: "Start met Visitekaartje", highlight: false, badge: "🎉 Actie: nog 5 plekken",
     },
     {
-      name: "Website Starter", priceEenmalig: "€500", priceMaand: "€50",
+      name: "Website Starter", priceEenmalig: "€500", originalPrice: null, priceMaand: "€50",
       desc: "Perfect voor kleine bedrijven die online zichtbaar willen worden.",
-      features: ["Op maat ontworpen website", "Tot 5 pagina's", "Mobielvriendelijk & snel", "SEO-basis geoptimaliseerd", "Contactformulier", "SSL-beveiliging inbegrepen", "Oplevering in 1–2 weken"],
+      features: ["Op maat ontworpen website", "Tot 5 pagina's", "Mobielvriendelijk & snel", "SEO-basis geoptimaliseerd", "Contactformulier", "SSL-beveiliging", "Oplevering in 1–2 weken"],
       cta: "Start met Starter", highlight: false, badge: null,
     },
     {
-      name: "Website + AI-agent", priceEenmalig: "Vanaf €750", priceMaand: "Vanaf €110",
+      name: "Website + AI-agent", priceEenmalig: "Vanaf €750", originalPrice: null, priceMaand: "Vanaf €110",
       desc: "Meer bezoekers én slimmere opvolging. 20% korting op de combinatie.",
       features: ["Alles van Starter of Business", "AI-chatbot op je website", "24/7 automatische klantenservice", "Leads automatisch opvolgen", "Koppelingen met jouw systemen", "Maandelijkse rapportage", "20% combinatiekorting"],
       cta: "Kies Website + AI", highlight: true, badge: "Beste deal",
     },
     {
-      name: "Website Business", priceEenmalig: "€1.000", priceMaand: "€75",
+      name: "Website Business", priceEenmalig: "€1.000", originalPrice: null, priceMaand: "€75",
       desc: "Voor groeiende bedrijven met meer wensen en hogere ambities.",
-      features: ["Op maat ontworpen website", "Onbeperkt aantal pagina's", "Mobielvriendelijk & snel", "Uitgebreide SEO-optimalisatie", "Afspraak- of boekingssysteem", "Prioriteit support", "Oplevering in 2–3 weken"],
+      features: ["Op maat ontworpen website", "Onbeperkt pagina's", "Mobielvriendelijk & snel", "Uitgebreide SEO-optimalisatie", "Afspraak- of boekingssysteem", "Prioriteit support", "Oplevering in 2–3 weken"],
       cta: "Start met Business", highlight: false, badge: null,
     },
   ];
-  const checkIcon = (
-    <svg className="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 16 16">
-      <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
+
   return (
-    <section id="prijzen" className="py-24 px-6 relative">
-      <div className="absolute inset-0 pointer-events-none hidden sm:block">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full"
-          style={{ background: "radial-gradient(ellipse, rgba(109,40,217,0.07) 0%, transparent 70%)" }} />
-      </div>
+    <section id="prijzen" className="py-24 px-6 relative"
+      style={{ background: "linear-gradient(180deg, #0a0a0f 0%, #0d0a1e 20%, #0d0a1e 80%, #0a0a0f 100%)" }}>
+      {/* Subtle top glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] pointer-events-none"
+        style={{ background: "radial-gradient(ellipse, rgba(124,58,237,0.12) 0%, transparent 70%)" }} />
+
       <div className="max-w-6xl mx-auto relative">
         <div className="text-center mb-16">
           <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Transparante prijzen</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white">Kies wat bij je past</h2>
           <p className="mt-4 text-white/50 max-w-md mx-auto">Geen verborgen kosten. Vaste prijs, vaste kwaliteit. Vrijgesteld van BTW (KOR).</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6 items-start">
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
           {pakketten.map((p) => (
-            <div key={p.name} className={`relative rounded-2xl p-6 flex flex-col gap-5 ${p.highlight ? "bg-violet-950/50 border border-violet-500/40 shadow-lg shadow-violet-900/20 md:-mt-4" : "bg-white/[0.03] border border-white/10"}`}>
+            <div key={p.name}
+              className={`relative rounded-2xl p-6 flex flex-col gap-4 transition-all duration-200 ${
+                p.highlight
+                  ? "bg-violet-600 shadow-2xl shadow-violet-900/40 lg:-mt-3 lg:mb-3 border border-violet-500/60"
+                  : "bg-white/[0.04] border border-white/[0.08] hover:border-violet-500/20"
+              }`}>
               {p.badge && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="px-3 py-1 rounded-full bg-violet-600 text-white text-xs font-bold tracking-wide">{p.badge}</span>
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap">
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide shadow-lg ${p.highlight ? "bg-amber-400 text-amber-900" : "bg-violet-600 text-white"}`}>
+                    {p.badge}
+                  </span>
                 </div>
               )}
+
               <div>
-                <p className={`text-xs font-semibold uppercase tracking-widest mb-1 ${p.highlight ? "text-violet-400" : "text-white/40"}`}>{p.name}</p>
-                <div className="flex items-end gap-1 mt-2">
-                  <span className="text-3xl font-bold text-white">{p.priceEenmalig}</span>
-                  <span className="text-white/40 text-sm mb-1">eenmalig</span>
+                <p className={`text-xs font-semibold uppercase tracking-widest mb-2 ${p.highlight ? "text-violet-200" : "text-white/40"}`}>
+                  {p.name}
+                </p>
+                <div className="flex items-end gap-2 flex-wrap">
+                  {p.originalPrice && (
+                    <span className="text-sm line-through text-white/30">{p.originalPrice}</span>
+                  )}
+                  <span className={`text-3xl font-bold ${p.highlight ? "text-white" : "text-white"}`}>
+                    {p.priceEenmalig}
+                  </span>
+                  <span className={`text-sm mb-1 ${p.highlight ? "text-violet-200" : "text-white/40"}`}>
+                    eenmalig
+                  </span>
                 </div>
-                <p className="text-violet-300 font-semibold text-sm mt-0.5">+ {p.priceMaand}<span className="text-white/40 font-normal">/mnd</span></p>
-                <p className="text-white/40 text-xs mt-3 leading-relaxed">{p.desc}</p>
+                <p className={`font-semibold text-sm mt-0.5 ${p.highlight ? "text-violet-200" : "text-violet-300"}`}>
+                  + {p.priceMaand}<span className={`font-normal ${p.highlight ? "text-violet-300" : "text-white/40"}`}>/mnd</span>
+                </p>
+                <p className={`text-xs mt-3 leading-relaxed ${p.highlight ? "text-violet-200/80" : "text-white/40"}`}>{p.desc}</p>
               </div>
-              <ul className="space-y-2.5">
+
+              <ul className="space-y-2 flex-1">
                 {p.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5">{checkIcon}<span className="text-sm text-white/70">{f}</span></li>
+                  <li key={f} className="flex items-start gap-2">
+                    <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 ${p.highlight ? "text-emerald-300" : "text-emerald-400"}`} fill="none" viewBox="0 0 16 16">
+                      <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className={`text-sm ${p.highlight ? "text-white/90" : "text-white/70"}`}>{f}</span>
+                  </li>
                 ))}
               </ul>
-              <a href="#contact" className={`mt-auto block text-center py-3 rounded-xl font-semibold text-sm transition-colors ${p.highlight ? "bg-violet-600 hover:bg-violet-500 text-white purple-glow" : "bg-white/[0.06] hover:bg-white/10 text-white border border-white/10"}`}>
+
+              <a href="#contact"
+                className={`mt-2 block text-center py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${
+                  p.highlight
+                    ? "bg-white text-violet-700 hover:bg-violet-50"
+                    : "bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/30"
+                }`}>
                 {p.cta} →
               </a>
             </div>
           ))}
         </div>
+
         {/* AI Agent sectie */}
-        <div className="mt-16 pt-16 border-t border-white/10">
+        <div className="mt-16 pt-16 border-t border-white/[0.06]">
           <div className="text-center mb-10">
             <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Alleen een AI Agent nodig?</p>
             <h3 className="text-2xl font-bold text-white">Kies je AI agent type</h3>
@@ -293,14 +374,17 @@ function Pricing() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { naam: "FAQ Chatbot", prijs: "€300", maand: "€50", desc: "Beantwoordt vaste vragen 24/7" },
-              { naam: "Leadopvolging", prijs: "€600", maand: "€90", desc: "Automatische e-mail/WhatsApp opvolging" },
-              { naam: "Afspraken Agent", prijs: "€900", maand: "€120", desc: "24/7 agenda management" },
-              { naam: "Volledige Agent", prijs: "€1.500", maand: "€175", desc: "Alles gecombineerd, op maat" },
+              { naam: "FAQ Chatbot", prijs: "€300", maand: "€50", desc: "Beantwoordt vaste vragen 24/7", emoji: "💬" },
+              { naam: "Leadopvolging", prijs: "€600", maand: "€90", desc: "Automatische e-mail/WhatsApp opvolging", emoji: "📧" },
+              { naam: "Afspraken Agent", prijs: "€900", maand: "€120", desc: "24/7 agenda management", emoji: "📅" },
+              { naam: "Volledige Agent", prijs: "€1.500", maand: "€175", desc: "Alles gecombineerd, op maat", emoji: "⚡" },
             ].map((ai) => (
-              <div key={ai.naam} className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col gap-3">
+              <div key={ai.naam} className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:border-violet-500/20 transition-colors flex flex-col gap-3">
                 <div>
-                  <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-2">{ai.naam}</p>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xl">{ai.emoji}</span>
+                    <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest">{ai.naam}</p>
+                  </div>
                   <div className="flex items-end gap-1">
                     <span className="text-2xl font-bold text-white">{ai.prijs}</span>
                     <span className="text-white/40 text-sm mb-1">eenmalig</span>
@@ -308,7 +392,7 @@ function Pricing() {
                   <p className="text-violet-300 text-sm font-semibold">+ {ai.maand}<span className="text-white/40 font-normal">/mnd</span></p>
                   <p className="text-white/40 text-xs mt-2 leading-relaxed">{ai.desc}</p>
                 </div>
-                <Link href="/bestellen" className="mt-auto block text-center py-2.5 rounded-xl text-sm font-semibold bg-white/[0.06] hover:bg-white/10 text-white border border-white/10 transition-colors">
+                <Link href="/bestellen" className="mt-auto block text-center py-2.5 rounded-xl text-sm font-semibold bg-white/[0.06] hover:bg-violet-600/20 text-white/80 hover:text-violet-300 border border-white/10 hover:border-violet-500/30 transition-all duration-200">
                   Kies dit pakket →
                 </Link>
               </div>
@@ -317,7 +401,7 @@ function Pricing() {
         </div>
 
         <p className="text-center mt-10 text-white/30 text-sm">
-          Wil je eerst weten hoeveel je terugverdient?{" "}
+          Wil je weten hoeveel je terugverdient?{" "}
           <Link href="/roi" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">Bereken je ROI →</Link>
         </p>
       </div>
@@ -334,7 +418,7 @@ function Voorbeelden() {
       beschrijving: "Dienstenoverzicht, prijstabel, afspraakformulier en FAQ.",
       emoji: "🔧",
       kleur: "#f97316",
-      bg: "from-orange-950/30 to-transparent",
+      bg: "from-orange-950/40 to-orange-950/0",
       href: "https://autofixpro-lac.vercel.app",
       extern: true,
     },
@@ -344,7 +428,7 @@ function Voorbeelden() {
       beschrijving: "Menukaart, reserveringen, fotogalerij en chef-verhaal.",
       emoji: "🍽️",
       kleur: "#c9a96e",
-      bg: "from-emerald-950/30 to-transparent",
+      bg: "from-amber-950/40 to-amber-950/0",
       href: "https://brasserie-de-linde.vercel.app",
       extern: true,
     },
@@ -354,7 +438,7 @@ function Voorbeelden() {
       beschrijving: "Elegant serif design, menu, reserveringen en over ons.",
       emoji: "🥩",
       kleur: "#10b981",
-      bg: "from-teal-950/30 to-transparent",
+      bg: "from-teal-950/40 to-teal-950/0",
       href: "/demo/horeca",
       extern: false,
     },
@@ -364,7 +448,7 @@ function Voorbeelden() {
       beschrijving: "Licht professioneel design, behandelingen, vergoeding en team.",
       emoji: "🏥",
       kleur: "#3b90c8",
-      bg: "from-blue-950/30 to-transparent",
+      bg: "from-blue-950/40 to-blue-950/0",
       href: "/demo/zorg",
       extern: false,
     },
@@ -374,10 +458,10 @@ function Voorbeelden() {
     <section id="voorbeelden" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-6">
-          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Voorbeelden</p>
+          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Portfolio</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white">Zo kan jouw website eruitzien</h2>
           <p className="mt-4 text-white/50 max-w-xl mx-auto">
-            Alles — kleuren, teksten, secties en stijl — passen wij volledig aan op jouw bedrijf en wensen.
+            Kleuren, teksten, secties en stijl — alles wordt volledig op maat gemaakt voor jouw bedrijf.
           </p>
         </div>
 
@@ -388,29 +472,29 @@ function Voorbeelden() {
           <span className="text-violet-300 text-sm">Dit zijn demo's — jouw website wordt volledig op maat gemaakt</span>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {items.map((d) => (
             <a key={d.naam} href={d.href}
               target={d.extern ? "_blank" : undefined}
               rel={d.extern ? "noopener noreferrer" : undefined}
-              className="group rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-white/20 transition-colors block"
-              style={{ touchAction: "manipulation" }}>
-              <div className={`h-24 bg-gradient-to-br ${d.bg} flex items-center justify-center relative`}>
-                <span className="text-4xl">{d.emoji}</span>
-                <svg className="absolute top-3 right-3 w-4 h-4 text-white/20 group-hover:text-white/50 transition-colors" fill="none" viewBox="0 0 14 14">
+              className="group rounded-2xl overflow-hidden border border-white/[0.08] bg-white/[0.03] hover:border-white/20 hover:-translate-y-1 transition-all duration-200 block">
+              <div className={`h-28 bg-gradient-to-b ${d.bg} flex items-center justify-center relative overflow-hidden`}
+                style={{ borderBottom: `1px solid ${d.kleur}20` }}>
+                <span className="text-5xl group-hover:scale-110 transition-transform duration-200">{d.emoji}</span>
+                <svg className="absolute top-3 right-3 w-3.5 h-3.5 text-white/20 group-hover:text-white/50 transition-colors" fill="none" viewBox="0 0 14 14">
                   <path d="M2 12L12 2M12 2H6M12 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <div className="p-5">
+              <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-bold text-white text-base">{d.naam}</h3>
-                  <span className="text-xs px-2 py-1 rounded-full border shrink-0 ml-2"
-                    style={{ color: d.kleur, borderColor: `${d.kleur}40`, background: `${d.kleur}10` }}>
+                  <h3 className="font-bold text-white text-sm">{d.naam}</h3>
+                  <span className="text-xs px-2 py-0.5 rounded-full border shrink-0 ml-2"
+                    style={{ color: d.kleur, borderColor: `${d.kleur}40`, background: `${d.kleur}12` }}>
                     {d.type}
                   </span>
                 </div>
-                <p className="text-white/50 text-sm leading-relaxed mb-3">{d.beschrijving}</p>
-                <span className="text-sm font-medium" style={{ color: d.kleur }}>Bekijk demo →</span>
+                <p className="text-white/45 text-xs leading-relaxed mb-3">{d.beschrijving}</p>
+                <span className="text-xs font-semibold" style={{ color: d.kleur }}>Bekijk demo →</span>
               </div>
             </a>
           ))}
@@ -448,37 +532,39 @@ function ContactSection() {
 /* ─── Eerste klanten ─────────────────────────────────────── */
 function EersteKlanten() {
   const voordelen = [
-    { titel: "Scherpe startersprijs", tekst: "Als een van mijn eerste klanten krijg je een extra voordelige prijs — in ruil voor je eerlijke feedback." },
-    { titel: "Persoonlijke aandacht", tekst: "Ik heb nu volop tijd om jouw project tot in de puntjes te verzorgen. Jij krijgt mijn volledige focus." },
-    { titel: "Samen opbouwen", tekst: "Tevreden? Dan mag jouw bedrijf met een review in mijn portfolio — zo groeien we samen." },
+    { emoji: "💸", titel: "Scherpe startersprijs", tekst: "Als een van mijn eerste klanten krijg je een extra voordelige prijs — in ruil voor je eerlijke feedback." },
+    { emoji: "🎯", titel: "Persoonlijke aandacht", tekst: "Ik heb nu volop tijd om jouw project tot in de puntjes te verzorgen. Jij krijgt mijn volledige focus." },
+    { emoji: "🤝", titel: "Samen opbouwen", tekst: "Tevreden? Dan mag jouw bedrijf met een review in mijn portfolio — zo groeien we samen." },
   ];
   return (
-    <section className="py-24 px-6 relative">
+    <section className="py-24 px-6 relative overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #0a0a0f 0%, #0b0d1a 50%, #0a0a0f 100%)" }}>
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full"
+          style={{ background: "radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 70%)" }} />
+      </div>
       <div className="max-w-4xl mx-auto relative">
         <div className="text-center mb-12">
-          <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Net begonnen</p>
+          <p className="text-emerald-400 text-sm font-medium tracking-widest uppercase mb-3">Net begonnen</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white">Word een van mijn eerste klanten</h2>
           <p className="mt-4 text-white/50 max-w-xl mx-auto">
-            LifeGix is een frisse start. Dat betekent voor jou: scherpe prijzen, volledige aandacht en een ondernemer die er alles aan doet om jou tevreden te maken.
+            LifeGix is een frisse start. Dat betekent: scherpe prijzen, volledige aandacht en een ondernemer die er alles aan doet om jou tevreden te maken.
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-5">
           {voordelen.map((v) => (
-            <div key={v.titel} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10">
-              <div className="w-9 h-9 rounded-lg bg-violet-500/15 flex items-center justify-center mb-4">
-                <svg className="w-4 h-4 text-violet-400" fill="none" viewBox="0 0 16 16">
-                  <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
+            <div key={v.titel} className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:border-emerald-500/20 transition-colors">
+              <div className="text-3xl mb-4">{v.emoji}</div>
               <h3 className="text-white font-semibold mb-2">{v.titel}</h3>
               <p className="text-white/50 text-sm leading-relaxed">{v.tekst}</p>
             </div>
           ))}
         </div>
         <div className="text-center mt-10">
-          <a href="#contact" className="inline-block px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-colors purple-glow">
+          <a href="#contact" className="inline-block px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all duration-200 purple-glow hover:scale-[1.02]">
             Plan een gratis gesprek →
           </a>
+          <p className="mt-4 text-white/25 text-xs">Gratis · Vrijblijvend · Binnen 24u reactie</p>
         </div>
       </div>
     </section>
@@ -488,7 +574,7 @@ function EersteKlanten() {
 /* ─── Footer ─────────────────────────────────────────────── */
 function Footer() {
   return (
-    <footer className="border-t border-white/5 py-8 px-6 mt-auto">
+    <footer className="border-t border-white/[0.06] py-8 px-6 mt-auto">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-white/30 text-sm">
         <span>© {new Date().getFullYear()} Life<span className="text-violet-500/60">gix</span> · Warnsveld · KvK 98120336</span>
         <span className="flex gap-4">
