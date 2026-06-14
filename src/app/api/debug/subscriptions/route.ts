@@ -4,11 +4,6 @@ import createMollieClient from "@mollie/api-client";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const key = req.nextUrl.searchParams.get("key");
-  if (key !== process.env.NEXT_PUBLIC_ADMIN_KEY) {
-    return NextResponse.json({ error: "Niet geautoriseerd" }, { status: 401 });
-  }
-
   const customerId = req.nextUrl.searchParams.get("customerId");
   if (!customerId) {
     return NextResponse.json({ error: "customerId vereist" }, { status: 400 });

@@ -98,11 +98,6 @@ const AI_PAKKETTEN = [
 const AI_EENMALIG = 600;
 const AI_MAANDELIJKS = 90;
 
-const BUNDEL: Record<string, { eenmalig: number; maandelijks: number; korting: number; kortingMaandelijks: number }> = {
-  starter:  { eenmalig: 750,  maandelijks: 110, korting: 50, kortingMaandelijks: 15 },
-  business: { eenmalig: 1200, maandelijks: 135, korting: 75, kortingMaandelijks: 15 },
-};
-
 const TEST_PAKKET = {
   id: "test",
   naam: "🧪 Testbetaling",
@@ -394,16 +389,6 @@ export default function BestelPage() {
                           <div className="mt-1 text-sm font-medium text-violet-300">
                             + €{p.maandelijks}/mnd
                           </div>
-                          {BUNDEL[p.id] && (
-                            <div className="mt-2 text-xs leading-snug max-w-[180px] sm:ml-auto">
-                              <span className="text-violet-400/80">
-                                Met AI: €{BUNDEL[p.id].eenmalig} + €{BUNDEL[p.id].maandelijks}/mnd
-                              </span>{" "}
-                              <span className="text-green-400 font-semibold">
-                                (−€{BUNDEL[p.id].korting})
-                              </span>
-                            </div>
-                          )}
                         </div>
                       </div>
                     </button>

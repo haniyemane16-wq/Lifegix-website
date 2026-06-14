@@ -278,12 +278,6 @@ function Pricing() {
       cta: "Start met Starter", highlight: false, badge: null,
     },
     {
-      name: "Website + AI-agent", priceEenmalig: "Vanaf €750", originalPrice: null, priceMaand: "Vanaf €110",
-      desc: "Meer bezoekers én slimmere opvolging. 20% korting op de combinatie.",
-      features: ["Alles van Starter of Business", "AI-chatbot op je website", "24/7 automatische klantenservice", "Leads automatisch opvolgen", "Koppelingen met jouw systemen", "Maandelijkse rapportage", "20% combinatiekorting"],
-      cta: "Kies Website + AI", highlight: true, badge: "Beste deal",
-    },
-    {
       name: "Website Business", priceEenmalig: "€1.000", originalPrice: null, priceMaand: "€75",
       desc: "Voor groeiende bedrijven met meer wensen en hogere ambities.",
       features: ["Op maat ontworpen website", "Onbeperkt pagina's", "Mobielvriendelijk & snel", "Uitgebreide SEO-optimalisatie", "Afspraak- of boekingssysteem", "Prioriteit support", "Oplevering in 2–3 weken"],
@@ -305,7 +299,7 @@ function Pricing() {
           <p className="mt-4 text-white/50 max-w-md mx-auto">Geen verborgen kosten. Vaste prijs, vaste kwaliteit. Vrijgesteld van BTW (KOR).</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+        <div className="grid md:grid-cols-3 gap-5 items-start">
           {pakketten.map((p) => (
             <div key={p.name}
               className={`relative rounded-2xl p-6 flex flex-col gap-4 transition-all duration-200 ${
@@ -327,7 +321,7 @@ function Pricing() {
                 </p>
                 <div className="flex items-end gap-2 flex-wrap">
                   {p.originalPrice && (
-                    <span className="text-sm line-through text-white/30">{p.originalPrice}</span>
+                    <span className="text-sm line-through text-red-400">{p.originalPrice}</span>
                   )}
                   <span className={`text-3xl font-bold ${p.highlight ? "text-white" : "text-white"}`}>
                     {p.priceEenmalig}
@@ -364,6 +358,11 @@ function Pricing() {
             </div>
           ))}
         </div>
+
+        <p className="mt-6 text-center text-sm text-white/40">
+          🤖 AI-agent toevoegen aan je website? <span className="text-violet-300 font-medium">20% korting</span> op de AI-agent — kies je combinatie bij{" "}
+          <a href="/bestellen" className="text-violet-300 underline hover:text-violet-200">Bestellen</a>.
+        </p>
 
         {/* AI Agent sectie */}
         <div className="mt-16 pt-16 border-t border-white/[0.06]">
