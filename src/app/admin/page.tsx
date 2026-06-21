@@ -86,6 +86,72 @@ function ReviewMailForm({ adminKey }: { adminKey: string }) {
   );
 }
 
+function ActivateSubscriptionForm({ adminKey }: { adminKey: string }) {
+  const [customerId, setCustomerId] = useState("");
+  const [bedrag, setBedrag] = useState("");
+  const [beschrijving, setBeschrijving] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [result, setResult] = useState("");
+
+  async function activeer() {
+    if (!customerId || !bedrag) return;
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/admin/activate-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+        body: JSON.stringify({ customerId, bedrag, beschrijving }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStatus("sent");
+        setResult(`Abonnement ${data.subscriptionId} start op ${data.startDate}`);
+        setCustomerId(""); setBedrag(""); setBeschrijving("");
+      } else {
+        setStatus("error");
+        setResult(data.error || "Onbekende fout");
+      }
+    } catch {
+      setStatus("error");
+      setResult("Netwerkfout");
+    }
+  }
+
+  return (
+    <section>
+      <h2 className="text-lg font-semibold text-white mb-1">Abonnement activeren 🔄</h2>
+      <p className="text-white/40 text-sm mb-4">Activeer het maandabonnement nadat de website is opgeleverd. Eerste incasso start 1 maand na activatie.</p>
+      <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-4">
+        <div className="grid sm:grid-cols-3 gap-3">
+          <div>
+            <label className="text-xs text-white/40 mb-1 block">Mollie klant ID</label>
+            <input value={customerId} onChange={e => setCustomerId(e.target.value)} placeholder="cst_..."
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50" />
+          </div>
+          <div>
+            <label className="text-xs text-white/40 mb-1 block">Bedrag per maand (€)</label>
+            <input value={bedrag} onChange={e => setBedrag(e.target.value)} placeholder="25.00" type="number" step="0.01"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50" />
+          </div>
+          <div>
+            <label className="text-xs text-white/40 mb-1 block">Beschrijving (optioneel)</label>
+            <input value={beschrijving} onChange={e => setBeschrijving(e.target.value)} placeholder="Website Visitekaartje"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <button onClick={activeer} disabled={status === "sending" || !customerId || !bedrag}
+            className="px-5 py-2.5 rounded-xl bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors">
+            {status === "sending" ? "Activeren..." : "🔄 Activeer abonnement"}
+          </button>
+          {status === "sent" && <p className="text-green-400 text-sm">✅ {result}</p>}
+          {status === "error" && <p className="text-red-400 text-sm">❌ {result}</p>}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AdminInner() {
   const params = useSearchParams();
   const key = params.get("key");
@@ -203,6 +269,9 @@ function AdminInner() {
 
         {/* Review mail */}
         <ReviewMailForm adminKey={key ?? ""} />
+
+        {/* Abonnement activeren */}
+        <ActivateSubscriptionForm adminKey={key ?? ""} />
 
         {/* n8n setup */}
         <section>

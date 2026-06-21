@@ -273,23 +273,10 @@ export async function POST(req: NextRequest) {
       });
       console.log(`✅ SEPA mandaat aangemaakt voor ${naam}`);
 
-      // Stap 3: Wacht even zodat mandaat verwerkt is
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Stap 4: Subscription aanmaken
-      const startDate = new Date();
-      startDate.setMonth(startDate.getMonth() + 1);
-
-      await mollie.customerSubscriptions.create({
-        customerId,
-        amount: { currency: "EUR", value: maandelijks.toFixed(2) },
-        interval: "1 month",
-        startDate: startDate.toISOString().split("T")[0],
-        description: `Maandelijks abonnement — ${beschrijving}`,
-        webhookUrl: "https://lifegix.nl/api/subscription/webhook",
-        metadata: JSON.stringify({ naam, email, pakket }),
-      });
-      console.log(`✅ Abonnement aangemaakt voor ${naam}: €${maandelijks}/mnd`);
+      // Subscription wordt NIET automatisch aangemaakt.
+      // Conform voorwaarden: abonnement start 1 maand na oplevering.
+      // Start het abonnement handmatig via /admin nadat de website is opgeleverd.
+      console.log(`✅ Klant + mandaat aangemaakt voor ${naam} (${customerId}) — abonnement start na oplevering`);
       void nameParts;
     } catch (err: unknown) {
       const e = err as Record<string, unknown>;
@@ -305,10 +292,6 @@ export async function POST(req: NextRequest) {
 
   // ── Bevestigingsmail naar klant ──
   try {
-    const nextMonth = new Date();
-    nextMonth.setMonth(nextMonth.getMonth() + 1);
-    const nextMonthStr = nextMonth.toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
-
     await resend.emails.send({
       from: "Lifegix <hanibal@lifegix.nl>",
       to: email,
@@ -330,11 +313,11 @@ export async function POST(req: NextRequest) {
           ${maandelijks > 0 ? `
           <!-- Abonnement -->
           <div style="padding: 16px; background: #0d1a0d; border-radius: 8px; border-left: 3px solid #22c55e; margin-bottom: 24px;">
-            <p style="color: #9ca3af; margin: 0 0 6px 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;">Maandelijks abonnement — actief</p>
+            <p style="color: #9ca3af; margin: 0 0 6px 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;">Maandelijks abonnement</p>
             <p style="margin: 0; font-weight: 600; font-size: 15px;">€${maandelijks.toFixed(2)} per maand</p>
-            <p style="margin: 6px 0 0 0; color: #9ca3af; font-size: 13px;">Eerste afschrijving: <strong style="color: #ededed;">${nextMonthStr}</strong> — daarna elke maand op dezelfde datum.</p>
+            <p style="margin: 6px 0 0 0; color: #9ca3af; font-size: 13px;">Het abonnement start <strong style="color: #ededed;">1 maand na oplevering</strong> van je website. Je ontvangt hiervan bericht.</p>
             <p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 13px;">Alle afschrijvingen gaan automatisch via SEPA-incasso van jouw rekening.</p>
-            <p style="margin: 8px 0 0 0; color: #22c55e; font-size: 13px;">✓ Abonnement succesvol aangemaakt</p>
+            <p style="margin: 8px 0 0 0; color: #22c55e; font-size: 13px;">✓ Betaalgegevens opgeslagen</p>
           </div>
           ` : ""}
 
@@ -371,7 +354,7 @@ export async function POST(req: NextRequest) {
             ${telefoon ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Telefoon</td><td style="padding: 8px 0;">${telefoon}</td></tr>` : ""}
             <tr><td style="padding: 8px 0; color: #9ca3af;">Pakket</td><td style="padding: 8px 0;">${beschrijving}</td></tr>
             <tr><td style="padding: 8px 0; color: #9ca3af;">Bedrag</td><td style="padding: 8px 0; font-weight: 600;">€${payment.amount.value}</td></tr>
-            ${maandelijks > 0 ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Abonnement</td><td style="padding: 8px 0; color: #a78bfa;">€${maandelijks.toFixed(2)}/mnd — automatisch aangemaakt</td></tr>` : ""}
+            ${maandelijks > 0 ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Abonnement</td><td style="padding: 8px 0; color: #a78bfa;">€${maandelijks.toFixed(2)}/mnd — start na oplevering (handmatig activeren via /admin)</td></tr>` : ""}
           </table>
         </div>
       `,
