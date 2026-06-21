@@ -49,6 +49,7 @@ export default function VoorwaardenPage() {
           <div>
             <h2 className="text-xl font-semibold text-white mb-3">5a. Maandelijks abonnement en SEPA-incasso</h2>
             <p>Voor diensten met een maandelijks abonnement (hosting, onderhoud, AI-agent) machtigt de opdrachtgever Lifegix om via Mollie N.V. het verschuldigde bedrag automatisch af te schrijven van de opgegeven bankrekening (SEPA Direct Debit).</p>
+            <p className="mt-2">Het maandelijks abonnement gaat in <strong className="text-white">1 maand na oplevering</strong> van de website of AI-agent aan de opdrachtgever — niet vanaf de startdatum van het bouwproces. De eerste incasso vindt plaats 1 maand na de opleverdatum.</p>
             <p className="mt-2">De opdrachtgever geeft bij het plaatsen van de bestelling een SEPA-machtiging af door zijn IBAN-rekeningnummer op te geven. Door akkoord te gaan met deze voorwaarden en de bestelling te voltooien, stemt de opdrachtgever in met de automatische maandelijkse incasso.</p>
             <p className="mt-2">De opdrachtgever heeft het recht om een afschrijving binnen <strong className="text-white">8 weken</strong> na incasso te laten terugboeken, conform de SEPA-regels. Dit laat de betalingsverplichting onverlet.</p>
           </div>
@@ -74,9 +75,43 @@ export default function VoorwaardenPage() {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-white mb-3">7. Intellectueel eigendom</h2>
-            <p>Na volledige betaling van de eenmalige vergoeding draagt Lifegix het eigendom van de geleverde website over aan de opdrachtgever. Zolang er een openstaande betalingsverplichting bestaat, behoudt Lifegix het eigendomsrecht.</p>
+            <h2 className="text-xl font-semibold text-white mb-3">7. Intellectueel eigendom en eigendomsoverdracht</h2>
+            <p>Na volledige betaling van de eenmalige vergoeding draagt Lifegix het intellectueel eigendom van het geleverde werk (ontwerp, broncode en inhoud) over aan de opdrachtgever. Zolang er een openstaande betalingsverplichting bestaat, behoudt Lifegix het eigendomsrecht.</p>
+            <p className="mt-2">De overdracht omvat:</p>
+            <ul className="list-disc list-inside space-y-1 mt-2">
+              <li>Het <strong className="text-white">ontwerp en de broncode</strong> van de website of webapp.</li>
+              <li>De <strong className="text-white">inhoud</strong> (teksten, afbeeldingen) die Lifegix in opdracht heeft gemaakt.</li>
+            </ul>
+            <p className="mt-2">De overdracht omvat <strong className="text-white">niet</strong>:</p>
+            <ul className="list-disc list-inside space-y-1 mt-2">
+              <li>Herbruikbare frameworks, bibliotheken en open-source componenten die Lifegix ook voor andere projecten gebruikt.</li>
+              <li>Licenties van derden (hosting, domeinnaam, API-diensten) — deze lopen op naam van de opdrachtgever of worden apart geregeld.</li>
+            </ul>
+            <p className="mt-2">Lifegix verstrekt op verzoek de <strong className="text-white">volledige broncode</strong> na volledige betaling. Bij een lopend abonnement kan de opdrachtgever de broncode op elk moment opvragen.</p>
             <p className="mt-2">Lifegix behoudt het recht om het werk te vermelden als referentie in zijn portfolio, tenzij de opdrachtgever hier schriftelijk bezwaar tegen maakt.</p>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold text-white mb-3">7a. Domeinnaam en hosting</h2>
+            <p>De <strong className="text-white">domeinnaam</strong> wordt bij voorkeur geregistreerd op naam van de opdrachtgever. Lifegix kan hierbij ondersteunen, maar de opdrachtgever is zelf eigenaar en verantwoordelijk voor verlenging.</p>
+            <p className="mt-2">Zolang de opdrachtgever een actief abonnement heeft, verzorgt Lifegix de <strong className="text-white">hosting</strong> van de website. Na opzegging van het abonnement kan de opdrachtgever de website zelf elders hosten met de verstrekte broncode.</p>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold text-white mb-3">7b. Oplevering en acceptatie</h2>
+            <p>Na oplevering heeft de opdrachtgever <strong className="text-white">7 werkdagen</strong> om de website of webapp te beoordelen en eventuele gebreken te melden. Kleine aanpassingen binnen de oorspronkelijke opdracht worden kosteloos verwerkt.</p>
+            <p className="mt-2">Na deze periode, of na schriftelijke goedkeuring, geldt het werk als geaccepteerd. Wijzigingen die buiten de oorspronkelijke opdracht vallen, worden als meerwerk behandeld.</p>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold text-white mb-3">7c. Maatwerk en webapplicaties</h2>
+            <p>Voor maatwerk-projecten (webapplicaties, platforms, complexe functionaliteit) gelden aanvullend:</p>
+            <ul className="list-disc list-inside space-y-2 mt-2">
+              <li><strong className="text-white">Offerte op maat:</strong> Lifegix stelt een projectplan en offerte op waarin de scope, functies, planning en prijs zijn vastgelegd.</li>
+              <li><strong className="text-white">Gefaseerde betaling:</strong> Tenzij anders overeengekomen, wordt 50% vooraf betaald en 50% bij oplevering.</li>
+              <li><strong className="text-white">Scopewijzigingen:</strong> Wijzigingen of uitbreidingen buiten de overeengekomen scope worden schriftelijk bevestigd met een aangepaste prijs en planning.</li>
+              <li><strong className="text-white">Testperiode:</strong> Na oplevering ontvangt de opdrachtgever een testperiode van 14 dagen om bugs te melden. Bugs worden kosteloos opgelost; nieuwe functies vallen onder meerwerk.</li>
+            </ul>
           </div>
 
           <div>
