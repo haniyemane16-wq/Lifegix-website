@@ -283,6 +283,12 @@ function Pricing() {
       features: ["Op maat ontworpen website", "Onbeperkt pagina's", "Mobielvriendelijk & snel", "Uitgebreide SEO-optimalisatie", "Afspraak- of boekingssysteem", "Prioriteit support", "Oplevering in 2–3 weken"],
       cta: "Start met Business", highlight: false, badge: null,
     },
+    {
+      name: "Maatwerk / Webapp", priceEenmalig: "Op maat", originalPrice: null, priceMaand: "Op maat",
+      desc: "Een platform, webapp of complex project? We bouwen het samen — volledig op jouw wensen.",
+      features: ["Webapps & platforms", "Gebruikerssystemen & dashboards", "Koppelingen met API's", "Database op maat", "Volledige technische vrijheid", "Persoonlijk projectplan"],
+      cta: "Neem contact op", highlight: true, badge: "Custom",
+    },
   ];
 
   return (
@@ -299,7 +305,7 @@ function Pricing() {
           <p className="mt-4 text-white/50 max-w-md mx-auto">Geen verborgen kosten. Vaste prijs, vaste kwaliteit. Vrijgesteld van BTW (KOR).</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5 items-start">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
           {pakketten.map((p) => (
             <div key={p.name}
               className={`relative rounded-2xl p-6 flex flex-col gap-4 transition-all duration-200 ${
