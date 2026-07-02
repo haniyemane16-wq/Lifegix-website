@@ -526,6 +526,10 @@ function ContactSection() {
             <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">Contact</p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white">Klaar om te beginnen?</h2>
             <p className="mt-4 text-white/50">Stuur een bericht en ik reageer binnen 24 uur. Het eerste gesprek is altijd gratis en vrijblijvend.</p>
+            <p className="mt-3 text-white/50">
+              Liever bellen?{" "}
+              <a href="tel:+31854005545" className="text-violet-400 hover:text-violet-300 transition-colors">085 - 400 55 45</a>
+            </p>
           </div>
           <ContactForm />
         </div>
@@ -581,7 +585,7 @@ function Footer() {
   return (
     <footer className="border-t border-white/[0.06] py-8 px-6 mt-auto">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-white/30 text-sm">
-        <span>© {new Date().getFullYear()} Life<span className="text-violet-500/60">gix</span> · Warnsveld · KvK 98120336</span>
+        <span>© {new Date().getFullYear()} Life<span className="text-violet-500/60">gix</span> · Warnsveld · KvK 98120336 · <a href="tel:+31854005545" className="hover:text-white/60 transition-colors">085 - 400 55 45</a></span>
         <span className="flex gap-4">
           <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacyverklaring</Link>
           <Link href="/voorwaarden" className="hover:text-white/60 transition-colors">Algemene Voorwaarden</Link>

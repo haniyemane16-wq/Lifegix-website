@@ -140,7 +140,7 @@ export default function VoorwaardenPage() {
           <div>
             <h2 className="text-xl font-semibold text-white mb-3">12. Contact</h2>
             <p>Lifegix · Warnsveld · KvK 98120336<br />
-            <a href="mailto:hanibal@lifegix.nl" className="text-violet-400 hover:underline">hanibal@lifegix.nl</a> · <a href="https://lifegix.nl" className="text-violet-400 hover:underline">lifegix.nl</a></p>
+            <a href="mailto:hanibal@lifegix.nl" className="text-violet-400 hover:underline">hanibal@lifegix.nl</a> · <a href="tel:+31854005545" className="text-violet-400 hover:underline">085 - 400 55 45</a> · <a href="https://lifegix.nl" className="text-violet-400 hover:underline">lifegix.nl</a></p>
           </div>
 
         </section>
