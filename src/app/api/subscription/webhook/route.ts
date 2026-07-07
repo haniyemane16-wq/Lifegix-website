@@ -90,7 +90,33 @@ export async function POST(req: NextRequest) {
   }
 
   const meta = (payment.metadata ?? {}) as Record<string, string>;
-  const { naam, email, pakket } = meta;
+  let { naam, email, pakket } = meta;
+
+  // Automatische incasso's van Mollie hebben geen metadata — haal de gegevens
+  // dan op via de klant en het abonnement waar de betaling bij hoort.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const payCustomerId = (payment as any).customerId as string | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const paySubscriptionId = (payment as any).subscriptionId as string | undefined;
+
+  if ((!naam || !email) && payCustomerId) {
+    try {
+      const customer = await mollie.customers.get(payCustomerId);
+      naam = naam || customer.name || undefined;
+      email = email || customer.email || undefined;
+    } catch (err) {
+      console.warn("Kon klantgegevens niet ophalen voor incasso-mail:", err);
+    }
+  }
+
+  if (!pakket && payCustomerId && paySubscriptionId) {
+    try {
+      const subscription = await mollie.customerSubscriptions.get(paySubscriptionId, { customerId: payCustomerId });
+      pakket = subscription.description || undefined;
+    } catch (err) {
+      console.warn("Kon abonnement niet ophalen voor incasso-mail:", err);
+    }
+  }
 
   /* ── Geslaagde incasso ─────────────────────────────────────── */
   if (payment.status === "paid") {
