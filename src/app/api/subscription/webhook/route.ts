@@ -90,7 +90,9 @@ export async function POST(req: NextRequest) {
   }
 
   const meta = (payment.metadata ?? {}) as Record<string, string>;
-  let { naam, email, pakket } = meta;
+  let naam: string | undefined = meta.naam;
+  let email: string | undefined = meta.email;
+  let pakket: string | undefined = meta.pakket;
 
   // Automatische incasso's van Mollie hebben geen metadata — haal de gegevens
   // dan op via de klant en het abonnement waar de betaling bij hoort.
