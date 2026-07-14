@@ -355,6 +355,7 @@ export async function POST(req: NextRequest) {
             <tr><td style="padding: 8px 0; color: #9ca3af;">Pakket</td><td style="padding: 8px 0;">${beschrijving}</td></tr>
             <tr><td style="padding: 8px 0; color: #9ca3af;">Bedrag</td><td style="padding: 8px 0; font-weight: 600;">€${payment.amount.value}</td></tr>
             ${maandelijks > 0 ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Abonnement</td><td style="padding: 8px 0; color: #a78bfa;">€${maandelijks.toFixed(2)}/mnd — start na oplevering (handmatig activeren via /admin)</td></tr>` : ""}
+            ${mollieKlantId ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Mollie klant-ID</td><td style="padding: 8px 0; font-family: monospace;">${mollieKlantId} <span style="color:#9ca3af;">(nodig bij abonnement activeren)</span></td></tr>` : ""}
           </table>
         </div>
       `,
