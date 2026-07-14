@@ -156,7 +156,31 @@ function AdminInner() {
   const params = useSearchParams();
   const key = params.get("key");
 
-  const authorized = key === "n2905xeqZPjFyLubHBvNi6Gc";
+  // De sleutel wordt server-side geverifieerd; hij staat NIET meer in deze
+  // client-code. "checking" = bezig, true/false = uitslag.
+  const [authorized, setAuthorized] = useState<boolean | "checking">("checking");
+
+  useEffect(() => {
+    let actief = true;
+    if (!key) { setAuthorized(false); return; }
+    fetch("/api/admin/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key }),
+    })
+      .then((r) => r.json())
+      .then((d) => { if (actief) setAuthorized(d.ok === true); })
+      .catch(() => { if (actief) setAuthorized(false); });
+    return () => { actief = false; };
+  }, [key]);
+
+  if (authorized === "checking") {
+    return (
+      <main className="min-h-screen bg-[#0a0a0f] text-white flex items-center justify-center px-6">
+        <p className="text-white/40 text-sm">Toegang controleren…</p>
+      </main>
+    );
+  }
 
   if (!authorized) {
     return (
