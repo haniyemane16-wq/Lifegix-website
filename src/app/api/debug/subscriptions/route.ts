@@ -64,8 +64,7 @@ export async function GET(req: NextRequest) {
 
 // Abonnement opzeggen: DELETE met customerId + subscriptionId
 export async function DELETE(req: NextRequest) {
-  const key = req.headers.get("x-admin-key") ?? req.nextUrl.searchParams.get("key");
-  if (key !== ADMIN_KEY) {
+  if (!isValidAdminKey(req.headers.get("x-admin-key") ?? req.nextUrl.searchParams.get("key"))) {
     return NextResponse.json({ error: "Geen toegang" }, { status: 401 });
   }
 
