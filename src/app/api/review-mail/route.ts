@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { isValidAdminKey } from "@/lib/adminAuth";
 
 export const dynamic = "force-dynamic";
 
@@ -7,9 +8,7 @@ const TO_EMAIL = "lifegix.contact@gmail.com";
 const GOOGLE_REVIEW_URL = "https://g.page/r/CQwD9ekJjstFEBM/review";
 
 export async function POST(req: NextRequest) {
-  // Simpele beveiliging
-  const adminKey = req.headers.get("x-admin-key");
-  if (adminKey !== "n2905xeqZPjFyLubHBvNi6Gc") {
+  if (!isValidAdminKey(req.headers.get("x-admin-key"))) {
     return NextResponse.json({ error: "Niet toegestaan" }, { status: 401 });
   }
 
