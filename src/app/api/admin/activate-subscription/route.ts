@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import createMollieClient from "@mollie/api-client";
+import { isValidAdminKey } from "@/lib/adminAuth";
 
 export const dynamic = "force-dynamic";
 
-const ADMIN_KEY = "n2905xeqZPjFyLubHBvNi6Gc";
-
 export async function POST(req: NextRequest) {
-  const authKey = req.headers.get("x-admin-key");
-  if (authKey !== ADMIN_KEY) {
+  if (!isValidAdminKey(req.headers.get("x-admin-key"))) {
     return NextResponse.json({ error: "Geen toegang" }, { status: 401 });
   }
 
