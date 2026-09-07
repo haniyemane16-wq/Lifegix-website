@@ -2,8 +2,49 @@
 import Link from "next/link";
 import { useState } from "react";
 
-// Nieuwe (klant)demo toevoegen: één entry hieraan toevoegen + de route onder /demo/<slug> aanmaken.
+// Nieuwe (klant)demo toevoegen: één entry hieraan toevoegen.
+// Interne demo's krijgen een href (/demo/<slug>); externe demo's (losse Vercel-projecten) een url.
 const demos = [
+  {
+    url: "https://autoservice-vanderwiel.vercel.app",
+    label: "Auto",
+    naam: "Autoservice v.d. Wiel",
+    tekst: "Garagewebsite met diensten, openingstijden en contact.",
+    accent: "#d97706",
+    zoekwoorden: "auto garage apk onderhoud wiel vanderwiel warnsveld",
+  },
+  {
+    url: "https://jh-autoservice-demo.vercel.app",
+    label: "Auto",
+    naam: "JH-Autoservice",
+    tekst: "Garagewebsite met diensten, openingstijden en contact.",
+    accent: "#2563eb",
+    zoekwoorden: "auto garage apk onderhoud jh eefde",
+  },
+  {
+    url: "https://jh-demo-nieuw.vercel.app",
+    label: "Auto",
+    naam: "JH-Autoservice — nieuwe stijl",
+    tekst: "Tweede ontwerp voor JH-Autoservice, in een andere stijl.",
+    accent: "#2563eb",
+    zoekwoorden: "auto garage apk onderhoud jh eefde",
+  },
+  {
+    url: "https://brasserie-de-linde.vercel.app",
+    label: "Horeca",
+    naam: "Brasserie De Linde",
+    tekst: "Brasseriewebsite met menukaart en reserveren.",
+    accent: "#b0413e",
+    zoekwoorden: "restaurant brasserie eten reserveren linde",
+  },
+  {
+    url: "https://autofixpro-lac.vercel.app",
+    label: "Auto",
+    naam: "AutoFixPro",
+    tekst: "Garagewebsite met diensten en online afspraak maken.",
+    accent: "#16a34a",
+    zoekwoorden: "auto garage apk onderhoud autofix",
+  },
   {
     href: "/demo/horeca",
     label: "Horeca",
@@ -61,26 +102,35 @@ export default function DemoZoeker() {
       {/* Resultaten */}
       {resultaten.length > 0 ? (
         <div className="grid gap-5 sm:grid-cols-3">
-          {resultaten.map((demo) => (
-            <Link
-              key={demo.href}
-              href={demo.href}
-              className="group rounded-2xl border border-white/10 bg-white/5 p-6 flex flex-col gap-3 hover:border-violet-500/50 hover:bg-white/[0.07] transition-colors"
-            >
-              <span
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: `${demo.accent}22`, border: `1px solid ${demo.accent}55` }}
-              >
-                <span className="w-3 h-3 rounded-full" style={{ background: demo.accent }} />
-              </span>
-              <p className="text-xs font-medium tracking-widest uppercase text-white/40">{demo.label}</p>
-              <h2 className="text-lg font-bold">{demo.naam}</h2>
-              <p className="text-sm text-white/60 flex-1">{demo.tekst}</p>
-              <span className="text-sm font-medium text-violet-400 group-hover:text-violet-300 transition-colors">
-                Bekijk demo →
-              </span>
-            </Link>
-          ))}
+          {resultaten.map((demo) => {
+            const kaartClass =
+              "group rounded-2xl border border-white/10 bg-white/5 p-6 flex flex-col gap-3 hover:border-violet-500/50 hover:bg-white/[0.07] transition-colors";
+            const inhoud = (
+              <>
+                <span
+                  className="w-10 h-10 rounded-xl flex items-center justify-center"
+                  style={{ background: `${demo.accent}22`, border: `1px solid ${demo.accent}55` }}
+                >
+                  <span className="w-3 h-3 rounded-full" style={{ background: demo.accent }} />
+                </span>
+                <p className="text-xs font-medium tracking-widest uppercase text-white/40">{demo.label}</p>
+                <h2 className="text-lg font-bold">{demo.naam}</h2>
+                <p className="text-sm text-white/60 flex-1">{demo.tekst}</p>
+                <span className="text-sm font-medium text-violet-400 group-hover:text-violet-300 transition-colors">
+                  Bekijk demo →
+                </span>
+              </>
+            );
+            return "url" in demo && demo.url ? (
+              <a key={demo.url} href={demo.url} target="_blank" rel="noopener noreferrer" className={kaartClass}>
+                {inhoud}
+              </a>
+            ) : (
+              <Link key={demo.href} href={demo.href ?? "/demo"} className={kaartClass}>
+                {inhoud}
+              </Link>
+            );
+          })}
         </div>
       ) : (
         <div className="text-center rounded-2xl border border-white/10 bg-white/5 py-14 px-8">
