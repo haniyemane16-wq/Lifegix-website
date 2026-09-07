@@ -3,12 +3,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+// Anker-links zijn absoluut (/#…) zodat ze ook vanaf subpagina's werken.
 const navLinks = [
-  { href: "#diensten", label: "Diensten" },
-  { href: "#prijzen", label: "Prijzen" },
-  { href: "#voorbeelden", label: "Voorbeelden" },
+  { href: "/#diensten", label: "Diensten" },
+  { href: "/#prijzen", label: "Prijzen" },
+  { href: "/demo", label: "Demo's" },
   { href: "/waarom-lifegix", label: "Waarom LifeGix" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export default function Navbar() {
@@ -22,21 +23,17 @@ export default function Navbar() {
           <span className="text-white">Life</span><span className="text-violet-400">gix</span>
         </Link>
         <div className="hidden md:flex items-center gap-8 text-sm text-white/60">
-          {navLinks.map((l) =>
-            l.href.startsWith("/") ? (
-              <Link key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</Link>
-            ) : (
-              <a key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</a>
-            )
-          )}
+          {navLinks.map((l) => (
+            <Link key={l.href} href={l.href} className="hover:text-white transition-colors">{l.label}</Link>
+          ))}
         </div>
         <div className="hidden md:flex items-center gap-3">
           <Link href="/bestellen" onMouseEnter={prefetchBestellen} onTouchStart={prefetchBestellen} className="text-sm font-medium px-4 py-2 rounded-lg border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 transition-colors">
             Bestellen
           </Link>
-          <a href="#contact" className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors">
+          <Link href="/#contact" className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors">
             Gratis gesprek
-          </a>
+          </Link>
         </div>
         <button
           onClick={() => setOpen((o) => !o)}
@@ -50,24 +47,18 @@ export default function Navbar() {
       </div>
       {open && (
         <div className="md:hidden border-t border-white/5 bg-[#0a0a0f]/98 px-6 py-4 flex flex-col gap-4">
-          {navLinks.map((l) =>
-            l.href.startsWith("/") ? (
-              <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm text-white/70 hover:text-white transition-colors py-1">
-                {l.label}
-              </Link>
-            ) : (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm text-white/70 hover:text-white transition-colors py-1">
-                {l.label}
-              </a>
-            )
-          )}
+          {navLinks.map((l) => (
+            <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-sm text-white/70 hover:text-white transition-colors py-1">
+              {l.label}
+            </Link>
+          ))}
           <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
             <Link href="/bestellen" onClick={() => setOpen(false)} className="text-sm font-medium px-4 py-2.5 rounded-lg border border-violet-500/40 text-violet-300 text-center">
               Bestellen
             </Link>
-            <a href="#contact" onClick={() => setOpen(false)} className="text-sm font-medium px-4 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors text-center">
+            <Link href="/#contact" onClick={() => setOpen(false)} className="text-sm font-medium px-4 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors text-center">
               Gratis gesprek
-            </a>
+            </Link>
           </div>
         </div>
       )}

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Navbar from "../_components/Navbar";
+import Footer from "../_components/Footer";
 import ContactForm from "../_components/ContactForm";
 import StickyContactBtn from "../_components/StickyContactBtn";
+import { ACTIE_PRIJS, VISITEKAARTJE_NORMAAL, ACTIE_ACTIEF, STARTPRIJS_BUNDEL, euro } from "@/lib/prijzen";
 
 export const metadata: Metadata = {
   title: "Webdesigner Warnsveld | Websites voor MKB — LifeGix",
@@ -77,19 +79,21 @@ export default function WebdesignerWarnsveld() {
           LifeGix bouwt websites die klanten opleveren — persoonlijk contact, eerlijke prijs.
         </p>
 
-        <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm font-semibold">
-          🎉 Actie: website visitekaartje voor €149 i.p.v. €249 — nog beperkt beschikbaar
-        </div>
+        {ACTIE_ACTIEF && (
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm font-semibold">
+            🎉 Actie: website visitekaartje voor {euro(ACTIE_PRIJS)} i.p.v. {euro(VISITEKAARTJE_NORMAAL)} — nog beperkt beschikbaar
+          </div>
+        )}
 
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <a
-            href="/#contact"
+            href="#contact"
             className="px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all duration-200 hover:scale-[1.02]"
           >
             Gratis gesprek inplannen →
           </a>
           <Link
-            href="/#voorbeelden"
+            href="/demo"
             className="px-7 py-3.5 rounded-xl border border-white/10 hover:border-white/20 text-white/70 hover:text-white text-sm transition-all duration-200"
           >
             Voorbeelden bekijken
@@ -162,8 +166,8 @@ export default function WebdesignerWarnsveld() {
                 ))}
               </ul>
               <div className="flex items-baseline gap-2">
-                <span className="text-red-400 line-through text-sm">€249</span>
-                <span className="text-2xl font-bold text-white">€149</span>
+                {ACTIE_ACTIEF && <span className="text-red-400 line-through text-sm">{euro(VISITEKAARTJE_NORMAAL)}</span>}
+                <span className="text-2xl font-bold text-white">{euro(ACTIE_ACTIEF ? ACTIE_PRIJS : VISITEKAARTJE_NORMAAL)}</span>
                 <span className="text-white/40 text-sm">eenmalig</span>
               </div>
             </div>
@@ -182,8 +186,8 @@ export default function WebdesignerWarnsveld() {
                 ))}
               </ul>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-white">Vanaf €499</span>
-                <span className="text-white/40 text-sm">eenmalig</span>
+                <span className="text-2xl font-bold text-white">Vanaf {euro(STARTPRIJS_BUNDEL)}</span>
+                <span className="text-white/40 text-sm">eenmalig (met 20% bundelkorting)</span>
               </div>
             </div>
           </div>
@@ -206,7 +210,7 @@ export default function WebdesignerWarnsveld() {
             <strong className="text-white/70">Achterhoek</strong> — en ook door heel Nederland.
           </p>
           <a
-            href="/#contact"
+            href="#contact"
             className="inline-block px-7 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-semibold text-sm transition-all duration-200 hover:scale-[1.02]"
           >
             Gratis gesprek inplannen →
@@ -227,17 +231,7 @@ export default function WebdesignerWarnsveld() {
         <ContactForm />
       </section>
 
-      {/* ─── Footer ───────────────────────────────────────── */}
-      <footer className="border-t border-white/[0.06] py-8 px-6 mt-auto">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-white/30 text-sm">
-          <span>© {new Date().getFullYear()} Life<span className="text-violet-500/60">gix</span> · Warnsveld · KvK 98120336</span>
-          <span className="flex gap-4">
-            <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacyverklaring</Link>
-            <Link href="/voorwaarden" className="hover:text-white/60 transition-colors">Algemene Voorwaarden</Link>
-            <Link href="/" className="hover:text-white/60 transition-colors">Terug naar home</Link>
-          </span>
-        </div>
-      </footer>
+      <Footer />
 
       <StickyContactBtn />
     </main>

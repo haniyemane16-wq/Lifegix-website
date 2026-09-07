@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react";
 
-const TO_EMAIL = "lifegix.contact@gmail.com";
-
 export default function ContactForm() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", service: "", message: "" });
   const [submitted, setSubmitted] = useState(false);

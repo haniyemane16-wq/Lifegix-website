@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { verifyLeadToken } from "@/lib/token";
+import { WEBSITE_PAKKETTEN, AI_PAKKETTEN, bundelPrijs, euro } from "@/lib/prijzen";
 
 export const dynamic = "force-dynamic";
 
@@ -33,18 +34,21 @@ function buildOfferteHtml(
     day: "numeric", month: "long", year: "numeric",
   });
 
+  // Prijsregels komen uit lib/prijzen zodat de offerte altijd gelijkloopt met de site
+  const rij = (label: string, eenmalig: number, maandelijks: number, laatste: boolean) => {
+    const border = laatste ? "" : "border-bottom:1px solid #1f2937;";
+    return `<tr><td style="padding:10px 0;${border}color:#9ca3af;">${label}</td><td style="padding:10px 0;${border}text-align:right;font-weight:600;">${euro(eenmalig)} eenmalig + ${euro(maandelijks)}/mnd</td></tr>`;
+  };
+  const rijen = (items: { label: string; eenmalig: number; maandelijks: number }[]) =>
+    items.map((it, i) => rij(it.label, it.eenmalig, it.maandelijks, i === items.length - 1)).join("\n");
+
   const prijsOpties: Record<string, string> = {
-    website: `
-      <tr><td style="padding:10px 0;border-bottom:1px solid #1f2937;color:#9ca3af;">Website Starter</td><td style="padding:10px 0;border-bottom:1px solid #1f2937;text-align:right;font-weight:600;">€500 eenmalig + €50/mnd</td></tr>
-      <tr><td style="padding:10px 0;color:#9ca3af;">Website Business</td><td style="padding:10px 0;text-align:right;font-weight:600;">€1.000 eenmalig + €75/mnd</td></tr>
-    `,
-    ai: `
-      <tr><td style="padding:10px 0;color:#9ca3af;">AI Agent</td><td style="padding:10px 0;text-align:right;font-weight:600;">€300 eenmalig + €75/mnd</td></tr>
-    `,
-    both: `
-      <tr><td style="padding:10px 0;border-bottom:1px solid #1f2937;color:#9ca3af;">Website Starter + AI Agent</td><td style="padding:10px 0;border-bottom:1px solid #1f2937;text-align:right;font-weight:600;">€750 eenmalig + €110/mnd</td></tr>
-      <tr><td style="padding:10px 0;color:#9ca3af;">Website Business + AI Agent</td><td style="padding:10px 0;text-align:right;font-weight:600;">€1.200 eenmalig + €135/mnd</td></tr>
-    `,
+    website: rijen(WEBSITE_PAKKETTEN.map((p) => ({ label: p.naam, eenmalig: p.eenmalig, maandelijks: p.maandelijks }))),
+    ai: rijen(AI_PAKKETTEN.map((p) => ({ label: p.naam, eenmalig: p.eenmalig, maandelijks: p.maandelijks }))),
+    both: rijen(WEBSITE_PAKKETTEN.map((p) => {
+      const b = bundelPrijs(p, AI_PAKKETTEN[0]);
+      return { label: `${p.naam} + ${AI_PAKKETTEN[0].naam}`, eenmalig: b.eenmalig, maandelijks: b.maandelijks };
+    })),
   };
 
   const prijzen = prijsOpties[service] ?? prijsOpties["website"];

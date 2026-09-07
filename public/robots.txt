@@ -4,5 +4,7 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 Disallow: /intake
+Disallow: /marketing
+Disallow: /bedankt
 
 Sitemap: https://lifegix.nl/sitemap.xml

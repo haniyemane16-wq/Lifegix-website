@@ -1,9 +1,11 @@
 import Link from "next/link";
 import Navbar from "./_components/Navbar";
+import Footer from "./_components/Footer";
 import FAQAccordion from "./_components/FAQAccordion";
 import ContactForm from "./_components/ContactForm";
 import StickyContactBtn from "./_components/StickyContactBtn";
 import ChatWidget from "./_components/ChatWidget";
+import { WEBSITE_PAKKETTEN, AI_PAKKETTEN, ACTIE_PLEKKEN, STARTPRIJS_WEBSITE, STARTPRIJS_WEBSITE_MAAND, STARTPRIJS_AI, STARTPRIJS_AI_MAAND, euro } from "@/lib/prijzen";
 
 export default function Home() {
   return (
@@ -12,9 +14,9 @@ export default function Home() {
       <Hero />
       <Stats />
       <Services />
+      <Voorbeelden />
       <HowItWorks />
       <Pricing />
-      <Voorbeelden />
       <EersteKlanten />
       <FAQAccordion />
       <ContactSection />
@@ -64,15 +66,11 @@ function Hero() {
 
       {/* Social proof balk */}
       <div className="animate-fade-in-up animation-delay-600 mt-14 flex flex-col sm:flex-row items-center gap-4 sm:gap-8 text-sm text-white/35">
-        <div className="flex items-center gap-2">
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <svg key={i} className="w-4 h-4" fill="#f59e0b" viewBox="0 0 16 16">
-                <path d="M8 1l1.8 3.6L14 5.3l-3 2.9.7 4.1L8 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.7z"/>
-              </svg>
-            ))}
-          </div>
-          <span>Eerlijk & persoonlijk</span>
+        <div className="flex items-center gap-1.5">
+          <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 16 16">
+            <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span>Direct contact met de bouwer</span>
         </div>
         <span className="hidden sm:block w-px h-4 bg-white/10" />
         <div className="flex items-center gap-1.5">
@@ -98,7 +96,7 @@ function Stats() {
   const items = [
     { icon: "⚡", value: "1–2 wkn", label: "Van start tot live" },
     { icon: "💬", value: "24u", label: "Reactietijd" },
-    { icon: "💶", value: "€149", label: "Startprijs website" },
+    { icon: "💶", value: euro(STARTPRIJS_WEBSITE), label: "Startprijs website" },
     { icon: "✅", value: "100%", label: "Vrijgesteld van BTW" },
   ];
   return (
@@ -118,29 +116,29 @@ function Stats() {
 }
 
 /* ─── Services ───────────────────────────────────────────── */
-function Services() {
-  const WebIcon = () => (
-    <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-      <rect x="2" y="5" width="28" height="22" rx="4" stroke="#a78bfa" strokeWidth="1.8"/>
-      <line x1="2" y1="11" x2="30" y2="11" stroke="#a78bfa" strokeWidth="1.8"/>
-      <circle cx="7" cy="8" r="1.2" fill="#7c3aed"/><circle cx="11" cy="8" r="1.2" fill="#7c3aed"/><circle cx="15" cy="8" r="1.2" fill="#7c3aed"/>
-      <rect x="7" y="15" width="8" height="8" rx="1.5" fill="#7c3aed" opacity="0.5"/>
-      <line x1="19" y1="16" x2="25" y2="16" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="19" y1="19" x2="25" y2="19" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="19" y1="22" x2="23" y2="22" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  );
-  const BotIcon = () => (
-    <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-      <rect x="6" y="10" width="20" height="16" rx="4" stroke="#a78bfa" strokeWidth="1.8"/>
-      <circle cx="12" cy="18" r="2" fill="#7c3aed"/><circle cx="20" cy="18" r="2" fill="#7c3aed"/>
-      <line x1="16" y1="4" x2="16" y2="10" stroke="#a78bfa" strokeWidth="1.8" strokeLinecap="round"/>
-      <circle cx="16" cy="3.5" r="1.5" fill="#a78bfa"/>
-      <line x1="6" y1="22" x2="2" y2="25" stroke="#a78bfa" strokeWidth="1.8" strokeLinecap="round"/>
-      <line x1="26" y1="22" x2="30" y2="25" stroke="#a78bfa" strokeWidth="1.8" strokeLinecap="round"/>
-    </svg>
-  );
+const WebIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+    <rect x="2" y="5" width="28" height="22" rx="4" stroke="#a78bfa" strokeWidth="1.8"/>
+    <line x1="2" y1="11" x2="30" y2="11" stroke="#a78bfa" strokeWidth="1.8"/>
+    <circle cx="7" cy="8" r="1.2" fill="#7c3aed"/><circle cx="11" cy="8" r="1.2" fill="#7c3aed"/><circle cx="15" cy="8" r="1.2" fill="#7c3aed"/>
+    <rect x="7" y="15" width="8" height="8" rx="1.5" fill="#7c3aed" opacity="0.5"/>
+    <line x1="19" y1="16" x2="25" y2="16" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+    <line x1="19" y1="19" x2="25" y2="19" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+    <line x1="19" y1="22" x2="23" y2="22" stroke="#a78bfa" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+const BotIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+    <rect x="6" y="10" width="20" height="16" rx="4" stroke="#a78bfa" strokeWidth="1.8"/>
+    <circle cx="12" cy="18" r="2" fill="#7c3aed"/><circle cx="20" cy="18" r="2" fill="#7c3aed"/>
+    <line x1="16" y1="4" x2="16" y2="10" stroke="#a78bfa" strokeWidth="1.8" strokeLinecap="round"/>
+    <circle cx="16" cy="3.5" r="1.5" fill="#a78bfa"/>
+    <line x1="6" y1="22" x2="2" y2="25" stroke="#a78bfa" strokeWidth="1.8" strokeLinecap="round"/>
+    <line x1="26" y1="22" x2="30" y2="25" stroke="#a78bfa" strokeWidth="1.8" strokeLinecap="round"/>
+  </svg>
+);
 
+function Services() {
   const services = [
     {
       icon: <WebIcon />,
@@ -148,8 +146,8 @@ function Services() {
       tagline: "Snel online, professioneel en vindbaar",
       description: "Een moderne website die 24/7 voor jouw bedrijf werkt. Ontworpen voor conversie, geoptimaliseerd voor Google en gebouwd om lang mee te gaan.",
       features: ["Volledig op maat ontworpen", "Mobielvriendelijk (responsive)", "SEO-geoptimaliseerd", "Snel en veilig (SSL)", "Contactformulier inbegrepen", "Google Analytics"],
-      price: "Vanaf €249",
-      priceNote: "eenmalig + €25/mnd",
+      price: `Vanaf ${euro(STARTPRIJS_WEBSITE)}`,
+      priceNote: `eenmalig + ${euro(STARTPRIJS_WEBSITE_MAAND)}/mnd`,
       highlighted: false,
     },
     {
@@ -158,8 +156,8 @@ function Services() {
       tagline: "Laat AI het zware werk doen",
       description: "Van automatische klantreacties tot slimme planningssystemen — ik bouw AI-agents die repetitieve taken voor jou overnemen.",
       features: ["Persoonlijke AI-assistent", "Automatische klantopvolging", "Afspraakplanning via AI", "WhatsApp / e-mail integratie", "24/7 beschikbaar", "Maandelijkse rapportage"],
-      price: "Vanaf €300",
-      priceNote: "eenmalig + €50/mnd",
+      price: `Vanaf ${euro(STARTPRIJS_AI)}`,
+      priceNote: `eenmalig + ${euro(STARTPRIJS_AI_MAAND)}/mnd`,
       highlighted: true,
     },
   ];
@@ -201,14 +199,9 @@ function Services() {
               <div className="pt-5 border-t border-white/[0.08]">
                 <p className="text-2xl font-bold text-white">{s.price}</p>
                 <p className="mt-0.5 text-xs text-white/40">{s.priceNote}</p>
-                <div className="flex gap-3 mt-4">
-                  <a href="#contact" className={`flex-1 block text-center py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${s.highlighted ? "bg-violet-600 hover:bg-violet-500 text-white" : "bg-white/[0.06] hover:bg-white/10 text-white/80 border border-white/10"}`}>
-                    Interesse →
-                  </a>
-                  <a href="#prijzen" className="px-4 py-3 rounded-xl text-sm text-violet-400 hover:text-violet-300 border border-violet-500/20 hover:border-violet-500/40 transition-colors">
-                    Prijzen
-                  </a>
-                </div>
+                <a href="#prijzen" className={`mt-4 block text-center py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${s.highlighted ? "bg-violet-600 hover:bg-violet-500 text-white" : "bg-white/[0.06] hover:bg-white/10 text-white/80 border border-white/10"}`}>
+                  Bekijk pakketten en prijzen →
+                </a>
               </div>
             </div>
           ))}
@@ -265,34 +258,28 @@ function HowItWorks() {
 /* ─── Pricing ────────────────────────────────────────────── */
 function Pricing() {
   const pakketten = [
-    {
-      name: "Website Visitekaartje", priceEenmalig: "€149", originalPrice: "€249", priceMaand: "€25",
-      desc: "Snel online met een professionele 1-pagina website. Live in 3 dagen.",
-      features: ["1 pagina op maat", "Contactformulier", "Mobielvriendelijk & snel", "SSL-beveiliging", "Live in 3 dagen"],
-      cta: "Start met Visitekaartje", highlight: false, badge: "🎉 Actie: nog 5 plekken",
-    },
-    {
-      name: "Website Starter", priceEenmalig: "€500", originalPrice: null, priceMaand: "€50",
-      desc: "Perfect voor kleine bedrijven die online zichtbaar willen worden.",
-      features: ["Op maat ontworpen website", "Tot 5 pagina's", "Mobielvriendelijk & snel", "SEO-basis geoptimaliseerd", "Contactformulier", "SSL-beveiliging", "Oplevering in 1–2 weken"],
-      cta: "Start met Starter", highlight: false, badge: null,
-    },
-    {
-      name: "Website Business", priceEenmalig: "€1.000", originalPrice: null, priceMaand: "€75",
-      desc: "Voor groeiende bedrijven met meer wensen en hogere ambities.",
-      features: ["Op maat ontworpen website", "Onbeperkt pagina's", "Mobielvriendelijk & snel", "Uitgebreide SEO-optimalisatie", "Afspraak- of boekingssysteem", "Prioriteit support", "Oplevering in 2–3 weken"],
-      cta: "Start met Business", highlight: false, badge: null,
-    },
+    ...WEBSITE_PAKKETTEN.map((p) => ({
+      name: p.naam,
+      priceEenmalig: euro(p.eenmalig),
+      originalPrice: p.normaal ? euro(p.normaal) : null,
+      priceMaand: euro(p.maandelijks),
+      desc: p.desc,
+      features: [...p.features],
+      cta: `Start met ${p.naam.replace("Website ", "")}`,
+      href: "/bestellen",
+      highlight: false,
+      badge: p.normaal ? `🎉 Actie: nog ${ACTIE_PLEKKEN} plekken` : null,
+    })),
     {
       name: "Maatwerk / Webapp", priceEenmalig: "Op maat", originalPrice: null, priceMaand: "Op maat",
       desc: "Een platform, webapp of complex project? We bouwen het samen — volledig op jouw wensen.",
       features: ["Webapps & platforms", "Gebruikerssystemen & dashboards", "Koppelingen met API's", "Database op maat", "Volledige technische vrijheid", "Persoonlijk projectplan"],
-      cta: "Neem contact op", highlight: true, badge: "Custom",
+      cta: "Neem contact op", href: "#contact", highlight: true, badge: "Custom",
     },
   ];
 
   return (
-    <section id="prijzen" className="py-24 px-6 relative"
+    <section id="prijzen" className="py-24 px-6 relative overflow-hidden"
       style={{ background: "linear-gradient(180deg, #0a0a0f 0%, #0d0a1e 20%, #0d0a1e 80%, #0a0a0f 100%)" }}>
       {/* Subtle top glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] pointer-events-none"
@@ -353,14 +340,14 @@ function Pricing() {
                 ))}
               </ul>
 
-              <a href="#contact"
+              <Link href={p.href}
                 className={`mt-2 block text-center py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${
                   p.highlight
                     ? "bg-white text-violet-700 hover:bg-violet-50"
                     : "bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/30"
                 }`}>
                 {p.cta} →
-              </a>
+              </Link>
             </div>
           ))}
         </div>
@@ -378,24 +365,16 @@ function Pricing() {
             <p className="mt-3 text-white/50 text-sm">Voor bedrijven die al een website hebben.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { naam: "FAQ Chatbot", prijs: "€300", maand: "€50", desc: "Beantwoordt vaste vragen 24/7", emoji: "💬" },
-              { naam: "Leadopvolging", prijs: "€600", maand: "€90", desc: "Automatische e-mail/WhatsApp opvolging", emoji: "📧" },
-              { naam: "Afspraken Agent", prijs: "€900", maand: "€120", desc: "24/7 agenda management", emoji: "📅" },
-              { naam: "Volledige Agent", prijs: "€1.500", maand: "€175", desc: "Alles gecombineerd, op maat", emoji: "⚡" },
-            ].map((ai) => (
-              <div key={ai.naam} className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:border-violet-500/20 transition-colors flex flex-col gap-3">
+            {AI_PAKKETTEN.map((ai) => (
+              <div key={ai.id} className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:border-violet-500/20 transition-colors flex flex-col gap-3">
                 <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl">{ai.emoji}</span>
-                    <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest">{ai.naam}</p>
-                  </div>
+                  <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-2">{ai.naam}</p>
                   <div className="flex items-end gap-1">
-                    <span className="text-2xl font-bold text-white">{ai.prijs}</span>
+                    <span className="text-2xl font-bold text-white">{euro(ai.eenmalig)}</span>
                     <span className="text-white/40 text-sm mb-1">eenmalig</span>
                   </div>
-                  <p className="text-violet-300 text-sm font-semibold">+ {ai.maand}<span className="text-white/40 font-normal">/mnd</span></p>
-                  <p className="text-white/40 text-xs mt-2 leading-relaxed">{ai.desc}</p>
+                  <p className="text-violet-300 text-sm font-semibold">+ {euro(ai.maandelijks)}<span className="text-white/40 font-normal">/mnd</span></p>
+                  <p className="text-white/40 text-xs mt-2 leading-relaxed">{ai.tagline}</p>
                 </div>
                 <Link href="/bestellen" className="mt-auto block text-center py-2.5 rounded-xl text-sm font-semibold bg-white/[0.06] hover:bg-violet-600/20 text-white/80 hover:text-violet-300 border border-white/10 hover:border-violet-500/30 transition-all duration-200">
                   Kies dit pakket →
@@ -474,7 +453,7 @@ function Voorbeelden() {
           <svg className="w-4 h-4 text-violet-400 shrink-0" fill="none" viewBox="0 0 16 16">
             <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM8 5v4M8 10.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
-          <span className="text-violet-300 text-sm">Dit zijn demo's — jouw website wordt volledig op maat gemaakt</span>
+          <span className="text-violet-300 text-sm">Dit zijn demo&apos;s — jouw website wordt volledig op maat gemaakt</span>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -505,12 +484,15 @@ function Voorbeelden() {
           ))}
         </div>
 
-        <p className="text-center mt-10 text-white/30 text-sm">
-          Jouw branche staat er niet bij?{" "}
-          <Link href="#contact" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">
-            Neem contact op →
+        <div className="text-center mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm">
+          <Link href="/demo" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 font-medium transition-colors">
+            Alle demo&apos;s bekijken →
           </Link>
-        </p>
+          <span className="text-white/30">
+            Jouw branche staat er niet bij?{" "}
+            <a href="#contact" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">Neem contact op</a>
+          </span>
+        </div>
       </div>
     </section>
   );
@@ -577,20 +559,5 @@ function EersteKlanten() {
         </div>
       </div>
     </section>
-  );
-}
-
-/* ─── Footer ─────────────────────────────────────────────── */
-function Footer() {
-  return (
-    <footer className="border-t border-white/[0.06] py-8 px-6 mt-auto">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-white/30 text-sm">
-        <span>© {new Date().getFullYear()} Life<span className="text-violet-500/60">gix</span> · Warnsveld · KvK 98120336 · <a href="tel:+31854005545" className="hover:text-white/60 transition-colors">085 - 400 55 45</a></span>
-        <span className="flex gap-4">
-          <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacyverklaring</Link>
-          <Link href="/voorwaarden" className="hover:text-white/60 transition-colors">Algemene Voorwaarden</Link>
-        </span>
-      </div>
-    </footer>
   );
 }

@@ -1,5 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import Navbar from "../_components/Navbar";
+import Footer from "../_components/Footer";
+import { STARTPRIJS_WEBSITE, STARTPRIJS_AI, euro } from "@/lib/prijzen";
 
 export const metadata: Metadata = {
   title: "Waarom LifeGix? — De slimme keuze voor ondernemers",
@@ -9,18 +12,8 @@ export const metadata: Metadata = {
 
 export default function WaaromLifeGixPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-white">
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/95 sm:bg-[#0a0a0f]/80 sm:backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
-            <span className="text-white">Life</span><span className="text-violet-400">gix</span>
-          </Link>
-          <Link href="/bestellen" className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors">
-            Direct beginnen →
-          </Link>
-        </div>
-      </nav>
+    <main className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
+      <Navbar />
 
       <div className="pt-24">
 
@@ -62,10 +55,10 @@ export default function WaaromLifeGixPage() {
             </div>
             <div className="grid md:grid-cols-3 gap-4">
               {[
-                { label: "Prijs website", bureau: "€3.000 – €10.000", lifegix: "Vanaf €249", win: true },
+                { label: "Prijs website", bureau: "€3.000 – €10.000", lifegix: `Vanaf ${euro(STARTPRIJS_WEBSITE)}`, win: true },
                 { label: "Doorlooptijd", bureau: "6 – 12 weken", lifegix: "1 – 2 weken", win: true },
                 { label: "Contact", bureau: "Accountmanager → designer → developer", lifegix: "Direct met de bouwer", win: true },
-                { label: "AI agent", bureau: "€5.000 – €25.000", lifegix: "Vanaf €300", win: true },
+                { label: "AI agent", bureau: "€5.000 – €25.000", lifegix: `Vanaf ${euro(STARTPRIJS_AI)}`, win: true },
                 { label: "Aanpassingen", bureau: "Aparte offerte per wijziging", lifegix: "Inbegrepen in abonnement", win: true },
                 { label: "Persoonlijk", bureau: "Nummer in een systeem", lifegix: "Jij kent mij, ik ken jou", win: true },
               ].map((row) => (
@@ -110,7 +103,7 @@ export default function WaaromLifeGixPage() {
                 {
                   nr: "03",
                   titel: "Ver onder de marktprijs — zelfde kwaliteit",
-                  tekst: "Bureaus vragen €3.000 tot €10.000 voor een website. Ik vraag vanaf €249. Niet omdat ik minder lever — maar omdat ik geen kantoor, geen salesteam en geen overhead heb. Die besparing geef ik direct aan jou door.",
+                  tekst: `Bureaus vragen €3.000 tot €10.000 voor een website. Ik vraag vanaf ${euro(STARTPRIJS_WEBSITE)}. Niet omdat ik minder lever — maar omdat ik geen kantoor, geen salesteam en geen overhead heb. Die besparing geef ik direct aan jou door.`,
                 },
                 {
                   nr: "04",
@@ -162,7 +155,7 @@ export default function WaaromLifeGixPage() {
             {[
               { value: "1–2 wkn", label: "Van start tot live" },
               { value: "24u", label: "Reactietijd" },
-              { value: "€249", label: "Startprijs website" },
+              { value: euro(STARTPRIJS_WEBSITE), label: "Startprijs website" },
               { value: "100%", label: "Vrijgesteld van BTW" },
             ].map((s) => (
               <div key={s.label}>
@@ -257,6 +250,7 @@ export default function WaaromLifeGixPage() {
         </section>
 
       </div>
+      <Footer />
     </main>
   );
 }
