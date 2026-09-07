@@ -1,35 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import DemoZoeker from "./DemoZoeker";
 
 export const metadata: Metadata = {
   title: "Demo's — Bekijk voorbeeldwebsites van LifeGix",
   description:
-    "Bekijk drie werkende voorbeeldwebsites van LifeGix: horeca, zorg en diensten. Zo kan uw website er ook uitzien — live binnen 1–2 weken.",
+    "Bekijk werkende voorbeeldwebsites van LifeGix. Zoek op bedrijfsnaam of branche en zie hoe uw website eruit kan zien — live binnen 1–2 weken.",
 };
-
-const demos = [
-  {
-    href: "/demo/horeca",
-    label: "Horeca",
-    naam: "Restaurant De Waag",
-    tekst: "Restaurantwebsite met menukaart en online reserveren.",
-    accent: "#c0392b",
-  },
-  {
-    href: "/demo/zorg",
-    label: "Zorg",
-    naam: "FysioFit Zutphen",
-    tekst: "Praktijkwebsite met behandelingen, team en afspraak maken.",
-    accent: "#1d6fa4",
-  },
-  {
-    href: "/demo/diensten",
-    label: "Diensten",
-    naam: "Barbershop Yazan",
-    tekst: "Barbershopwebsite met prijslijst en afspraak maken.",
-    accent: "#c9a84c",
-  },
-];
 
 export default function DemoOverzichtPage() {
   return (
@@ -62,35 +39,14 @@ export default function DemoOverzichtPage() {
               </span>
             </h1>
             <p className="text-white/60 text-lg max-w-2xl mx-auto">
-              Drie werkende voorbeeldwebsites, gebouwd door LifeGix. Kies de branche die bij u past en klik rond.
+              Werkende voorbeeldwebsites, gebouwd door LifeGix. Zoek uw bedrijfsnaam of kijk rond bij andere branches.
             </p>
           </div>
         </section>
 
-        {/* Demo cards */}
+        {/* Zoekbalk + demo cards */}
         <section className="px-6 pb-16">
-          <div className="max-w-4xl mx-auto grid gap-5 sm:grid-cols-3">
-            {demos.map((demo) => (
-              <Link
-                key={demo.href}
-                href={demo.href}
-                className="group rounded-2xl border border-white/10 bg-white/5 p-6 flex flex-col gap-3 hover:border-violet-500/50 hover:bg-white/[0.07] transition-colors"
-              >
-                <span
-                  className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ background: `${demo.accent}22`, border: `1px solid ${demo.accent}55` }}
-                >
-                  <span className="w-3 h-3 rounded-full" style={{ background: demo.accent }} />
-                </span>
-                <p className="text-xs font-medium tracking-widest uppercase text-white/40">{demo.label}</p>
-                <h2 className="text-lg font-bold">{demo.naam}</h2>
-                <p className="text-sm text-white/60 flex-1">{demo.tekst}</p>
-                <span className="text-sm font-medium text-violet-400 group-hover:text-violet-300 transition-colors">
-                  Bekijk demo →
-                </span>
-              </Link>
-            ))}
-          </div>
+          <DemoZoeker />
         </section>
 
         {/* CTA */}
