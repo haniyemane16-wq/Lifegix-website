@@ -2,6 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Navbar from "../_components/Navbar";
+import Footer from "../_components/Footer";
+import { WEBSITE_PAKKETTEN, AI_PAKKETTEN, bundelPrijs, euro, type WebsitePakketId, type AIPakketId } from "@/lib/prijzen";
 
 /* ─── Zoekbare branche-combobox ─── */
 function BrancheCombobox({
@@ -179,182 +182,123 @@ const BRANCH_MULTIPLIER: Record<string, number> = {
   "Anders":                         1.0,
 };
 
-// Realistische bandbreedtes (min–max) per dienst.
-// Website: gemiddeld +3–7% extra omzet via meer online vindbaarheid.
-// AI-agent: gemiddeld +2–5% via snellere opvolging & minder gemiste leads.
-// Beide: combinatie, maar niet simpelweg de som (overlap in effect).
-const SERVICE_META: Record<string, { label: string; upliftMin: number; upliftMax: number; desc: string }> = {
-  website_starter: {
-    label: "Website Starter",
-    upliftMin: 0.03, upliftMax: 0.07,
-    desc: "Meer klanten via Google & een betere eerste indruk",
-  },
-  website_business: {
-    label: "Website Business",
-    upliftMin: 0.04, upliftMax: 0.09,
-    desc: "Uitgebreide SEO, meer pagina's en hogere conversie",
-  },
-  ai_faq: {
-    label: "FAQ Chatbot",
-    upliftMin: 0.01, upliftMax: 0.03,
-    desc: "Beantwoordt vragen automatisch, minder gemiste leads",
-  },
-  ai_leads: {
-    label: "Leadopvolging Agent",
-    upliftMin: 0.02, upliftMax: 0.05,
-    desc: "Automatische opvolging via e-mail & WhatsApp",
-  },
-  ai_afspraken: {
-    label: "Afspraakplanning Agent",
-    upliftMin: 0.03, upliftMax: 0.06,
-    desc: "24/7 afspraken inplannen zonder telefoontjes",
-  },
-  ai_volledig: {
-    label: "Volledige AI Agent",
-    upliftMin: 0.04, upliftMax: 0.08,
-    desc: "Alles gecombineerd — chat, leads, afspraken",
-  },
-  both: {
-    label: "Website + AI-agent",
-    upliftMin: 0.05, upliftMax: 0.11,
-    desc: "Meer bezoekers én slimmere opvolging gecombineerd",
-  },
+// Realistische bandbreedtes (min–max) van extra omzet per maand.
+// Bewust conservatief: dit zijn indicaties, geen beloftes.
+// Website: meer vindbaarheid via Google en een betere eerste indruk.
+// AI-agent: snellere opvolging en minder gemiste vragen/afspraken.
+type Uplift = { min: number; max: number; desc: string };
+
+const WEBSITE_UPLIFT: Record<WebsitePakketId, Uplift> = {
+  visitekaartje: { min: 0.02, max: 0.05, desc: "Vindbaar op Google en een professionele eerste indruk" },
+  starter:       { min: 0.03, max: 0.07, desc: "Meer vindbaarheid via Google en een professionelere uitstraling" },
+  business:      { min: 0.05, max: 0.10, desc: "Uitgebreide SEO, meer pagina's en hogere conversie" },
 };
 
-const PRICE_TIERS: Record<string, { maxOmzet: number; eenmalig: number; maand: number; naam: string }[]> = {
-  website_starter: [{ maxOmzet: Infinity, eenmalig: 500,   maand: 50,  naam: "Website Starter" }],
-  website_business: [{ maxOmzet: Infinity, eenmalig: 1_000, maand: 75,  naam: "Website Business" }],
-  ai_faq:       [{ maxOmzet: Infinity, eenmalig: 300,   maand: 50,  naam: "FAQ Chatbot" }],
-  ai_leads:     [{ maxOmzet: Infinity, eenmalig: 600,   maand: 90,  naam: "Leadopvolging Agent" }],
-  ai_afspraken: [{ maxOmzet: Infinity, eenmalig: 900,   maand: 120, naam: "Afspraakplanning Agent" }],
-  ai_volledig:  [{ maxOmzet: Infinity, eenmalig: 1_500, maand: 175, naam: "Volledige AI Agent" }],
-  both: [
-    { maxOmzet: 5_000,    eenmalig: 750,   maand: 110, naam: "Website Starter + AI Agent" },
-    { maxOmzet: Infinity, eenmalig: 1_200, maand: 135, naam: "Website Business + AI Agent" },
-  ],
+const AI_UPLIFT: Record<AIPakketId, Uplift> = {
+  ai_faq:       { min: 0.01, max: 0.03, desc: "Minder gemiste vragen, hogere klanttevredenheid" },
+  ai_leads:     { min: 0.02, max: 0.05, desc: "Aanvragen worden direct opgevolgd in plaats van vergeten" },
+  ai_afspraken: { min: 0.03, max: 0.06, desc: "24/7 afspraken inplannen zonder telefoontjes" },
+  ai_volledig:  { min: 0.04, max: 0.08, desc: "Vragen, leads en afspraken volledig geautomatiseerd" },
 };
 
-function getPricing(dienst: string, maandomzet: number) {
-  const tiers = PRICE_TIERS[dienst] ?? PRICE_TIERS.website;
-  const tier = tiers.find((t) => maandomzet < t.maxOmzet) ?? tiers[tiers.length - 1];
-  return {
-    eenmalig: tier.eenmalig,
-    maand: tier.maand,
-    naam: tier.naam,
-    korting: dienst === "both",
-  };
-}
+// Website + AI overlappen deels in effect: AI telt voor 80% mee naast een website.
+const OVERLAP_FACTOR = 0.8;
+
+type WebsiteKeuze = "geen" | WebsitePakketId;
+type AiKeuze = "geen" | AIPakketId;
+
+type Resultaat = {
+  huidig: number;
+  extraMin: number;
+  extraMax: number;
+  terugverdien: number | null; // null = extra omzet dekt de maandkosten niet
+  label: string;
+  desc: string;
+  eenmalig: number;
+  maand: number;
+  korting: boolean;
+};
 
 export default function ROIPage() {
   const [branche, setBranche] = useState("");
   const [klanten, setKlanten] = useState("");
   const [omzetPerKlant, setOmzetPerKlant] = useState("");
-  const [websiteKeuze, setWebsiteKeuze] = useState<"geen" | "starter" | "business">("starter");
-  const [aiKeuze, setAiKeuze] = useState<"geen" | "faq" | "leads" | "afspraken" | "volledig">("geen");
-  const [result, setResult] = useState<{
-    huidig: number;
-    extraMin: number;
-    extraMax: number;
-    terugverdien: number;
-    label: string;
-    desc: string;
-    eenmalig: number;
-    maand: number;
-    korting: boolean;
-    pakketnaam: string;
-    brancheMultiplier: number;
-  } | null>(null);
+  const [websiteKeuze, setWebsiteKeuze] = useState<WebsiteKeuze>("starter");
+  const [aiKeuze, setAiKeuze] = useState<AiKeuze>("geen");
+  const [fout, setFout] = useState("");
+  const [result, setResult] = useState<Resultaat | null>(null);
 
   const calculate = () => {
     const k = parseInt(klanten, 10);
     const o = parseFloat(omzetPerKlant);
-    if (!k || !o || k <= 0 || o <= 0) return;
-    if (websiteKeuze === "geen" && aiKeuze === "geen") return;
+    if (!k || !o || k <= 0 || o <= 0) {
+      setFout("Vul het aantal klanten per maand en de gemiddelde omzet per klant in.");
+      setResult(null);
+      return;
+    }
+    if (websiteKeuze === "geen" && aiKeuze === "geen") {
+      setFout("Kies minimaal een website of een AI-agent.");
+      setResult(null);
+      return;
+    }
+    setFout("");
 
     const huidig = k * o;
     const multiplier = BRANCH_MULTIPLIER[branche] ?? 1.0;
-    const heeftWebsite = websiteKeuze !== "geen";
-    const heeftAi = aiKeuze !== "geen";
 
-    // Realistische uplift per component — cumulatief maar met overlap-correctie
-    const websiteUplift = {
-      starter:  { min: 0.03, max: 0.07, desc: "Meer vindbaarheid via Google, professionelere uitstraling" },
-      business: { min: 0.05, max: 0.10, desc: "Uitgebreide SEO, meer pagina's en hogere conversie" },
-      geen:     { min: 0,    max: 0,    desc: "" },
-    }[websiteKeuze];
+    const website = websiteKeuze === "geen" ? null : WEBSITE_PAKKETTEN.find((p) => p.id === websiteKeuze) ?? null;
+    const ai = aiKeuze === "geen" ? null : AI_PAKKETTEN.find((p) => p.id === aiKeuze) ?? null;
 
-    const aiUplift = {
-      faq:       { min: 0.01, max: 0.03, desc: "Minder gemiste vragen, hogere klanttevredenheid" },
-      leads:     { min: 0.04, max: 0.09, desc: "Gemiste leads direct opgevolgd — gemiddeld 15-30% meer conversies uit bestaand verkeer" },
-      afspraken: { min: 0.06, max: 0.13, desc: "24/7 boeken = nooit meer een gemiste afspraak, direct meer bezette slots" },
-      volledig:  { min: 0.08, max: 0.16, desc: "Leads + afspraken + vragen volledig geautomatiseerd" },
-      geen:      { min: 0,    max: 0,    desc: "" },
-    }[aiKeuze];
+    const wu: Uplift = website ? WEBSITE_UPLIFT[website.id] : { min: 0, max: 0, desc: "" };
+    const au: Uplift = ai ? AI_UPLIFT[ai.id] : { min: 0, max: 0, desc: "" };
+    const aiFactor = website ? OVERLAP_FACTOR : 1;
 
-    // Gecombineerd: AI voegt 80% van zijn waarde toe naast website (overlap)
-    const aiMultiplier = heeftWebsite ? 0.8 : 1;
-    const totalMin = websiteUplift.min + aiUplift.min * aiMultiplier;
-    const totalMax = websiteUplift.max + aiUplift.max * aiMultiplier;
-
-    const extraMin = Math.round(huidig * totalMin * multiplier);
-    const extraMax = Math.round(huidig * totalMax * multiplier);
+    const extraMin = Math.round(huidig * (wu.min + au.min * aiFactor) * multiplier);
+    const extraMax = Math.round(huidig * (wu.max + au.max * aiFactor) * multiplier);
     const extraMid = (extraMin + extraMax) / 2;
 
-    // Prijzen
-    const wp = { starter: { e: 500, m: 50 }, business: { e: 1000, m: 75 }, geen: { e: 0, m: 0 } }[websiteKeuze];
-    const ap = { faq: { e: 300, m: 50 }, leads: { e: 600, m: 90 }, afspraken: { e: 900, m: 120 }, volledig: { e: 1500, m: 175 }, geen: { e: 0, m: 0 } }[aiKeuze];
-    const korting = heeftWebsite && heeftAi;
-    const factor = korting ? 0.8 : 1;
-    const eenmalig = Math.round((wp.e + ap.e) * factor);
-    const maand = Math.round((wp.m + ap.m) * factor);
+    // Prijzen — zelfde bron en bundellogica als /bestellen en de checkout
+    const korting = !!website && !!ai;
+    const prijs = website && ai
+      ? bundelPrijs(website, ai)
+      : { eenmalig: (website ?? ai)!.eenmalig, maandelijks: (website ?? ai)!.maandelijks };
 
-    const naamDelen = [
-      heeftWebsite ? (websiteKeuze === "starter" ? "Website Starter" : "Website Business") : "",
-      heeftAi ? ({ faq: "FAQ Chatbot", leads: "Leadopvolging", afspraken: "Afspraken Agent", volledig: "Volledige AI Agent" } as Record<string, string>)[aiKeuze] ?? "" : "",
-    ].filter(Boolean);
-    const pakketnaam = naamDelen.join(" + ") + (korting ? " (−20%)" : "");
+    const label = [website?.naam, ai?.naam].filter(Boolean).join(" + ") + (korting ? " (−20%)" : "");
+    const desc = [wu.desc, au.desc].filter(Boolean).join(" · ");
 
-    const descDelen = [websiteUplift.desc, aiUplift.desc].filter(Boolean);
-    const desc = descDelen.join(" · ") || "Meer omzet via betere online aanwezigheid";
-
-    const terugverdien = Math.ceil(eenmalig / Math.max(extraMid - maand, 1));
+    const nettoPerMaand = extraMid - prijs.maandelijks;
+    const terugverdien = nettoPerMaand > 0 ? Math.ceil(prijs.eenmalig / nettoPerMaand) : null;
 
     setResult({
       huidig, extraMin, extraMax, terugverdien,
-      label: pakketnaam, desc,
-      eenmalig, maand, korting, pakketnaam,
-      brancheMultiplier: multiplier,
+      label, desc,
+      eenmalig: prijs.eenmalig, maand: prijs.maandelijks, korting,
     });
   };
 
   const inputClass =
     "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.07] transition-all appearance-none";
 
+  const keuzeClass = (actief: boolean) =>
+    `px-3 py-2.5 rounded-xl text-sm font-medium transition-colors border ${
+      actief ? "bg-violet-600/30 border-violet-500/60 text-white" : "bg-white/5 border-white/10 text-white/50 hover:text-white/80"
+    }`;
+
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-white">
+    <main className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[500px] rounded-full bg-violet-600/8 blur-[140px]" />
       </div>
 
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
-            <span className="text-white">Life</span><span className="text-violet-400">gix</span>
-          </Link>
-          <Link href="/" className="text-sm text-white/50 hover:text-white transition-colors">
-            ← Terug naar home
-          </Link>
-        </div>
-      </nav>
+      <Navbar />
 
-      <div className="max-w-3xl mx-auto px-6 pt-32 pb-24 relative">
+      <div className="max-w-3xl mx-auto px-6 pt-32 pb-24 relative w-full">
         {/* Header */}
         <div className="text-center mb-12">
           <p className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-3">ROI Calculator</p>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white">Bereken je return</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white">Wat kan het je opleveren?</h1>
           <p className="mt-4 text-white/50 max-w-md mx-auto">
-            Vul je situatie in en zie een realistische schatting van wat een website of AI-agent jou kan opleveren.
+            Vul je situatie in en zie een voorzichtige schatting van wat een website of AI-agent jou per maand extra kan opleveren.
           </p>
         </div>
 
@@ -363,11 +307,7 @@ export default function ROIPage() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-white/50 mb-1.5">Branche</label>
-              <BrancheCombobox
-                value={branche}
-                onChange={setBranche}
-                branches={BRANCHES}
-              />
+              <BrancheCombobox value={branche} onChange={setBranche} branches={BRANCHES} />
             </div>
             <div>
               <label className="block text-xs font-medium text-white/50 mb-1.5">Klanten per maand</label>
@@ -381,9 +321,7 @@ export default function ROIPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-white/50 mb-1.5">
-              Gemiddelde omzet per klant (€)
-            </label>
+            <label className="block text-xs font-medium text-white/50 mb-1.5">Gemiddelde omzet per klant (€)</label>
             <input
               type="number" min="1" value={omzetPerKlant}
               onChange={(e) => setOmzetPerKlant(e.target.value)}
@@ -397,21 +335,14 @@ export default function ROIPage() {
             <label className="block text-xs font-medium text-white/50 mb-2">
               Website <span className="text-white/30">(optioneel)</span>
             </label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { val: "geen" as const, label: "Geen", prijs: "" },
-                { val: "starter" as const, label: "Starter", prijs: "€500" },
-                { val: "business" as const, label: "Business", prijs: "€1.000" },
-              ].map((opt) => (
-                <button key={opt.val} type="button"
-                  onClick={() => setWebsiteKeuze(opt.val)}
-                  className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-colors border ${
-                    websiteKeuze === opt.val
-                      ? "bg-violet-600/30 border-violet-500/60 text-white"
-                      : "bg-white/5 border-white/10 text-white/50 hover:text-white/80"
-                  }`}>
-                  <div>{opt.label}</div>
-                  {opt.prijs && <div className="text-xs opacity-70 mt-0.5">{opt.prijs}</div>}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button type="button" onClick={() => setWebsiteKeuze("geen")} className={keuzeClass(websiteKeuze === "geen")}>
+                <div>Geen</div>
+              </button>
+              {WEBSITE_PAKKETTEN.map((p) => (
+                <button key={p.id} type="button" onClick={() => setWebsiteKeuze(p.id)} className={keuzeClass(websiteKeuze === p.id)}>
+                  <div>{p.naam.replace("Website ", "")}</div>
+                  <div className="text-xs opacity-70 mt-0.5">{euro(p.eenmalig)}</div>
                 </button>
               ))}
             </div>
@@ -423,22 +354,13 @@ export default function ROIPage() {
               AI Agent <span className="text-white/30">(optioneel)</span>
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-              {[
-                { val: "geen" as const, label: "Geen", prijs: "" },
-                { val: "faq" as const, label: "FAQ", prijs: "€300" },
-                { val: "leads" as const, label: "Leads", prijs: "€600" },
-                { val: "afspraken" as const, label: "Afspraken", prijs: "€900" },
-                { val: "volledig" as const, label: "Volledig", prijs: "€1.500" },
-              ].map((opt) => (
-                <button key={opt.val} type="button"
-                  onClick={() => setAiKeuze(opt.val)}
-                  className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-colors border ${
-                    aiKeuze === opt.val
-                      ? "bg-violet-600/30 border-violet-500/60 text-white"
-                      : "bg-white/5 border-white/10 text-white/50 hover:text-white/80"
-                  }`}>
-                  <div>{opt.label}</div>
-                  {opt.prijs && <div className="text-xs opacity-70 mt-0.5">{opt.prijs}</div>}
+              <button type="button" onClick={() => setAiKeuze("geen")} className={keuzeClass(aiKeuze === "geen")}>
+                <div>Geen</div>
+              </button>
+              {AI_PAKKETTEN.map((p) => (
+                <button key={p.id} type="button" onClick={() => setAiKeuze(p.id)} className={keuzeClass(aiKeuze === p.id)}>
+                  <div>{p.naam.replace(" Agent", "").replace(" Chatbot", "")}</div>
+                  <div className="text-xs opacity-70 mt-0.5">{euro(p.eenmalig)}</div>
                 </button>
               ))}
             </div>
@@ -446,6 +368,8 @@ export default function ROIPage() {
               <p className="mt-2 text-xs text-green-400 font-medium">✓ Bundel — automatisch 20% korting toegepast</p>
             )}
           </div>
+
+          {fout && <p className="text-sm text-red-400 text-center">{fout}</p>}
 
           <button
             onClick={calculate}
@@ -463,28 +387,26 @@ export default function ROIPage() {
               <div className="grid sm:grid-cols-3 gap-4 text-center">
                 <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
                   <p className="text-xs text-white/40 mb-1">Huidige maandomzet</p>
-                  <p className="text-2xl font-bold text-white">
-                    €{result.huidig.toLocaleString("nl-NL")}
-                  </p>
+                  <p className="text-2xl font-bold text-white">{euro(result.huidig)}</p>
                 </div>
                 <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/30">
                   <p className="text-xs text-violet-300/70 mb-1">Geschatte extra omzet/mnd</p>
                   <p className="text-xl font-bold text-violet-300">
-                    +€{result.extraMin.toLocaleString("nl-NL")}
+                    +{euro(result.extraMin)}
                     <span className="text-base text-violet-400/70"> – </span>
-                    €{result.extraMax.toLocaleString("nl-NL")}
+                    {euro(result.extraMax)}
                   </p>
                 </div>
                 <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10">
                   <p className="text-xs text-white/40 mb-1">
-                    {result.pakketnaam}{result.korting && <span className="ml-1 text-violet-400"> (bundel)</span>}
+                    {result.label}{result.korting && <span className="ml-1 text-violet-400"> (bundel)</span>}
                   </p>
                   <p className="text-lg font-bold text-white">
-                    €{result.eenmalig.toLocaleString("nl-NL")}
+                    {euro(result.eenmalig)}
                     <span className="text-xs font-normal text-white/40"> eenmalig</span>
                   </p>
                   <p className="text-sm font-semibold text-violet-300">
-                    + €{result.maand}
+                    + {euro(result.maand)}
                     <span className="text-xs font-normal text-white/40">/mnd</span>
                   </p>
                 </div>
@@ -503,17 +425,24 @@ export default function ROIPage() {
                     {result.desc}.
                   </p>
                   <p>
-                    Geschatte terugverdientijd:{" "}
-                    <span className="text-violet-300 font-medium">
-                      {result.terugverdien <= 1
-                        ? "minder dan 1 maand"
-                        : result.terugverdien <= 3
-                        ? `~${result.terugverdien} maanden`
-                        : result.terugverdien <= 12
-                        ? `${result.terugverdien} maanden`
-                        : `meer dan 1 jaar`}
-                    </span>
-                    {" "}(op basis van het gemiddelde van de bandbreedte).
+                    {result.terugverdien === null ? (
+                      <>
+                        Bij deze schatting dekt de extra omzet de maandkosten <span className="text-amber-300 font-medium">nog niet</span>.
+                        Vul een groter aantal klanten in, of plan een gesprek om te kijken wat voor jou wél rendabel is.
+                      </>
+                    ) : (
+                      <>
+                        Geschatte terugverdientijd van de eenmalige kosten:{" "}
+                        <span className="text-violet-300 font-medium">
+                          {result.terugverdien <= 1
+                            ? "minder dan 1 maand"
+                            : result.terugverdien <= 24
+                            ? `${result.terugverdien} maanden`
+                            : "meer dan 2 jaar"}
+                        </span>
+                        {" "}(op basis van het midden van de bandbreedte, na aftrek van de maandkosten).
+                      </>
+                    )}
                   </p>
                 </div>
               </div>
@@ -529,7 +458,7 @@ export default function ROIPage() {
             {/* Disclaimer */}
             <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
               <p className="text-xs text-white/30 leading-relaxed">
-                <span className="text-white/50 font-medium">Let op:</span> Dit zijn indicatieve schattingen op basis van branchegemiddelden en typische groeicijfers bij bedrijven zonder of met een zwakke online aanwezigheid. Werkelijke resultaten hangen af van factoren zoals je huidige zichtbaarheid, concurrentie, locatie en hoe actief je de website of AI-agent inzet. Geen enkele investering garandeert een vast rendement.
+                <span className="text-white/50 font-medium">Let op:</span> Dit zijn indicatieve schattingen op basis van branchegemiddelden en typische groeicijfers bij bedrijven zonder of met een zwakke online aanwezigheid. Werkelijke resultaten hangen af van je huidige zichtbaarheid, concurrentie, locatie en hoe actief je de website of AI-agent inzet. Geen enkele investering garandeert een vast rendement.
               </p>
             </div>
           </div>
@@ -538,10 +467,12 @@ export default function ROIPage() {
         <p className="text-center mt-10 text-white/30 text-sm">
           Klaar om te starten?{" "}
           <Link href="/#prijzen" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">
-            Bekijk onze pakketten →
+            Bekijk de pakketten →
           </Link>
         </p>
       </div>
+
+      <Footer />
     </main>
   );
 }
