@@ -3,7 +3,8 @@ import RestaurantNavbarClient from "./RestaurantNavbar";
 
 /* ─── Metadata ───────────────────────────────────────────── */
 export const metadata = {
-  title: "Restaurant De Waag — Zutphen | Reserveer Online",
+  robots: { index: false, follow: false },
+  title: "Restaurant De Waag — Zutphen | Reserveer Online · Demo door LifeGix",
   description:
     "Al 20 jaar het beste restaurant van Zutphen. ★4.8 op Google. Vers bereid met lokale ingrediënten op de Grote Markt. Reserveer vandaag uw tafel.",
 };

@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Barbershop Yazan — Knippen & Baard trimmen in Zutphen",
+  robots: { index: false, follow: false },
+  title: "Barbershop Yazan — Knippen & Baard trimmen in Zutphen · Demo door LifeGix",
   description:
     "Barbershop Yazan in Zutphen. 4.9 ★ op Google. Professioneel knippen, baard trimmen en meer. Al 8 jaar de vertrouwde kapper in het centrum van Zutphen. Maak vandaag nog een afspraak.",
 };

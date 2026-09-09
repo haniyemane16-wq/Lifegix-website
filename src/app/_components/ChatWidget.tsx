@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 type Message = { role: "user" | "assistant"; content: string };
 
 const WELKOM =
-  "Hoi! Ik ben de assistent van LifeGix. Stel me gerust een vraag over onze diensten, prijzen of hoe we kunnen helpen. 👋";
+  "Hoi! Ik ben de AI-assistent van LifeGix. Stel me gerust een vraag over de diensten, prijzen of hoe LifeGix jouw bedrijf kan helpen. 👋";
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);

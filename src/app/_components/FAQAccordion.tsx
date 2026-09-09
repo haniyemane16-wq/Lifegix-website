@@ -28,7 +28,7 @@ const items = [
     a: "Absoluut. De AI agent koppelen we aan je bestaande website, WhatsApp-nummer of e-mail. Je hoeft niets te vervangen.",
   },
   {
-    q: "Werken jullie alleen in Warnsveld?",
+    q: "Werk je alleen in Warnsveld?",
     a: "Ik ben gevestigd in Warnsveld maar werk voor bedrijven door heel Nederland. Alles gaat prima op afstand — met regelmatig contact via video of telefoon.",
   },
 ];

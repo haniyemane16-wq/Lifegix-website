@@ -2,7 +2,8 @@ import Link from "next/link";
 import ZorgNavbarClient from "./ZorgNavbar";
 
 export const metadata = {
-  title: "FysioFit Zutphen — Fysiotherapie | Afspraak binnen 2 dagen",
+  robots: { index: false, follow: false },
+  title: "FysioFit Zutphen — Fysiotherapie | Afspraak binnen 2 dagen · Demo door LifeGix",
   description: "Fysiotherapiepraktijk FysioFit in Zutphen. Vergoed door zorgverzekeraar. Afspraak binnen 2 dagen. 9.6/10 op Zorgkaart. BIG-geregistreerd.",
 };
 
