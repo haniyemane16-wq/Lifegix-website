@@ -537,9 +537,9 @@ export default function ROIPage() {
 
         <p className="text-center mt-10 text-white/30 text-sm">
           Klaar om te starten?{" "}
-          <a href="/#prijzen" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">
+          <Link href="/#prijzen" className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors">
             Bekijk onze pakketten →
-          </a>
+          </Link>
         </p>
       </div>
     </main>

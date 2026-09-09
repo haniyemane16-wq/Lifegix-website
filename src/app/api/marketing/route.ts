@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { isValidAdminKey } from "@/lib/adminAuth";
+import { prijzenAlsTekst } from "@/lib/prijzen";
 
 export const dynamic = "force-dynamic";
 
@@ -8,14 +10,8 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const LIFEGIX_CONTEXT = `
 LifeGix is een webdesign & AI-automatiseringsbedrijf van Hanibal, gevestigd in Warnsveld, Nederland.
 
-Diensten:
-- Website Starter: €500 eenmalig + €50/mnd
-- Website Business: €1.000 eenmalig + €75/mnd
-- AI Agent (FAQ Chatbot): €300 + €50/mnd
-- AI Agent (Leadopvolging): €600 + €90/mnd
-- AI Agent (Afspraakplanning): €900 + €120/mnd
-- Volledige AI Agent: €1.500 + €175/mnd
-- Bundels (website + AI): vanaf €750 + €110/mnd (20% korting)
+Diensten en prijzen (vrijgesteld van BTW):
+${prijzenAlsTekst()}
 
 Doelgroep: lokale MKB-ondernemers in Warnsveld, Zutphen en omgeving (kapper, installateur, restaurant, garage, fysiotherapeut, etc.)
 USP's: persoonlijk contact, 1-2 weken doorlooptijd, ver onder bureauprijs, alles geregeld
@@ -68,7 +64,7 @@ export async function POST(req: NextRequest) {
   try {
     const { verzoek, adminKey } = await req.json();
 
-    if (adminKey !== process.env.NEXT_PUBLIC_ADMIN_KEY) {
+    if (!isValidAdminKey(adminKey)) {
       return NextResponse.json({ error: "Niet geautoriseerd." }, { status: 401 });
     }
 

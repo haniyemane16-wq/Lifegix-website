@@ -4,99 +4,20 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-/* ─── Oprichtingskorting ─────────────────────────────────── */
-// Zet ACTIE_PLEKKEN op 0 om de actie te beëindigen
-const ACTIE_PLEKKEN = 5;
-const ACTIE_PRIJS = 149;
-const ACTIE_ACTIEF = ACTIE_PLEKKEN > 0;
+import {
+  WEBSITE_PAKKETTEN,
+  AI_PAKKETTEN,
+  ACTIE_ACTIEF,
+  ACTIE_PLEKKEN,
+  bundelPrijs,
+  euro,
+  isAIPakket as isAIPakketId,
+  type WebsitePakketId,
+  type AIPakketId,
+} from "@/lib/prijzen";
 
-/* ─── Website pakketten ─────────────────────────────────── */
-const WEBSITE_PAKKETTEN = [
-  {
-    id: "visitekaartje",
-    naam: "Website Visitekaartje",
-    eenmalig: ACTIE_ACTIEF ? ACTIE_PRIJS : 249,
-    maandelijks: 25,
-    features: ["1 pagina", "Contactformulier", "Mobielvriendelijk", "Live in 3 dagen"],
-    highlighted: false,
-  },
-  {
-    id: "starter",
-    naam: "Website Starter",
-    eenmalig: 500,
-    maandelijks: 50,
-    features: ["1 pagina", "Contactformulier", "SEO basis", "Mobielvriendelijk"],
-    highlighted: false,
-  },
-  {
-    id: "business",
-    naam: "Website Business",
-    eenmalig: 1000,
-    maandelijks: 75,
-    features: ["5 pagina's", "SEO volledig", "Google Analytics", "Contactformulier"],
-    highlighted: true,
-  },
-] as const;
-
-/* ─── AI Agent pakketten ────────────────────────────────── */
-const AI_PAKKETTEN = [
-  {
-    id: "ai_faq",
-    naam: "FAQ Chatbot",
-    tagline: "Beantwoordt vaste vragen 24/7",
-    eenmalig: 300,
-    maandelijks: 50,
-    features: [
-      "Veelgestelde vragen automatisch",
-      "Website integratie",
-      "Doorsturen bij complexe vragen",
-    ],
-    highlighted: false,
-  },
-  {
-    id: "ai_leads",
-    naam: "Leadopvolging Agent",
-    tagline: "Volgt leads automatisch op",
-    eenmalig: 600,
-    maandelijks: 90,
-    features: [
-      "Automatische e-mail/WhatsApp opvolging",
-      "Lead kwalificatie",
-      "CRM-koppeling mogelijk",
-    ],
-    highlighted: false,
-  },
-  {
-    id: "ai_afspraken",
-    naam: "Afspraakplanning Agent",
-    tagline: "Plant afspraken automatisch in",
-    eenmalig: 900,
-    maandelijks: 120,
-    features: [
-      "24/7 agenda management",
-      "Automatische bevestigingen",
-      "Google Calendar integratie",
-    ],
-    highlighted: true,
-  },
-  {
-    id: "ai_volledig",
-    naam: "Volledige AI Agent",
-    tagline: "Alles in één, volledig op maat",
-    eenmalig: 1500,
-    maandelijks: 175,
-    features: [
-      "Chat + leads + afspraken",
-      "Multi-channel (web, WhatsApp, e-mail)",
-      "Maandelijkse rapportage",
-      "Prioriteit support",
-    ],
-    highlighted: false,
-  },
-] as const;
-
-const AI_EENMALIG = 600;
-const AI_MAANDELIJKS = 90;
+// Testbetalingen van €0,01 — alleen zichtbaar buiten productie
+const TOON_TEST_PAKKETTEN = process.env.NODE_ENV !== "production";
 
 const TEST_PAKKET = {
   id: "test",
@@ -114,14 +35,9 @@ const TEST_SUB_PAKKET = {
   features: [] as string[],
 } as const;
 
-type WebsitePakketId = (typeof WEBSITE_PAKKETTEN)[number]["id"];
-type AIPakketId = (typeof AI_PAKKETTEN)[number]["id"];
 type PakketId = WebsitePakketId | AIPakketId | "test" | "test_sub";
 
-const AI_PAKKET_IDS: string[] = AI_PAKKETTEN.map((p) => p.id);
-const isAIPakket = (id: PakketId | null): id is AIPakketId =>
-  id !== null && AI_PAKKET_IDS.includes(id);
-
+const isAIPakket = (id: PakketId | null): id is AIPakketId => isAIPakketId(id);
 const isTestPakket = (id: PakketId | null) => id === "test" || id === "test_sub";
 
 function CheckIcon() {
@@ -200,24 +116,15 @@ export default function BestelPage() {
     gekozenPakket === "test" ? TEST_PAKKET : undefined
   );
 
-  // Dynamische prijsberekening — zelfde logica als de API
-  const heeftBundel = metAiAgent && websitePakket && gekozenAiType;
+  // Dynamische prijsberekening — zelfde logica als de API (via lib/prijzen)
   const gekozenAiPakket = AI_PAKKETTEN.find((p) => p.id === gekozenAiType);
+  const bundel = metAiAgent && websitePakket && gekozenAiPakket ? bundelPrijs(websitePakket, gekozenAiPakket) : null;
+  const heeftBundel = bundel !== null;
 
-  const totaalEenmalig = heeftBundel && websitePakket && gekozenAiPakket
-    ? Math.round((websitePakket.eenmalig + gekozenAiPakket.eenmalig) * 0.8)
-    : huidigPakket?.eenmalig ?? 0;
-
-  const totaalMaandelijks = heeftBundel && websitePakket && gekozenAiPakket
-    ? Math.round((websitePakket.maandelijks + gekozenAiPakket.maandelijks) * 0.8)
-    : huidigPakket?.maandelijks ?? 0;
-
-  const kortingEenmalig = heeftBundel && websitePakket && gekozenAiPakket
-    ? Math.round((websitePakket.eenmalig + gekozenAiPakket.eenmalig) * 0.2)
-    : 0;
-  const kortingMaandelijks = heeftBundel && websitePakket && gekozenAiPakket
-    ? Math.round((websitePakket.maandelijks + gekozenAiPakket.maandelijks) * 0.2)
-    : 0;
+  const totaalEenmalig = bundel?.eenmalig ?? huidigPakket?.eenmalig ?? 0;
+  const totaalMaandelijks = bundel?.maandelijks ?? huidigPakket?.maandelijks ?? 0;
+  const kortingEenmalig = bundel?.kortingEenmalig ?? 0;
+  const kortingMaandelijks = bundel?.kortingMaandelijks ?? 0;
 
   const totalSteps = isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket) ? 2 : 3;
 
@@ -381,13 +288,13 @@ export default function BestelPage() {
                           </ul>
                         </div>
                         <div className="sm:text-right shrink-0">
-                          {p.id === "visitekaartje" && ACTIE_ACTIEF && (
-                            <div className="text-sm text-white/40 line-through mb-0.5">€249</div>
+                          {p.normaal && (
+                            <div className="text-sm text-white/40 line-through mb-0.5">{euro(p.normaal)}</div>
                           )}
-                          <div className="text-2xl font-bold text-white">€{p.eenmalig}</div>
+                          <div className="text-2xl font-bold text-white">{euro(p.eenmalig)}</div>
                           <div className="text-xs text-white/40">eenmalig</div>
                           <div className="mt-1 text-sm font-medium text-violet-300">
-                            + €{p.maandelijks}/mnd
+                            + {euro(p.maandelijks)}/mnd
                           </div>
                         </div>
                       </div>
@@ -416,7 +323,8 @@ export default function BestelPage() {
                   </div>
                 </button>
 
-                {/* Test pakketten — altijd zichtbaar */}
+                {/* Test pakketten — alleen buiten productie */}
+                {TOON_TEST_PAKKETTEN && (
                 <div className="flex gap-2">
                   <button
                     onClick={() => handlePakketKeuze("test")}
@@ -431,6 +339,7 @@ export default function BestelPage() {
                     🧪 Test + Abo
                   </button>
                 </div>
+                )}
               </>
             ) : (
               <>
@@ -476,10 +385,10 @@ export default function BestelPage() {
                           </ul>
                         </div>
                         <div className="sm:text-right shrink-0">
-                          <div className="text-2xl font-bold text-white">€{p.eenmalig}</div>
+                          <div className="text-2xl font-bold text-white">{euro(p.eenmalig)}</div>
                           <div className="text-xs text-white/40">eenmalig</div>
                           <div className="mt-1 text-sm font-medium text-violet-300">
-                            + €{p.maandelijks}/mnd
+                            + {euro(p.maandelijks)}/mnd
                           </div>
                         </div>
                       </div>
@@ -502,31 +411,25 @@ export default function BestelPage() {
             </p>
 
             <div className="grid gap-3">
-              {[
-                { id: "ai_faq",       naam: "FAQ Chatbot",           desc: "Beantwoordt vaste vragen 24/7",                    e: 300,  m: 50,  badge: null },
-                { id: "ai_leads",     naam: "Leadopvolging Agent",   desc: "Automatische e-mail & WhatsApp opvolging",         e: 600,  m: 90,  badge: null },
-                { id: "ai_afspraken", naam: "Afspraakplanning Agent",desc: "24/7 agenda management & bevestigingen",           e: 900,  m: 120, badge: "Populair" },
-                { id: "ai_volledig",  naam: "Volledige AI Agent",    desc: "Alles: chat, leads, afspraken & rapportage",       e: 1500, m: 175, badge: null },
-              ].map((ai) => {
-                const websiteP = WEBSITE_PAKKETTEN.find((x) => x.id === gekozenPakket);
-                const kortingE = Math.round((websiteP ? ai.e : 0) * 0.2);
-                const kortingM = Math.round((websiteP ? ai.m : 0) * 0.2);
-                const actiefE = ai.e - kortingE;
-                const actiefM = ai.m - kortingM;
+              {AI_PAKKETTEN.map((ai) => {
+                const b = websitePakket ? bundelPrijs(websitePakket, ai) : null;
+                const kortingE = b ? Math.round(ai.eenmalig * 0.2) : 0;
+                const actiefE = ai.eenmalig - kortingE;
+                const actiefM = ai.maandelijks - (b ? Math.round(ai.maandelijks * 0.2) : 0);
                 return (
                   <button key={ai.id} onClick={() => { setGekozenAiType(ai.id); handleAiKeuze(true); }}
                     className="relative w-full text-left rounded-2xl p-5 gradient-border bg-white/[0.03] hover:bg-white/[0.05] transition-all">
-                    {ai.badge && (
+                    {ai.highlighted && (
                       <span className="absolute top-4 right-4 text-xs font-semibold px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/20">
-                        {ai.badge}
+                        Populair
                       </span>
                     )}
                     <h3 className="text-base font-bold text-white mb-1 pr-20">{ai.naam}</h3>
-                    <p className="text-sm text-white/50 mb-2">{ai.desc}</p>
+                    <p className="text-sm text-white/50 mb-2">{ai.tagline}</p>
                     <div className="flex items-center gap-3 text-sm">
-                      {kortingE > 0 && <span className="line-through text-white/25">+€{ai.e}</span>}
-                      <span className="text-green-400 font-semibold">+€{actiefE} eenmalig</span>
-                      <span className="text-violet-300">+ €{actiefM}/mnd</span>
+                      {kortingE > 0 && <span className="line-through text-white/25">+{euro(ai.eenmalig)}</span>}
+                      <span className="text-green-400 font-semibold">+{euro(actiefE)} eenmalig</span>
+                      <span className="text-violet-300">+ {euro(actiefM)}/mnd</span>
                       {kortingE > 0 && <span className="text-green-400/70 text-xs">(20% korting)</span>}
                     </div>
                   </button>
@@ -564,14 +467,14 @@ export default function BestelPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-white">{huidigPakket.naam}</span>
                   <div className="text-right">
-                    <span className="text-white font-semibold">€{huidigPakket.eenmalig}</span>
+                    <span className="text-white font-semibold">{euro(huidigPakket.eenmalig)}</span>
                     <span className="text-white/40 text-sm ml-1">eenmalig</span>
                   </div>
                 </div>
                 {huidigPakket.maandelijks > 0 && (
                   <div className="flex items-center justify-between text-sm text-white/50">
                     <span>Maandelijks abonnement</span>
-                    <span>€{huidigPakket.maandelijks}/mnd</span>
+                    <span>{euro(huidigPakket.maandelijks)}/mnd</span>
                   </div>
                 )}
 
@@ -581,18 +484,18 @@ export default function BestelPage() {
                     <div className="flex items-center justify-between">
                       <span className="text-white">{gekozenAiPakket.naam}</span>
                       <div className="text-right">
-                        <span className="text-white font-semibold">€{gekozenAiPakket.eenmalig}</span>
+                        <span className="text-white font-semibold">{euro(gekozenAiPakket.eenmalig)}</span>
                         <span className="text-white/40 text-sm ml-1">eenmalig</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-sm text-white/50">
                       <span>Abonnement {gekozenAiPakket.naam}</span>
-                      <span>€{gekozenAiPakket.maandelijks}/mnd</span>
+                      <span>{euro(gekozenAiPakket.maandelijks)}/mnd</span>
                     </div>
                     {heeftBundel && kortingEenmalig > 0 && (
                       <div className="flex items-center justify-between text-sm text-green-400 font-medium">
                         <span>Bundelkorting (20%)</span>
-                        <span>−€{kortingEenmalig} / −€{kortingMaandelijks}/mnd</span>
+                        <span>−{euro(kortingEenmalig)} / −{euro(kortingMaandelijks)}/mnd</span>
                       </div>
                     )}
                   </>
@@ -607,12 +510,12 @@ export default function BestelPage() {
                 <div className="h-px bg-white/10 mt-4 mb-3" />
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-white">Nu te betalen</span>
-                  <span className="text-2xl font-bold text-violet-300">€{totaalEenmalig}</span>
+                  <span className="text-2xl font-bold text-violet-300">{euro(totaalEenmalig)}</span>
                 </div>
                 {totaalMaandelijks > 0 && (
                   <div className="flex items-center justify-between text-sm text-white/50">
                     <span>Daarna maandelijks</span>
-                    <span>€{totaalMaandelijks}/mnd</span>
+                    <span>{euro(totaalMaandelijks)}/mnd</span>
                   </div>
                 )}
               </div>
@@ -687,7 +590,7 @@ export default function BestelPage() {
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/25 focus:outline-none focus:border-violet-500/60 focus:bg-white/[0.07] transition-all text-sm font-mono"
                   />
                   <p className="text-white/30 text-xs mt-1.5">
-                    Jouw bankrekening waarvan €{totaalMaandelijks}/mnd wordt afgeschreven
+                    Jouw bankrekening waarvan {euro(totaalMaandelijks)}/mnd wordt afgeschreven
                   </p>
                 </div>
               )}
@@ -739,7 +642,7 @@ export default function BestelPage() {
                   disabled={loading}
                   className="w-full py-4 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-sm transition-all hover:scale-[1.01] purple-glow"
                 >
-                  {loading ? "Betaling aanmaken…" : `Bestellen en betalen — €${totaalEenmalig}`}
+                  {loading ? "Betaling aanmaken…" : `Bestellen en betalen — ${euro(totaalEenmalig)}`}
                 </button>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
                   <span className="flex items-center gap-1.5 text-xs text-white/40">

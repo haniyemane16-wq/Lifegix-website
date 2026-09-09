@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { STARTPRIJS_WEBSITE, STARTPRIJS_WEBSITE_MAAND, euro } from "@/lib/prijzen";
 
 const items = [
   {
@@ -8,7 +9,7 @@ const items = [
   },
   {
     q: "Wat kost een website?",
-    a: "Websites starten vanaf €249 eenmalig plus €25 per maand voor hosting, onderhoud en support. Gebruik de ROI-calculator voor een berekening op maat op basis van jouw situatie.",
+    a: `Websites starten vanaf ${euro(STARTPRIJS_WEBSITE)} eenmalig plus ${euro(STARTPRIJS_WEBSITE_MAAND)} per maand voor hosting, onderhoud en support. Bekijk alle pakketten bij Prijzen, of gebruik de ROI-calculator voor een berekening op maat.`,
   },
   {
     q: "Heb ik technische kennis nodig?",

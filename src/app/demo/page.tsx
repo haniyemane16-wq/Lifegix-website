@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import Navbar from "../_components/Navbar";
+import Footer from "../_components/Footer";
 import DemoZoeker from "./DemoZoeker";
 
 export const metadata: Metadata = {
@@ -10,18 +12,8 @@ export const metadata: Metadata = {
 
 export default function DemoOverzichtPage() {
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-white">
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0a0a0f]/95 sm:bg-[#0a0a0f]/80 sm:backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
-            <span className="text-white">Life</span><span className="text-violet-400">gix</span>
-          </Link>
-          <Link href="/bestellen" className="text-sm font-medium px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 transition-colors">
-            Direct beginnen →
-          </Link>
-        </div>
-      </nav>
+    <main className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
+      <Navbar />
 
       <div className="pt-24">
         {/* Hero */}
@@ -67,6 +59,7 @@ export default function DemoOverzichtPage() {
           </div>
         </section>
       </div>
+      <Footer />
     </main>
   );
 }

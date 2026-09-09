@@ -1,28 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import createMollieClient from "@mollie/api-client";
+import { WEBSITE_PAKKETTEN, AI_PAKKETTEN, bundelPrijs, isWebsitePakket, isAIPakket } from "@/lib/prijzen";
 
 export const dynamic = "force-dynamic";
 
-const PAKKETTEN: Record<string, { eenmalig: number; maandelijks: number; label: string }> = {
-  starter:      { eenmalig: 500,  maandelijks: 50,  label: "Website Starter" },
-  business:     { eenmalig: 1000, maandelijks: 75,  label: "Website Business" },
-  ai_faq:       { eenmalig: 300,  maandelijks: 50,  label: "FAQ Chatbot" },
-  ai_leads:     { eenmalig: 600,  maandelijks: 90,  label: "Leadopvolging Agent" },
-  ai_afspraken: { eenmalig: 900,  maandelijks: 120, label: "Afspraakplanning Agent" },
-  ai_volledig:  { eenmalig: 1500, maandelijks: 175, label: "Volledige AI Agent" },
-  test:         { eenmalig: 0.01, maandelijks: 0,   label: "Testbetaling" },
-  test_sub:     { eenmalig: 0.01, maandelijks: 0.03, label: "Testbetaling + Abonnement" },
+type Pakket = { eenmalig: number; maandelijks: number; label: string };
+
+// Testbetalingen van €0,01 bestaan alleen buiten productie.
+const TEST_PAKKETTEN: Record<string, Pakket> = process.env.NODE_ENV === "production" ? {} : {
+  test:     { eenmalig: 0.01, maandelijks: 0,    label: "Testbetaling" },
+  test_sub: { eenmalig: 0.01, maandelijks: 0.03, label: "Testbetaling + Abonnement" },
+};
+
+const PAKKETTEN: Record<string, Pakket> = {
+  ...Object.fromEntries([...WEBSITE_PAKKETTEN, ...AI_PAKKETTEN].map((p) => [p.id, { eenmalig: p.eenmalig, maandelijks: p.maandelijks, label: p.naam }])),
+  ...TEST_PAKKETTEN,
 };
 
 function berekenBundel(pakket: string, aiType: string) {
   const website = PAKKETTEN[pakket];
   const ai = PAKKETTEN[aiType];
-  if (!website || !ai) return null;
-  return {
-    eenmalig: Math.round((website.eenmalig + ai.eenmalig) * 0.8),
-    maandelijks: Math.round((website.maandelijks + ai.maandelijks) * 0.8),
-    label: `${website.label} + ${ai.label}`,
-  };
+  if (!website || !ai || !isWebsitePakket(pakket) || !isAIPakket(aiType)) return null;
+  const b = bundelPrijs(website, ai);
+  return { eenmalig: b.eenmalig, maandelijks: b.maandelijks, label: `${website.label} + ${ai.label}` };
 }
 
 export async function POST(req: NextRequest) {
@@ -54,8 +54,7 @@ export async function POST(req: NextRequest) {
   const p = PAKKETTEN[pakket];
   if (!p) return NextResponse.json({ error: "Ongeldig pakket." }, { status: 400 });
 
-  const isBundle = aiAgent && (pakket === "starter" || pakket === "business") && aiType;
-  const bundel = isBundle ? berekenBundel(pakket, aiType!) : null;
+  const bundel = aiAgent && isWebsitePakket(pakket) && aiType ? berekenBundel(pakket, aiType) : null;
   const gekozenPakket = bundel ?? p;
   const eenmaligBedrag = gekozenPakket.eenmalig;
   const maandelijksBedrag = gekozenPakket.maandelijks;

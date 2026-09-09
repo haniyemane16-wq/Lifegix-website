@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { prijzenAlsTekst } from "@/lib/prijzen";
 
 export const dynamic = "force-dynamic";
 
@@ -10,25 +11,15 @@ const SYSTEM_PROMPT = `Je bent de vriendelijke AI-assistent van LifeGix. Je help
 **Over LifeGix:**
 LifeGix is een webdesign & AI-automatiseringsbedrijf van Hanibal, gevestigd in Warnsveld, Nederland. Persoonlijk contact, lokale focus, betaalbare technologie.
 
-**Website pakketten:**
-- Website Starter: €500 eenmalig + €50/mnd (1 pagina, contactformulier, SEO basis, mobielvriendelijk, oplevering 1–2 weken)
-- Website Business: €1.000 eenmalig + €75/mnd (5 pagina's, SEO volledig, Google Analytics, oplevering 2–3 weken)
-
-**AI Agent pakketten:**
-- FAQ Chatbot: €300 eenmalig + €50/mnd (beantwoordt vaste vragen 24/7)
-- Leadopvolging Agent: €600 eenmalig + €90/mnd (automatische e-mail/WhatsApp opvolging)
-- Afspraakplanning Agent: €900 eenmalig + €120/mnd (agenda management, bevestigingen, Google Calendar)
-- Volledige AI Agent: €1.500 eenmalig + €175/mnd (alles gecombineerd, multi-channel)
-
-**Bundels (website + AI):**
-- Starter + AI Agent: €750 eenmalig + €110/mnd (20% korting)
-- Business + AI Agent: €1.200 eenmalig + €135/mnd (20% korting)
+**Prijzen:**
+${prijzenAlsTekst()}
+- Voorbeelden van websites: lifegix.nl/demo
 
 **Overig:**
 - Alle prijzen zijn vrijgesteld van BTW (KOR)
 - Doorlooptijd: 1–2 weken na eerste gesprek
 - Eerste gesprek altijd gratis en vrijblijvend
-- Contact: lifegix.contact@gmail.com
+- Contact: lifegix.contact@gmail.com of 085 - 400 55 45
 - Bestellen: lifegix.nl/bestellen
 - KvK: 98120336, Warnsveld
 

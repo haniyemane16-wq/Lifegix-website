@@ -17,7 +17,8 @@ const VOORBEELDEN = [
 function MarketingContent() {
   const params = useSearchParams();
   const adminKey = params.get("key") ?? "";
-  const [authorized, setAuthorized] = useState(false);
+  // De sleutel wordt server-side geverifieerd (zelfde route als het admin-paneel).
+  const [authorized, setAuthorized] = useState<boolean | "checking">("checking");
 
   const [verzoek, setVerzoek] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,12 +28,17 @@ function MarketingContent() {
   const [activeTab, setActiveTab] = useState<"final" | "draft" | "brief">("final");
 
   useEffect(() => {
-    if (adminKey === process.env.NEXT_PUBLIC_ADMIN_KEY) {
-      setAuthorized(true);
-    } else {
-      // Check via a simple comparison — key is public env var
-      setAuthorized(!!adminKey && adminKey.length > 10);
-    }
+    let actief = true;
+    if (!adminKey) { setAuthorized(false); return; }
+    fetch("/api/admin/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key: adminKey }),
+    })
+      .then((r) => r.json())
+      .then((d) => { if (actief) setAuthorized(d.ok === true); })
+      .catch(() => { if (actief) setAuthorized(false); });
+    return () => { actief = false; };
   }, [adminKey]);
 
   async function run() {
@@ -64,6 +70,14 @@ function MarketingContent() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (authorized === "checking") {
+    return (
+      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center px-6">
+        <p className="text-white/40 text-sm">Toegang controleren…</p>
+      </div>
+    );
   }
 
   if (!authorized) {
