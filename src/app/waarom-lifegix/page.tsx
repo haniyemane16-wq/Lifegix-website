@@ -188,6 +188,10 @@ export default function WaaromLifeGixPage() {
                   a: "Zelfbouwplatforms zien er prima uit maar scoren slecht op SEO, snelheid en conversie. Een professioneel gebouwde website haalt gemiddeld 2–3× meer bezoekers via Google. Dat verdien je snel terug.",
                 },
                 {
+                  q: "Kan ik dit niet gewoon zelf met AI maken?",
+                  a: "Kan, maar reken op tientallen uren puzzelen — teksten kloppend maken, alles testen op mobiel, hosting en domein regelen. En dan heb je nog geen werkend betaalsysteem, een AI-chatbot die echt klantvragen beantwoordt of iemand die het onderhoudt als er iets stuk gaat. Ik lever dat kant-en-klaar, voor minder dan wat één gemiste klant je kost.",
+                },
+                {
                   q: "Hoeveel tijd kost het mij?",
                   a: "Ongeveer 1–2 uur van jouw kant. Je levert je teksten en foto's aan (of ik help daarmee), en ik regel de rest. Na de oplevering ben je zo goed als klaar.",
                 },
