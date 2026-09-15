@@ -44,6 +44,7 @@ async function addNotionKlant(data: {
   maandelijks: number;
   mollieKlantId?: string;
   moneybirdFactuurId?: string;
+  referral?: string;
 }) {
   const token = process.env.NOTION_API_KEY;
   if (!token) { console.warn("⚠️ NOTION_API_KEY niet ingesteld"); return; }
@@ -66,6 +67,7 @@ async function addNotionKlant(data: {
     "Klant sinds":         { date: { start: new Date().toISOString().split("T")[0] } },
     "Mollie klant ID":     data.mollieKlantId ? { rich_text: [{ text: { content: data.mollieKlantId } }] } : undefined,
     "Moneybird factuur ID": data.moneybirdFactuurId ? { rich_text: [{ text: { content: data.moneybirdFactuurId } }] } : undefined,
+    "Geworven door":       data.referral ? { rich_text: [{ text: { content: data.referral } }] } : undefined,
   };
   if (notionPakket) properties["Pakket"] = { select: { name: notionPakket } };
 
@@ -245,6 +247,7 @@ export async function POST(req: NextRequest) {
     maandelijksBedrag,
     beschrijving: metaBeschrijving,
     iban,
+    referral,
   } = meta;
 
   const pakketLabel = PAKKET_LABEL[pakket] ?? pakket;
@@ -355,6 +358,7 @@ export async function POST(req: NextRequest) {
             <tr><td style="padding: 8px 0; color: #9ca3af;">Pakket</td><td style="padding: 8px 0;">${beschrijving}</td></tr>
             <tr><td style="padding: 8px 0; color: #9ca3af;">Bedrag</td><td style="padding: 8px 0; font-weight: 600;">€${payment.amount.value}</td></tr>
             ${maandelijks > 0 ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Abonnement</td><td style="padding: 8px 0; color: #a78bfa;">€${maandelijks.toFixed(2)}/mnd — start na oplevering (handmatig activeren via /admin)</td></tr>` : ""}
+            ${referral ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Geworven door</td><td style="padding: 8px 0; font-weight: 600; color: #22c55e;">${referral} 💰</td></tr>` : ""}
             ${mollieKlantId ? `<tr><td style="padding: 8px 0; color: #9ca3af;">Mollie klant-ID</td><td style="padding: 8px 0; font-family: monospace;">${mollieKlantId} <span style="color:#9ca3af;">(nodig bij abonnement activeren)</span></td></tr>` : ""}
           </table>
         </div>
@@ -405,6 +409,7 @@ export async function POST(req: NextRequest) {
         maandelijks,
         mollieKlantId,
         moneybirdFactuurId,
+        referral,
       });
     } catch (err) {
       console.error("Notion CRM error:", err);

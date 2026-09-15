@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 import {
@@ -85,8 +85,11 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
   );
 }
 
-export default function BestelPage() {
+function BestelPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Affiliate/referral-tracking: ?ref=naam op de link → automatisch meegestuurd naar Notion/mail
+  const referral = searchParams.get("ref") ?? "";
   const [mounted, setMounted] = useState(false);
   const [stap, setStap] = useState(1);
   const [showAITypes, setShowAITypes] = useState(false);
@@ -167,6 +170,7 @@ export default function BestelPage() {
           email,
           telefoon,
           iban: iban.replace(/\s/g, "").toUpperCase(),
+          referral,
         }),
       });
 
@@ -672,5 +676,17 @@ export default function BestelPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function BestelPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-violet-500/30 border-t-violet-500 animate-spin" />
+      </main>
+    }>
+      <BestelPageInner />
+    </Suspense>
   );
 }

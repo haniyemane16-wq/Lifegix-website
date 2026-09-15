@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
     email: string;
     telefoon: string;
     iban?: string;
+    referral?: string;
   };
 
   try {
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
   }
 
-  const { pakket, aiAgent, aiType, naam, bedrijf, email, telefoon, iban } = body;
+  const { pakket, aiAgent, aiType, naam, bedrijf, email, telefoon, iban, referral } = body;
 
   if (!pakket || !naam || !email) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
@@ -74,6 +75,7 @@ export async function POST(req: NextRequest) {
       maandelijksBedrag: String(maandelijksBedrag),
       beschrijving,
       iban: iban ?? "",
+      referral: referral ?? "",
     };
 
     // Gewone betaling — geen sequenceType, klant kiest zelf betaalmethode
