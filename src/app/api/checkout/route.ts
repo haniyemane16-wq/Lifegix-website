@@ -48,6 +48,9 @@ export async function POST(req: NextRequest) {
 
   const { pakket, aiAgent, aiType, naam, bedrijf, email, telefoon, iban, referral } = body;
 
+  // Referral is bedoeld als korte referrer-code — server-side afdwingen, client-side filter is te omzeilen.
+  const veiligeReferral = (referral ?? "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40);
+
   if (!pakket || !naam || !email) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
   }
@@ -75,7 +78,7 @@ export async function POST(req: NextRequest) {
       maandelijksBedrag: String(maandelijksBedrag),
       beschrijving,
       iban: iban ?? "",
-      referral: referral ?? "",
+      referral: veiligeReferral,
     };
 
     // Gewone betaling — geen sequenceType, klant kiest zelf betaalmethode

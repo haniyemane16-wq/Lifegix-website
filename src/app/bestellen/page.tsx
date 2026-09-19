@@ -89,7 +89,8 @@ function BestelPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   // Affiliate/referral-tracking: ?ref=naam op de link → automatisch meegestuurd naar Notion/mail
-  const referral = searchParams.get("ref") ?? "";
+  // Alleen veilige tekens toestaan en kort houden — dit is bedoeld als korte referrer-code, geen vrije tekst.
+  const referral = (searchParams.get("ref") ?? "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40);
   const [mounted, setMounted] = useState(false);
   const [stap, setStap] = useState(1);
   const [showAITypes, setShowAITypes] = useState(false);
