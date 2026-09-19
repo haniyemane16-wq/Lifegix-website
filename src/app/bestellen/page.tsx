@@ -16,8 +16,9 @@ import {
   type AIPakketId,
 } from "@/lib/prijzen";
 
-// Testbetalingen van €0,01 — alleen zichtbaar buiten productie
-const TOON_TEST_PAKKETTEN = process.env.NODE_ENV !== "production";
+// Testbetalingen van €0,01 — buiten productie altijd zichtbaar; in productie alléén
+// met ?testkey=<admin-sleutel> in de link (server valideert de sleutel bij het afrekenen).
+const TEST_ZICHTBAAR_STANDAARD = process.env.NODE_ENV !== "production";
 
 const TEST_PAKKET = {
   id: "test",
@@ -91,6 +92,11 @@ function BestelPageInner() {
   // Affiliate/referral-tracking: ?ref=naam op de link → automatisch meegestuurd naar Notion/mail
   // Alleen veilige tekens toestaan en kort houden — dit is bedoeld als korte referrer-code, geen vrije tekst.
   const referral = (searchParams.get("ref") ?? "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40);
+  // ?testkey=<admin-sleutel> ontgrendelt de testpakketten ook in productie — de sleutel
+  // wordt hier nooit gevalideerd (dat lekt 'm naar de browser-bundel), alleen doorgestuurd.
+  // De server (/api/checkout) controleert 'm timing-safe voordat een testbetaling wordt toegestaan.
+  const testKey = searchParams.get("testkey") ?? "";
+  const TOON_TEST_PAKKETTEN = TEST_ZICHTBAAR_STANDAARD || testKey.length > 0;
   const [mounted, setMounted] = useState(false);
   const [stap, setStap] = useState(1);
   const [showAITypes, setShowAITypes] = useState(false);
@@ -172,6 +178,7 @@ function BestelPageInner() {
           telefoon,
           iban: iban.replace(/\s/g, "").toUpperCase(),
           referral,
+          adminKey: testKey,
         }),
       });
 
