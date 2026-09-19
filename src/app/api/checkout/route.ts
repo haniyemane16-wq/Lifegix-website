@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import createMollieClient from "@mollie/api-client";
 import { WEBSITE_PAKKETTEN, AI_PAKKETTEN, bundelPrijs, isWebsitePakket, isAIPakket } from "@/lib/prijzen";
+import { isValidAdminKey } from "@/lib/adminAuth";
 
 export const dynamic = "force-dynamic";
 
 type Pakket = { eenmalig: number; maandelijks: number; label: string };
 
-// Testbetalingen van €0,01 bestaan alleen buiten productie.
-const TEST_PAKKETTEN: Record<string, Pakket> = process.env.NODE_ENV === "production" ? {} : {
+// Testbetalingen van €0,01 — buiten productie altijd beschikbaar; in productie
+// alléén met een geldige admin-sleutel (zodat Hanibal het volledige bestelproces
+// live kan testen zonder dat willekeurige bezoekers voor 1 cent kunnen bestellen).
+const TEST_PAKKETTEN: Record<string, Pakket> = {
   test:     { eenmalig: 0.01, maandelijks: 0,    label: "Testbetaling" },
   test_sub: { eenmalig: 0.01, maandelijks: 0.03, label: "Testbetaling + Abonnement" },
 };
+const TEST_PAKKET_IDS = new Set(Object.keys(TEST_PAKKETTEN));
 
 const PAKKETTEN: Record<string, Pakket> = {
   ...Object.fromEntries([...WEBSITE_PAKKETTEN, ...AI_PAKKETTEN].map((p) => [p.id, { eenmalig: p.eenmalig, maandelijks: p.maandelijks, label: p.naam }])),
@@ -38,6 +42,7 @@ export async function POST(req: NextRequest) {
     telefoon: string;
     iban?: string;
     referral?: string;
+    adminKey?: string;
   };
 
   try {
@@ -46,13 +51,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
   }
 
-  const { pakket, aiAgent, aiType, naam, bedrijf, email, telefoon, iban, referral } = body;
+  const { pakket, aiAgent, aiType, naam, bedrijf, email, telefoon, iban, referral, adminKey } = body;
 
   // Referral is bedoeld als korte referrer-code — server-side afdwingen, client-side filter is te omzeilen.
   const veiligeReferral = (referral ?? "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40);
 
   if (!pakket || !naam || !email) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
+  }
+
+  // Testpakketten alleen buiten productie, of in productie met een geldige admin-sleutel.
+  if (TEST_PAKKET_IDS.has(pakket) && process.env.NODE_ENV === "production" && !isValidAdminKey(adminKey)) {
+    return NextResponse.json({ error: "Ongeldig pakket." }, { status: 400 });
   }
 
   const p = PAKKETTEN[pakket];
