@@ -178,7 +178,14 @@ function AbonnementenBeheren({ adminKey }: { adminKey: string }) {
       const res = await fetch("/api/debug/subscriptions", { headers: { "x-admin-key": adminKey } });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Onbekende fout");
-      setKlanten(data.customers.filter((k: MollieKlant) => k.subscriptions.length > 0));
+      // Toon alleen abonnementen die nog daadwerkelijk gestopt kunnen worden — een
+      // al gestopt/afgerond abonnement heeft hier niks meer te zoeken (voorkomt een
+      // verwarrende "Stop"-knop op iets wat al gestopt is).
+      const metAlleenStopbare = (data.customers as MollieKlant[]).map((k) => ({
+        ...k,
+        subscriptions: k.subscriptions.filter((s) => s.status !== "canceled" && s.status !== "completed"),
+      })).filter((k) => k.subscriptions.length > 0);
+      setKlanten(metAlleenStopbare);
       setStatus("idle");
     } catch (err) {
       setStatus("error");
