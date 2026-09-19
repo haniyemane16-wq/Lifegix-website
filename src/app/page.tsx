@@ -229,10 +229,13 @@ function HowItWorks() {
           <p className="mt-4 text-white/50 max-w-md mx-auto">Simpel, transparant en zonder gedoe — in 3 stappen.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6 relative">
-          {/* Connecting line on desktop */}
-          <div className="hidden md:block absolute top-12 left-[calc(16.67%+16px)] right-[calc(16.67%+16px)] h-px"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.3) 20%, rgba(124,58,237,0.3) 80%, transparent)" }} />
-          {steps.map((step, i) => (
+          {/* Connectielijntjes tussen de kaarten — alleen in de tussenruimtes (gap-6),
+              zodat ze niet zichtbaar door de (bijna) doorzichtige kaartachtergrond heen lopen. */}
+          <div className="hidden md:block absolute top-12 h-px bg-violet-500/30"
+            style={{ left: "calc((100% - 3rem) / 3)", width: "1.5rem" }} />
+          <div className="hidden md:block absolute top-12 h-px bg-violet-500/30"
+            style={{ left: "calc(2 * (100% - 3rem) / 3 + 1.5rem)", width: "1.5rem" }} />
+          {steps.map((step) => (
             <div key={step.number} className="relative p-6 sm:p-8 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:border-violet-500/20 transition-colors">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-full bg-violet-500/15 border border-violet-500/20 flex items-center justify-center text-violet-400 text-sm font-bold flex-shrink-0">
