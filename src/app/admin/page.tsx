@@ -152,17 +152,111 @@ function ActivateSubscriptionForm({ adminKey }: { adminKey: string }) {
   );
 }
 
+type MollieKlant = {
+  customerId: string;
+  name: string | null;
+  email: string | null;
+  subscriptions: {
+    id: string;
+    status: string;
+    amount: { value: string; currency: string };
+    interval: string;
+    description: string;
+  }[];
+};
+
+function AbonnementenBeheren({ adminKey }: { adminKey: string }) {
+  const [klanten, setKlanten] = useState<MollieKlant[] | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [stoppend, setStoppend] = useState<string | null>(null);
+  const [melding, setMelding] = useState("");
+
+  async function ophalen() {
+    setStatus("loading");
+    setMelding("");
+    try {
+      const res = await fetch("/api/debug/subscriptions", { headers: { "x-admin-key": adminKey } });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Onbekende fout");
+      setKlanten(data.customers.filter((k: MollieKlant) => k.subscriptions.length > 0));
+      setStatus("idle");
+    } catch (err) {
+      setStatus("error");
+      setMelding(err instanceof Error ? err.message : "Netwerkfout");
+    }
+  }
+
+  async function stopAbonnement(customerId: string, subscriptionId: string) {
+    setStoppend(subscriptionId);
+    try {
+      const res = await fetch(`/api/debug/subscriptions?customerId=${customerId}&subscriptionId=${subscriptionId}`, {
+        method: "DELETE",
+        headers: { "x-admin-key": adminKey },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Onbekende fout");
+      // Ververs de lijst zodat het gestopte abonnement verdwijnt
+      await ophalen();
+    } catch (err) {
+      setMelding(err instanceof Error ? err.message : "Stoppen mislukt");
+    } finally {
+      setStoppend(null);
+    }
+  }
+
+  return (
+    <section>
+      <h2 className="text-lg font-semibold text-white mb-1">Abonnementen beheren ⏹️</h2>
+      <p className="text-white/40 text-sm mb-4">Bekijk alle actieve Mollie-abonnementen (incl. testabonnementen) en stop ze met één klik.</p>
+      <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-4">
+        <button onClick={ophalen} disabled={status === "loading"}
+          className="px-5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors">
+          {status === "loading" ? "Ophalen..." : "🔄 Ophalen abonnementen"}
+        </button>
+        {melding && <p className="text-red-400 text-sm">❌ {melding}</p>}
+
+        {klanten !== null && (
+          klanten.length === 0 ? (
+            <p className="text-white/40 text-sm">Geen actieve abonnementen gevonden.</p>
+          ) : (
+            <div className="space-y-3">
+              {klanten.map((k) => (
+                <div key={k.customerId} className="p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                  <p className="text-sm font-semibold text-white">{k.name || "(geen naam)"} <span className="text-white/30 font-normal">— {k.email}</span></p>
+                  <p className="text-xs text-white/30 font-mono mb-2">{k.customerId}</p>
+                  {k.subscriptions.map((s) => (
+                    <div key={s.id} className="flex items-center justify-between gap-3 py-2 border-t border-white/5 first:border-t-0">
+                      <div>
+                        <p className="text-sm text-white/70">{s.description} — €{s.amount.value}/{s.interval}</p>
+                        <p className="text-xs text-white/30">{s.status} · {s.id}</p>
+                      </div>
+                      <button onClick={() => stopAbonnement(k.customerId, s.id)} disabled={stoppend === s.id}
+                        className="px-4 py-2 rounded-lg bg-red-600/80 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold transition-colors flex-shrink-0">
+                        {stoppend === s.id ? "Stoppen..." : "⏹️ Stop"}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )
+        )}
+      </div>
+    </section>
+  );
+}
+
 function AdminInner() {
   const params = useSearchParams();
   const key = params.get("key");
 
   // De sleutel wordt server-side geverifieerd; hij staat NIET meer in deze
   // client-code. "checking" = bezig, true/false = uitslag.
-  const [authorized, setAuthorized] = useState<boolean | "checking">("checking");
+  const [authorized, setAuthorized] = useState<boolean | "checking">(key ? "checking" : false);
 
   useEffect(() => {
+    if (!key) return;
     let actief = true;
-    if (!key) { setAuthorized(false); return; }
     fetch("/api/admin/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -296,6 +390,9 @@ function AdminInner() {
 
         {/* Abonnement activeren */}
         <ActivateSubscriptionForm adminKey={key ?? ""} />
+
+        {/* Abonnementen beheren / stoppen */}
+        <AbonnementenBeheren adminKey={key ?? ""} />
 
         {/* n8n setup */}
         <section>
