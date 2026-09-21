@@ -7,19 +7,15 @@ export const dynamic = "force-dynamic";
 
 type Pakket = { eenmalig: number; maandelijks: number; label: string };
 
-// Testbetalingen van €0,01 — buiten productie altijd beschikbaar; in productie
-// alléén met een geldige admin-sleutel (zodat Hanibal het volledige bestelproces
-// live kan testen zonder dat willekeurige bezoekers voor 1 cent kunnen bestellen).
-const TEST_PAKKETTEN: Record<string, Pakket> = {
-  test:     { eenmalig: 0.01, maandelijks: 0,    label: "Testbetaling" },
-  test_sub: { eenmalig: 0.01, maandelijks: 0.03, label: "Testbetaling + Abonnement" },
-};
-const TEST_PAKKET_IDS = new Set(Object.keys(TEST_PAKKETTEN));
+const PAKKETTEN: Record<string, Pakket> = Object.fromEntries(
+  [...WEBSITE_PAKKETTEN, ...AI_PAKKETTEN].map((p) => [p.id, { eenmalig: p.eenmalig, maandelijks: p.maandelijks, label: p.naam }]),
+);
 
-const PAKKETTEN: Record<string, Pakket> = {
-  ...Object.fromEntries([...WEBSITE_PAKKETTEN, ...AI_PAKKETTEN].map((p) => [p.id, { eenmalig: p.eenmalig, maandelijks: p.maandelijks, label: p.naam }])),
-  ...TEST_PAKKETTEN,
-};
+// Testbedragen die met een geldige admin-sleutel het echte bedrag vervangen — zo kan
+// Hanibal élk (ook gebundeld) pakket voor een paar cent bestellen om het volledige
+// bestelproces te testen, zonder dat willekeurige bezoekers dat kunnen misbruiken.
+const TEST_EENMALIG = 0.01;
+const TEST_MAANDELIJKS = 0.03;
 
 function berekenBundel(pakket: string, aiType: string) {
   const website = PAKKETTEN[pakket];
@@ -60,21 +56,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
   }
 
-  // Testpakketten alleen buiten productie, of in productie met een geldige admin-sleutel.
-  if (TEST_PAKKET_IDS.has(pakket) && process.env.NODE_ENV === "production" && !isValidAdminKey(adminKey)) {
-    return NextResponse.json({ error: "Ongeldig pakket." }, { status: 400 });
-  }
-
   const p = PAKKETTEN[pakket];
   if (!p) return NextResponse.json({ error: "Ongeldig pakket." }, { status: 400 });
 
   const bundel = aiAgent && isWebsitePakket(pakket) && aiType ? berekenBundel(pakket, aiType) : null;
   const gekozenPakket = bundel ?? p;
-  const eenmaligBedrag = gekozenPakket.eenmalig;
-  const maandelijksBedrag = gekozenPakket.maandelijks;
   const beschrijving = gekozenPakket.label;
-  const heeftAbonnement = maandelijksBedrag > 0;
+  const heeftAbonnement = gekozenPakket.maandelijks > 0;
   const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_BASE_URL ?? "https://lifegix.nl";
+
+  // Testmodus: met een geldige admin-sleutel wordt het te betalen bedrag vervangen door
+  // een paar cent, ongeacht welk (evt. gebundeld) pakket is gekozen. Zo kan het complete
+  // bestelproces — inclusief een website+AI-bundel — getest worden zonder de echte prijs
+  // te betalen. Zonder geldige sleutel verandert er niets.
+  const testmodusActief = isValidAdminKey(adminKey);
+  const eenmaligBedrag = testmodusActief ? TEST_EENMALIG : gekozenPakket.eenmalig;
+  const maandelijksBedrag = testmodusActief ? (heeftAbonnement ? TEST_MAANDELIJKS : 0) : gekozenPakket.maandelijks;
 
   // Valideer IBAN als abonnement
   if (heeftAbonnement && !iban) {

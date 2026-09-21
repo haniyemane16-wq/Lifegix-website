@@ -16,30 +16,9 @@ import {
   type AIPakketId,
 } from "@/lib/prijzen";
 
-// Testbetalingen van €0,01 — buiten productie altijd zichtbaar; in productie alléén
-// met ?testkey=<admin-sleutel> in de link (server valideert de sleutel bij het afrekenen).
-const TEST_ZICHTBAAR_STANDAARD = process.env.NODE_ENV !== "production";
-
-const TEST_PAKKET = {
-  id: "test",
-  naam: "🧪 Testbetaling",
-  eenmalig: 0.01,
-  maandelijks: 0,
-  features: [] as string[],
-} as const;
-
-const TEST_SUB_PAKKET = {
-  id: "test_sub",
-  naam: "🧪 Testbetaling + Abonnement",
-  eenmalig: 0.01,
-  maandelijks: 0.03,
-  features: [] as string[],
-} as const;
-
-type PakketId = WebsitePakketId | AIPakketId | "test" | "test_sub";
+type PakketId = WebsitePakketId | AIPakketId;
 
 const isAIPakket = (id: PakketId | null): id is AIPakketId => isAIPakketId(id);
-const isTestPakket = (id: PakketId | null) => id === "test" || id === "test_sub";
 
 function CheckIcon() {
   return (
@@ -92,11 +71,12 @@ function BestelPageInner() {
   // Affiliate/referral-tracking: ?ref=naam op de link → automatisch meegestuurd naar Notion/mail
   // Alleen veilige tekens toestaan en kort houden — dit is bedoeld als korte referrer-code, geen vrije tekst.
   const referral = (searchParams.get("ref") ?? "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40);
-  // ?testkey=<admin-sleutel> ontgrendelt de testpakketten ook in productie — de sleutel
-  // wordt hier nooit gevalideerd (dat lekt 'm naar de browser-bundel), alleen doorgestuurd.
-  // De server (/api/checkout) controleert 'm timing-safe voordat een testbetaling wordt toegestaan.
+  // ?testkey=<admin-sleutel> zet testmodus aan: je doorloopt precies dezelfde stappen
+  // als een klant (incl. een website+AI-bundel), maar de server (/api/checkout) verlaagt
+  // het te betalen bedrag naar een paar cent zodra de sleutel klopt. De sleutel wordt
+  // hier nooit gevalideerd (dat lekt 'm naar de browser-bundel), alleen doorgestuurd.
   const testKey = searchParams.get("testkey") ?? "";
-  const TOON_TEST_PAKKETTEN = TEST_ZICHTBAAR_STANDAARD || testKey.length > 0;
+  const testmodusActief = testKey.length > 0;
   const [mounted, setMounted] = useState(false);
   const [stap, setStap] = useState(1);
   const [showAITypes, setShowAITypes] = useState(false);
@@ -121,10 +101,7 @@ function BestelPageInner() {
 
   const websitePakket = WEBSITE_PAKKETTEN.find((p) => p.id === gekozenPakket);
   const aiPakket = AI_PAKKETTEN.find((p) => p.id === gekozenPakket);
-  const huidigPakket = websitePakket ?? aiPakket ?? (
-    gekozenPakket === "test_sub" ? TEST_SUB_PAKKET :
-    gekozenPakket === "test" ? TEST_PAKKET : undefined
-  );
+  const huidigPakket = websitePakket ?? aiPakket;
 
   // Dynamische prijsberekening — zelfde logica als de API (via lib/prijzen)
   const gekozenAiPakket = AI_PAKKETTEN.find((p) => p.id === gekozenAiType);
@@ -136,16 +113,14 @@ function BestelPageInner() {
   const kortingEenmalig = bundel?.kortingEenmalig ?? 0;
   const kortingMaandelijks = bundel?.kortingMaandelijks ?? 0;
 
-  const totalSteps = isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket) ? 2 : 3;
+  const totalSteps = isAIPakket(gekozenPakket) ? 2 : 3;
 
   function handlePakketKeuze(id: PakketId) {
     setGekozenPakket(id);
-    if (isAIPakket(id) || isTestPakket(id)) {
+    if (isAIPakket(id)) {
       setMetAiAgent(false);
-      naarStap(2);
-    } else {
-      naarStap(2);
     }
+    naarStap(2);
   }
 
   function handleAiKeuze(ja: boolean) {
@@ -249,6 +224,11 @@ function BestelPageInner() {
           <p className="mt-3 text-white/50">
             Geen verborgen kosten. Je betaalt nu eenmalig, daarna maandelijks.
           </p>
+          {testmodusActief && (
+            <p className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold">
+              🧪 Testmodus actief — kies gerust elk pakket (ook met AI-agent), je betaalt hierdoor slechts een paar cent
+            </p>
+          )}
         </div>
 
         <StepIndicator current={displayStap} total={totalSteps} />
@@ -334,24 +314,6 @@ function BestelPageInner() {
                     </svg>
                   </div>
                 </button>
-
-                {/* Test pakketten — alleen buiten productie */}
-                {TOON_TEST_PAKKETTEN && (
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handlePakketKeuze("test")}
-                    className="flex-1 py-2.5 px-3 rounded-xl border border-dashed border-white/20 bg-white/[0.02] text-xs text-white/40 hover:text-white/60 transition-colors text-center"
-                  >
-                    🧪 Test €0,01
-                  </button>
-                  <button
-                    onClick={() => handlePakketKeuze("test_sub")}
-                    className="flex-1 py-2.5 px-3 rounded-xl border border-dashed border-violet-500/20 bg-white/[0.02] text-xs text-violet-400/50 hover:text-violet-400/80 transition-colors text-center"
-                  >
-                    🧪 Test + Abo
-                  </button>
-                </div>
-                )}
               </>
             ) : (
               <>
@@ -413,7 +375,7 @@ function BestelPageInner() {
         )}
 
         {/* ── Stap 2: Welke AI Agent? (alleen voor website pakketten) ── */}
-        {stap === 2 && !isAIPakket(gekozenPakket) && !isTestPakket(gekozenPakket) && (
+        {stap === 2 && !isAIPakket(gekozenPakket) && (
           <div>
             <h2 className="text-lg font-semibold text-white/80 mb-2">
               Stap 2 — Wil je een AI Agent erbij?
@@ -462,8 +424,8 @@ function BestelPageInner() {
         )}
 
         {/* ── Formulier stap ── */}
-        {((stap === 3 && !isAIPakket(gekozenPakket) && gekozenPakket !== "test") ||
-          (stap === 2 && (isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket)))) &&
+        {((stap === 3 && !isAIPakket(gekozenPakket)) ||
+          (stap === 2 && isAIPakket(gekozenPakket))) &&
           huidigPakket && (
           <div>
             <h2 className="text-lg font-semibold text-white/80 mb-6">
@@ -675,7 +637,7 @@ function BestelPageInner() {
             </form>
 
             <button
-              onClick={() => naarStap(isAIPakket(gekozenPakket) || isTestPakket(gekozenPakket) ? 1 : 2)}
+              onClick={() => naarStap(isAIPakket(gekozenPakket) ? 1 : 2)}
               className="mt-6 text-sm text-white/40 hover:text-white/70 transition-colors"
             >
               ← Terug
