@@ -168,7 +168,9 @@ type MollieKlant = {
 function AbonnementenBeheren({ adminKey }: { adminKey: string }) {
   const [klanten, setKlanten] = useState<MollieKlant[] | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
-  const [stoppend, setStoppend] = useState<string | null>(null);
+  // Set i.p.v. één string, zodat meerdere knoppen tegelijk hun eigen laadstatus
+  // kunnen tonen als je snel achter elkaar meerdere abonnementen stopt.
+  const [stoppend, setStoppend] = useState<Set<string>>(new Set());
   const [melding, setMelding] = useState("");
 
   async function ophalen() {
@@ -194,7 +196,7 @@ function AbonnementenBeheren({ adminKey }: { adminKey: string }) {
   }
 
   async function stopAbonnement(customerId: string, subscriptionId: string) {
-    setStoppend(subscriptionId);
+    setStoppend((prev) => new Set(prev).add(subscriptionId));
     try {
       const res = await fetch(`/api/debug/subscriptions?customerId=${customerId}&subscriptionId=${subscriptionId}`, {
         method: "DELETE",
@@ -207,7 +209,11 @@ function AbonnementenBeheren({ adminKey }: { adminKey: string }) {
     } catch (err) {
       setMelding(err instanceof Error ? err.message : "Stoppen mislukt");
     } finally {
-      setStoppend(null);
+      setStoppend((prev) => {
+        const next = new Set(prev);
+        next.delete(subscriptionId);
+        return next;
+      });
     }
   }
 
@@ -237,9 +243,9 @@ function AbonnementenBeheren({ adminKey }: { adminKey: string }) {
                         <p className="text-sm text-white/70">{s.description} — €{s.amount.value}/{s.interval}</p>
                         <p className="text-xs text-white/30">{s.status} · {s.id}</p>
                       </div>
-                      <button onClick={() => stopAbonnement(k.customerId, s.id)} disabled={stoppend === s.id}
+                      <button onClick={() => stopAbonnement(k.customerId, s.id)} disabled={stoppend.has(s.id)}
                         className="px-4 py-2 rounded-lg bg-red-600/80 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold transition-colors flex-shrink-0">
-                        {stoppend === s.id ? "Stoppen..." : "⏹️ Stop"}
+                        {stoppend.has(s.id) ? "Stoppen..." : "⏹️ Stop"}
                       </button>
                     </div>
                   ))}
