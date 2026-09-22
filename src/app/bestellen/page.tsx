@@ -20,6 +20,11 @@ type PakketId = WebsitePakketId | AIPakketId;
 
 const isAIPakket = (id: PakketId | null): id is AIPakketId => isAIPakketId(id);
 
+// Moet exact overeenkomen met TEST_EENMALIG/TEST_MAANDELIJKS in /api/checkout/route.ts —
+// alleen voor weergave, de server bepaalt het echte te betalen bedrag.
+const TEST_EENMALIG = 0.01;
+const TEST_MAANDELIJKS = 0.03;
+
 function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 mt-0.5">
@@ -112,6 +117,11 @@ function BestelPageInner() {
   const totaalMaandelijks = bundel?.maandelijks ?? huidigPakket?.maandelijks ?? 0;
   const kortingEenmalig = bundel?.kortingEenmalig ?? 0;
   const kortingMaandelijks = bundel?.kortingMaandelijks ?? 0;
+
+  // In testmodus rekent de server (/api/checkout) een paar cent i.p.v. het echte bedrag —
+  // toon dat hier ook, anders lijkt het alsof je toch het volle bedrag moet betalen.
+  const teBetalenEenmalig = testmodusActief ? TEST_EENMALIG : totaalEenmalig;
+  const teBetalenMaandelijks = testmodusActief ? (totaalMaandelijks > 0 ? TEST_MAANDELIJKS : 0) : totaalMaandelijks;
 
   const totalSteps = isAIPakket(gekozenPakket) ? 2 : 3;
 
@@ -484,12 +494,23 @@ function BestelPageInner() {
                 <div className="h-px bg-white/10 mt-4 mb-3" />
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-white">Nu te betalen</span>
-                  <span className="text-2xl font-bold text-violet-300">{euro(totaalEenmalig)}</span>
+                  <span className="text-right">
+                    {testmodusActief && (
+                      <span className="block text-sm text-white/40 line-through">{euro(totaalEenmalig)}</span>
+                    )}
+                    <span className="text-2xl font-bold text-violet-300">{euro(teBetalenEenmalig)}</span>
+                  </span>
                 </div>
-                {totaalMaandelijks > 0 && (
+                {testmodusActief && (
+                  <p className="text-xs text-amber-300/80 -mt-1">🧪 Testmodus: je betaalt nu écht maar {euro(teBetalenEenmalig)}, niet de normale prijs</p>
+                )}
+                {teBetalenMaandelijks > 0 && (
                   <div className="flex items-center justify-between text-sm text-white/50">
                     <span>Daarna maandelijks</span>
-                    <span>{euro(totaalMaandelijks)}/mnd</span>
+                    <span>
+                      {testmodusActief && <span className="line-through mr-1.5">{euro(totaalMaandelijks)}</span>}
+                      {euro(teBetalenMaandelijks)}/mnd
+                    </span>
                   </div>
                 )}
               </div>
@@ -616,7 +637,7 @@ function BestelPageInner() {
                   disabled={loading}
                   className="w-full py-4 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-sm transition-all hover:scale-[1.01] purple-glow"
                 >
-                  {loading ? "Betaling aanmaken…" : `Bestellen en betalen — ${euro(totaalEenmalig)}`}
+                  {loading ? "Betaling aanmaken…" : `Bestellen en betalen — ${euro(teBetalenEenmalig)}`}
                 </button>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
                   <span className="flex items-center gap-1.5 text-xs text-white/40">
