@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
     beschrijving, diensten, doelgroep,
     heeftLogo, beeldmateriaal,
     domeinKeuze, domein,
-    faqVragen, stijl, voorbeelden, opmerkingen,
+    faqOpeningstijden, faqLocatie, faqAfspraak, faqBetalen, faqOverig,
+    stijl, voorbeelden, opmerkingen,
   } = body as Record<string, string>;
 
   if (!naam || !email || !bedrijf || !beschrijving || !diensten) {
@@ -86,7 +87,11 @@ export async function POST(req: NextRequest) {
             ["Heeft logo", heeftLogo],
             ["Beeldmateriaal", beeldmateriaal],
             ["Domeinnaam", domeinKeuze === "bestaand" ? `Bestaand: ${domein}` : domeinKeuze === "nieuw" ? "Nieuw domein regelen" : ""],
-            ["Veelgestelde vragen (chatbot)", faqVragen],
+            ["FAQ — Openingstijden", faqOpeningstijden],
+            ["FAQ — Locatie / parkeren", faqLocatie],
+            ["FAQ — Afspraak nodig?", faqAfspraak],
+            ["FAQ — Betaalmethoden", faqBetalen],
+            ["FAQ — Overige vragen", faqOverig],
             ["Gewenste stijl", stijl],
             ["Voorbeelden", voorbeelden],
             ["Opmerkingen", opmerkingen],

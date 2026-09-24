@@ -24,7 +24,11 @@ function OnboardingFormInner() {
     beeldmateriaal: "",
     domeinKeuze: "",
     domein: "",
-    faqVragen: "",
+    faqOpeningstijden: "",
+    faqLocatie: "",
+    faqAfspraak: "",
+    faqBetalen: "",
+    faqOverig: "",
     stijl: "",
     voorbeelden: "",
     opmerkingen: "",
@@ -212,13 +216,34 @@ function OnboardingFormInner() {
           {/* ── FAQ chatbot ── */}
           <section className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 space-y-4">
             <h2 className="text-sm font-semibold text-white/70 uppercase tracking-widest">Voor je AI-chatbot (indien besteld)</h2>
+            <p className="text-white/30 text-xs -mt-1">
+              Vul in ieder geval deze paar veelgestelde vragen in — daarnaast kun je onderaan zelf extra vragen toevoegen.
+            </p>
+
             <div>
-              <label className={labelClass}>Welke vragen krijg je het vaakst van klanten?</label>
-              <textarea rows={3} value={form.faqVragen} onChange={(e) => set("faqVragen", e.target.value)} placeholder={"bijv.\nWat zijn jullie openingstijden?\nKan ik zonder afspraak langskomen?"} className={`${inputClass} resize-none`} />
-              <p className="text-white/30 text-xs mt-1.5">
-                Geen zorgen als je niet alles kan bedenken — dit zijn slechts de basisvragen. Een vraag die de chatbot nog niet kent, slaat hij op zodat jij (of iemand die het weet) &apos;m later kan beantwoorden. Zo leert de chatbot na verloop van tijd steeds meer bij, bovenop deze standaardvragen.
-              </p>
+              <label className={labelClass}>Wat zijn jullie openingstijden?</label>
+              <textarea rows={2} value={form.faqOpeningstijden} onChange={(e) => set("faqOpeningstijden", e.target.value)} placeholder={"bijv.\nMa–vr 9:00–18:00, za 9:00–16:00, zo gesloten"} className={`${inputClass} resize-none`} />
             </div>
+            <div>
+              <label className={labelClass}>Waar zijn jullie te vinden? (adres, parkeren, herkenningspunt)</label>
+              <textarea rows={2} value={form.faqLocatie} onChange={(e) => set("faqLocatie", e.target.value)} placeholder="bijv. Dreiumme 11-13, Warnsveld — parkeren kan gratis voor de deur" className={`${inputClass} resize-none`} />
+            </div>
+            <div>
+              <label className={labelClass}>Is een afspraak verplicht, of kan iemand ook gewoon langslopen?</label>
+              <textarea rows={2} value={form.faqAfspraak} onChange={(e) => set("faqAfspraak", e.target.value)} placeholder="bijv. Afspraak verplicht, telefonisch of via de website te maken" className={`${inputClass} resize-none`} />
+            </div>
+            <div>
+              <label className={labelClass}>Welke betaalmethoden accepteren jullie?</label>
+              <textarea rows={2} value={form.faqBetalen} onChange={(e) => set("faqBetalen", e.target.value)} placeholder="bijv. Pin, contant, iDEAL" className={`${inputClass} resize-none`} />
+            </div>
+            <div>
+              <label className={labelClass}>Nog andere vragen die klanten vaak stellen? (optioneel)</label>
+              <textarea rows={3} value={form.faqOverig} onChange={(e) => set("faqOverig", e.target.value)} placeholder={"bijv.\nDoen jullie ook kinderknipbeurten?\nKan ik een cadeaubon kopen?"} className={`${inputClass} resize-none`} />
+            </div>
+
+            <p className="text-white/30 text-xs">
+              Geen zorgen als je niet alles kan bedenken — een vraag die de chatbot nog niet kent, slaat hij op zodat jij (of iemand die het weet) &apos;m later kan beantwoorden. Zo leert de chatbot na verloop van tijd steeds meer bij, bovenop deze standaardvragen.
+            </p>
           </section>
 
           {/* ── Stijl ── */}
