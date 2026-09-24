@@ -4,12 +4,19 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
+const MAX_BESTANDEN = 2;
+const MAX_BESTAND_BYTES = 1.5 * 1024 * 1024; // 1,5MB per bestand — houdt de mail als geheel verstuurbaar
+
+type Bijlage = { filename: string; contentType: string; content: string };
+
 function OnboardingFormInner() {
   const params = useSearchParams();
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [bestanden, setBestanden] = useState<Bijlage[]>([]);
+  const [bestandFout, setBestandFout] = useState("");
 
   const [form, setForm] = useState({
     naam: params.get("naam") ?? "",
@@ -37,6 +44,36 @@ function OnboardingFormInner() {
   const set = (key: string, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
 
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result).split(",")[1] ?? "");
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const handleBestandKeuze = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setBestandFout("");
+
+    const nieuwe: Bijlage[] = [];
+    for (const file of Array.from(files)) {
+      if (bestanden.length + nieuwe.length >= MAX_BESTANDEN) {
+        setBestandFout(`Maximaal ${MAX_BESTANDEN} bestanden — gebruik voor de rest de link hieronder.`);
+        break;
+      }
+      if (file.size > MAX_BESTAND_BYTES) {
+        setBestandFout(`"${file.name}" is groter dan 1,5MB — comprimeer 'm of plak een link hieronder.`);
+        continue;
+      }
+      nieuwe.push({ filename: file.name, contentType: file.type || "application/octet-stream", content: await fileToBase64(file) });
+    }
+    setBestanden((prev) => [...prev, ...nieuwe]);
+  };
+
+  const verwijderBestand = (filename: string) =>
+    setBestanden((prev) => prev.filter((b) => b.filename !== filename));
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -45,7 +82,7 @@ function OnboardingFormInner() {
       const res = await fetch("/api/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, bestanden }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -182,8 +219,32 @@ function OnboardingFormInner() {
               </div>
             </div>
             <div>
-              <label className={labelClass}>Logo / foto&apos;s</label>
-              <textarea rows={2} value={form.beeldmateriaal} onChange={(e) => set("beeldmateriaal", e.target.value)} placeholder="Mail je logo en foto's naar lifegix.contact@gmail.com, of plak hier een link (Drive/Dropbox/Instagram)." className={`${inputClass} resize-none`} />
+              <label className={labelClass}>Logo / foto&apos;s uploaden</label>
+              <input
+                type="file"
+                multiple
+                accept="image/*,.pdf"
+                onChange={(e) => { void handleBestandKeuze(e.target.files); e.target.value = ""; }}
+                className="w-full text-sm text-white/60 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-violet-500/20 file:text-violet-300 hover:file:bg-violet-500/30 file:cursor-pointer cursor-pointer"
+              />
+              <p className="text-white/30 text-xs mt-1.5">Max {MAX_BESTANDEN} bestanden, elk max 1,5MB.</p>
+              {bestandFout && <p className="text-amber-400 text-xs mt-1.5">{bestandFout}</p>}
+              {bestanden.length > 0 && (
+                <ul className="mt-2 space-y-1">
+                  {bestanden.map((b) => (
+                    <li key={b.filename} className="flex items-center justify-between text-sm bg-white/5 rounded-lg px-3 py-2">
+                      <span className="text-white/70 truncate">{b.filename}</span>
+                      <button type="button" onClick={() => verwijderBestand(b.filename)} className="text-white/40 hover:text-red-400 text-xs ml-2 shrink-0">
+                        Verwijderen
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div>
+              <label className={labelClass}>Meer beeldmateriaal? (optioneel)</label>
+              <textarea rows={2} value={form.beeldmateriaal} onChange={(e) => set("beeldmateriaal", e.target.value)} placeholder="Voor grotere bestanden of meerdere foto's: plak hier een link (Drive/Dropbox/Instagram)." className={`${inputClass} resize-none`} />
             </div>
           </section>
 
