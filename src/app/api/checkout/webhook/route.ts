@@ -312,7 +312,14 @@ export async function POST(req: NextRequest) {
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #0a0a0f; color: #ededed; border-radius: 12px;">
           <h2 style="color: #a78bfa; margin-bottom: 8px;">Bedankt voor je bestelling, ${naam}!</h2>
-          <p style="color: #9ca3af; margin-bottom: 24px;">Je betaling is ontvangen. Ik neem binnen 24 uur persoonlijk contact met je op om te starten.</p>
+          <p style="color: #9ca3af; margin-bottom: 24px;">Je betaling is ontvangen. Vul het formulier hieronder in zodat ik direct aan de slag kan — ik neem sowieso binnen 24 uur ook persoonlijk contact met je op.</p>
+
+          <div style="text-align: center; margin-bottom: 24px;">
+            <a href="${BASE_URL}/onboarding?naam=${encodeURIComponent(naam)}&email=${encodeURIComponent(email)}&bedrijf=${encodeURIComponent(bedrijf ?? "")}"
+               style="display: inline-block; padding: 14px 32px; background: #7c3aed; color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px;">
+              Vul je gegevens in →
+            </a>
+          </div>
 
           <!-- Eenmalige betaling -->
           <div style="padding: 16px; background: #1a1a2e; border-radius: 8px; border-left: 3px solid #7c3aed; margin-bottom: 16px;">
