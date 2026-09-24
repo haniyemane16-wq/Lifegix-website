@@ -215,6 +215,9 @@ function OnboardingFormInner() {
             <div>
               <label className={labelClass}>Welke vragen krijg je het vaakst van klanten?</label>
               <textarea rows={3} value={form.faqVragen} onChange={(e) => set("faqVragen", e.target.value)} placeholder={"bijv.\nWat zijn jullie openingstijden?\nKan ik zonder afspraak langskomen?"} className={`${inputClass} resize-none`} />
+              <p className="text-white/30 text-xs mt-1.5">
+                Geen zorgen als je niet alles kan bedenken — dit zijn slechts de basisvragen. Een vraag die de chatbot nog niet kent, slaat hij op zodat jij (of iemand die het weet) &apos;m later kan beantwoorden. Zo leert de chatbot na verloop van tijd steeds meer bij, bovenop deze standaardvragen.
+              </p>
             </div>
           </section>
 
