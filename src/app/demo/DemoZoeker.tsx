@@ -69,6 +69,14 @@ const demos = [
     accent: "#c9a84c",
     zoekwoorden: "kapper barbershop knippen baard yazan zutphen",
   },
+  {
+    href: "/demo/kapsalon",
+    label: "Diensten",
+    naam: "Kapsalon Davines",
+    tekst: "Kapperswebsite met diensten, prijzen, FAQ-chatbot en contact.",
+    accent: "#e0a58c",
+    zoekwoorden: "kapper kapsalon knippen kleuren davines warnsveld",
+  },
 ];
 
 export default function DemoZoeker() {
