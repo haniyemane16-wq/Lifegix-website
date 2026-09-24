@@ -4,6 +4,21 @@ import { Resend } from "resend";
 export const dynamic = "force-dynamic";
 
 const TO_EMAIL = "lifegix.contact@gmail.com";
+const MAX_BESTANDEN = 2;
+const MAX_BESTAND_BYTES = 1.5 * 1024 * 1024;
+const TOEGESTANE_TYPES = ["image/", "application/pdf"];
+
+type Bijlage = { filename: string; contentType: string; content: string };
+
+function isGeldigeBijlage(b: unknown): b is Bijlage {
+  if (!b || typeof b !== "object") return false;
+  const { filename, contentType, content } = b as Record<string, unknown>;
+  if (typeof filename !== "string" || typeof contentType !== "string" || typeof content !== "string") return false;
+  if (!TOEGESTANE_TYPES.some((t) => contentType.startsWith(t))) return false;
+  // base64 → ruwe bytes: 4 tekens ≈ 3 bytes
+  const geschatteBytes = (content.length * 3) / 4;
+  return geschatteBytes <= MAX_BESTAND_BYTES;
+}
 
 function escapeHtml(str: string): string {
   return str
@@ -36,6 +51,10 @@ export async function POST(req: NextRequest) {
   if (!naam || !email || !bedrijf || !beschrijving || !diensten) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
   }
+
+  // Bijlagen server-side opnieuw valideren — de client-check is alleen voor UX
+  const ruweBijlagen = Array.isArray(body.bestanden) ? body.bestanden : [];
+  const bijlagen = ruweBijlagen.filter(isGeldigeBijlage).slice(0, MAX_BESTANDEN);
 
   // 1. Bevestiging naar klant — geen offerte/CTA, ze zijn al klant
   try {
@@ -70,6 +89,7 @@ export async function POST(req: NextRequest) {
       from: "Lifegix Onboarding <hanibal@lifegix.nl>",
       to: TO_EMAIL,
       subject: `Onboarding ingevuld — ${escapeHtml(bedrijf)} (${escapeHtml(naam)})`,
+      attachments: bijlagen.map((b) => ({ filename: b.filename, content: b.content })),
       html: `
         <div style="font-family:sans-serif; max-width:600px; margin:0 auto; padding:24px; background:#0a0a0f; color:#ededed; border-radius:12px;">
           <h2 style="color:#a78bfa; margin-bottom:24px;">Nieuwe onboarding-informatie</h2>
@@ -85,7 +105,8 @@ export async function POST(req: NextRequest) {
             ["Diensten & prijzen", diensten],
             ["Doelgroep", doelgroep],
             ["Heeft logo", heeftLogo],
-            ["Beeldmateriaal", beeldmateriaal],
+            ["Bijgevoegde bestanden", bijlagen.map((b) => b.filename).join(", ")],
+            ["Beeldmateriaal (link/opmerking)", beeldmateriaal],
             ["Domeinnaam", domeinKeuze === "bestaand" ? `Bestaand: ${domein}` : domeinKeuze === "nieuw" ? "Nieuw domein regelen" : ""],
             ["FAQ — Openingstijden", faqOpeningstijden],
             ["FAQ — Locatie / parkeren", faqLocatie],
