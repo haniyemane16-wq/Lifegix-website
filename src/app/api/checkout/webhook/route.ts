@@ -312,7 +312,7 @@ export async function POST(req: NextRequest) {
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #0a0a0f; color: #ededed; border-radius: 12px;">
           <h2 style="color: #a78bfa; margin-bottom: 8px;">Bedankt voor je bestelling, ${naam}!</h2>
-          <p style="color: #9ca3af; margin-bottom: 24px;">Je betaling is ontvangen. Vul het formulier hieronder in zodat ik direct aan de slag kan — ik neem sowieso binnen 24 uur ook persoonlijk contact met je op.</p>
+          <p style="color: #9ca3af; margin-bottom: 24px;">Je betaling is ontvangen. Vul het formulier hieronder in zodat ik direct aan de slag kan. Wil je nog even bellen om alles door te nemen? Prima, laat het weten. Liever alles per mail? Ook prima — helemaal jouw keuze.</p>
 
           <div style="text-align: center; margin-bottom: 24px;">
             <a href="${BASE_URL}/onboarding?naam=${encodeURIComponent(naam)}&email=${encodeURIComponent(email)}&bedrijf=${encodeURIComponent(bedrijf ?? "")}"

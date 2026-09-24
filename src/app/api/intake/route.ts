@@ -68,7 +68,7 @@ function buildOfferteHtml(
         <h2 style="color:#fff; font-size:20px; margin: 0 0 8px 0;">Beste ${escapeHtml(naam)},</h2>
         <p style="color:#9ca3af; margin: 0 0 28px 0; line-height:1.6;">
           Bedankt voor je projectformulier! Op basis van de informatie die je deelde heb ik onderstaande offerte voor je samengesteld.
-          Ik neem ook persoonlijk contact op om alles toe te lichten.
+          Heb je nog vragen? Bel of mail gerust — wat jou het beste uitkomt.
         </p>
 
         <!-- Project samenvatting -->

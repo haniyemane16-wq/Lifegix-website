@@ -18,7 +18,7 @@ export default function BedanktPage() {
           Bedankt voor je bestelling!
         </h1>
         <p className="text-white/50 leading-relaxed mb-8">
-          Je betaling is verwerkt. Je ontvangt binnen 24 uur een bevestiging per e-mail en ik neem persoonlijk contact met je op om te starten.
+          Je betaling is verwerkt. Je ontvangt binnen 24 uur een bevestiging per e-mail met een kort formulier om te starten — bellen kan altijd, maar hoeft niet.
         </p>
 
         <Link
