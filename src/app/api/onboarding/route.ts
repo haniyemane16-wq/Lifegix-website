@@ -44,13 +44,25 @@ export async function POST(req: NextRequest) {
     beschrijving, diensten, doelgroep,
     heeftLogo, beeldmateriaal,
     domeinKeuze, domein,
-    faqOpeningstijden, faqLocatie, faqAfspraak, faqBetalen, faqOverig,
+    faqOpeningstijden, locatieType, faqLocatie, faqWerkwijze,
+    afspraakType, faqAfspraak, faqBetalen, faqOverig,
     stijl, voorbeelden, opmerkingen,
   } = body as Record<string, string>;
 
   if (!naam || !email || !bedrijf || !beschrijving || !diensten) {
     return NextResponse.json({ error: "Verplichte velden ontbreken." }, { status: 400 });
   }
+
+  const locatieTekst =
+    locatieType === "vast" ? faqLocatie
+    : locatieType === "geen" ? `Geen vaste locatie — ${faqWerkwijze}`
+    : "";
+
+  const afspraakTekst =
+    afspraakType === "verplicht" ? `Afspraak verplicht. ${faqAfspraak}`.trim()
+    : afspraakType === "vrij" ? `Geen afspraak nodig. ${faqAfspraak}`.trim()
+    : afspraakType === "nvt" ? "Niet van toepassing"
+    : "";
 
   // Bijlagen server-side opnieuw valideren — de client-check is alleen voor UX
   const ruweBijlagen = Array.isArray(body.bestanden) ? body.bestanden : [];
@@ -109,8 +121,8 @@ export async function POST(req: NextRequest) {
             ["Beeldmateriaal (link/opmerking)", beeldmateriaal],
             ["Domeinnaam", domeinKeuze === "bestaand" ? `Bestaand: ${domein}` : domeinKeuze === "nieuw" ? "Nieuw domein regelen" : ""],
             ["FAQ — Openingstijden", faqOpeningstijden],
-            ["FAQ — Locatie / parkeren", faqLocatie],
-            ["FAQ — Afspraak nodig?", faqAfspraak],
+            ["FAQ — Locatie / parkeren", locatieTekst],
+            ["FAQ — Afspraak nodig?", afspraakTekst],
             ["FAQ — Betaalmethoden", faqBetalen],
             ["FAQ — Overige vragen", faqOverig],
             ["Gewenste stijl", stijl],

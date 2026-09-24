@@ -32,7 +32,10 @@ function OnboardingFormInner() {
     domeinKeuze: "",
     domein: "",
     faqOpeningstijden: "",
+    locatieType: "",
     faqLocatie: "",
+    faqWerkwijze: "",
+    afspraakType: "",
     faqAfspraak: "",
     faqBetalen: "",
     faqOverig: "",
@@ -283,19 +286,60 @@ function OnboardingFormInner() {
 
             <div>
               <label className={labelClass}>Wat zijn jullie openingstijden?</label>
-              <textarea rows={2} value={form.faqOpeningstijden} onChange={(e) => set("faqOpeningstijden", e.target.value)} placeholder={"bijv.\nMa–vr 9:00–18:00, za 9:00–16:00, zo gesloten"} className={`${inputClass} resize-none`} />
+              <textarea rows={2} value={form.faqOpeningstijden} onChange={(e) => set("faqOpeningstijden", e.target.value)} placeholder={"bijv.\nMa–vr 9:00–18:00, za 9:00–16:00, zo gesloten\n(of \"24/7 online\" / \"op afspraak\" als je geen vaste tijden hebt)"} className={`${inputClass} resize-none`} />
             </div>
+
             <div>
-              <label className={labelClass}>Waar zijn jullie te vinden? (adres, parkeren, herkenningspunt)</label>
-              <textarea rows={2} value={form.faqLocatie} onChange={(e) => set("faqLocatie", e.target.value)} placeholder="bijv. Dreiumme 11-13, Warnsveld — parkeren kan gratis voor de deur" className={`${inputClass} resize-none`} />
+              <label className={labelClass}>Hebben jullie een vaste locatie waar klanten langskomen?</label>
+              <div className="flex flex-wrap gap-3 mt-1">
+                {[
+                  { v: "vast", label: "Ja, vaste locatie" },
+                  { v: "geen", label: "Nee — online / bij de klant" },
+                ].map((opt) => (
+                  <button key={opt.v} type="button" onClick={() => set("locatieType", opt.v)}
+                    className={`px-4 py-2 rounded-xl text-sm border transition-all ${
+                      form.locatieType === opt.v
+                        ? "bg-violet-500/20 border-violet-500/50 text-violet-300"
+                        : "bg-white/[0.03] border-white/10 text-white/50 hover:border-white/20"
+                    }`}>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              {form.locatieType === "vast" && (
+                <textarea rows={2} value={form.faqLocatie} onChange={(e) => set("faqLocatie", e.target.value)} placeholder="bijv. Dreiumme 11-13, Warnsveld — parkeren kan gratis voor de deur" className={`${inputClass} resize-none mt-3`} />
+              )}
+              {form.locatieType === "geen" && (
+                <textarea rows={2} value={form.faqWerkwijze} onChange={(e) => set("faqWerkwijze", e.target.value)} placeholder="Hoe werkt het dan? bijv. we komen bij de klant langs, of alles verloopt online/telefonisch" className={`${inputClass} resize-none mt-3`} />
+              )}
             </div>
+
             <div>
               <label className={labelClass}>Is een afspraak verplicht, of kan iemand ook gewoon langslopen?</label>
-              <textarea rows={2} value={form.faqAfspraak} onChange={(e) => set("faqAfspraak", e.target.value)} placeholder="bijv. Afspraak verplicht, telefonisch of via de website te maken" className={`${inputClass} resize-none`} />
+              <div className="flex flex-wrap gap-3 mt-1">
+                {[
+                  { v: "verplicht", label: "Afspraak verplicht" },
+                  { v: "vrij", label: "Kan zonder afspraak" },
+                  { v: "nvt", label: "Niet van toepassing" },
+                ].map((opt) => (
+                  <button key={opt.v} type="button" onClick={() => set("afspraakType", opt.v)}
+                    className={`px-4 py-2 rounded-xl text-sm border transition-all ${
+                      form.afspraakType === opt.v
+                        ? "bg-violet-500/20 border-violet-500/50 text-violet-300"
+                        : "bg-white/[0.03] border-white/10 text-white/50 hover:border-white/20"
+                    }`}>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              {(form.afspraakType === "verplicht" || form.afspraakType === "vrij") && (
+                <textarea rows={2} value={form.faqAfspraak} onChange={(e) => set("faqAfspraak", e.target.value)} placeholder="bijv. telefonisch of via de website een afspraak te maken" className={`${inputClass} resize-none mt-3`} />
+              )}
             </div>
+
             <div>
-              <label className={labelClass}>Welke betaalmethoden accepteren jullie?</label>
-              <textarea rows={2} value={form.faqBetalen} onChange={(e) => set("faqBetalen", e.target.value)} placeholder="bijv. Pin, contant, iDEAL" className={`${inputClass} resize-none`} />
+              <label className={labelClass}>Welke betaalmethoden accepteren jullie? (optioneel)</label>
+              <textarea rows={2} value={form.faqBetalen} onChange={(e) => set("faqBetalen", e.target.value)} placeholder={'bijv. Pin, contant, iDEAL — of "n.v.t., we werken op factuur"'} className={`${inputClass} resize-none`} />
             </div>
             <div>
               <label className={labelClass}>Nog andere vragen die klanten vaak stellen? (optioneel)</label>
