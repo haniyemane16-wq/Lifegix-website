@@ -15,7 +15,7 @@ export default function OverOnsPage() {
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-12">
           <Image
             src="/demo/kapsalon/over-ons.jpg"
-            alt="Kapster van Kapsalon Davines knipt het haar van een klant"
+            alt="Kapster van Kapsalon Davines verzorgt het haar van een klant"
             fill
             sizes="(min-width: 640px) 672px, 90vw"
             className="object-cover"
