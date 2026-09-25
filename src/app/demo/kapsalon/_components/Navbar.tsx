@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
 const LINKS = [
@@ -9,10 +12,12 @@ const LINKS = [
 ];
 
 export default function Navbar() {
+  const [open, setOpen] = useState(false);
+
   return (
     <header className="fixed top-0 inset-x-0 z-40 bg-[#1b1113]/95 backdrop-blur-md border-b border-[#e0a58c]/10">
       <div className="max-w-6xl mx-auto px-6 h-[68px] flex items-center justify-between gap-4">
-        <Link href="/demo/kapsalon" className="shrink-0">
+        <Link href="/demo/kapsalon" className="shrink-0" onClick={() => setOpen(false)}>
           <span className="font-serif text-lg tracking-wide text-[#f3e9e4]">Kapsalon</span>{" "}
           <span className="font-serif text-lg tracking-wide text-[#e0a58c]">Davines</span>
         </Link>
@@ -29,13 +34,51 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <a
-          href="tel:+31575570701"
-          className="shrink-0 text-xs tracking-widest uppercase font-semibold px-5 py-2.5 rounded-full bg-[#e0a58c] text-[#1b1113] hover:bg-[#e8b8a2] transition-colors"
-        >
-          Bel voor afspraak
-        </a>
+        <div className="flex items-center gap-3">
+          <a
+            href="tel:+31575570701"
+            className="hidden sm:inline-block shrink-0 text-xs tracking-widest uppercase font-semibold px-5 py-2.5 rounded-full bg-[#e0a58c] text-[#1b1113] hover:bg-[#e8b8a2] transition-colors"
+          >
+            Bel voor afspraak
+          </a>
+
+          {/* Hamburger — alleen zichtbaar onder md */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Sluit menu" : "Open menu"}
+            aria-expanded={open}
+            className="md:hidden shrink-0 w-9 h-9 flex flex-col items-center justify-center gap-1.5"
+          >
+            <span className={`block w-5 h-px bg-[#f3e9e4] transition-transform ${open ? "translate-y-[3px] rotate-45" : ""}`} />
+            <span className={`block w-5 h-px bg-[#f3e9e4] transition-opacity ${open ? "opacity-0" : ""}`} />
+            <span className={`block w-5 h-px bg-[#f3e9e4] transition-transform ${open ? "-translate-y-[3px] -rotate-45" : ""}`} />
+          </button>
+        </div>
       </div>
+
+      {/* Mobiel uitklapmenu */}
+      {open && (
+        <div className="md:hidden border-t border-[#e0a58c]/10 bg-[#1b1113] px-6 py-4 flex flex-col gap-1">
+          {LINKS.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="py-3 text-sm text-[#f3e9e4]/70 hover:text-[#e0a58c] transition-colors border-b border-[#e0a58c]/5 last:border-0"
+            >
+              {l.label}
+            </Link>
+          ))}
+          <a
+            href="tel:+31575570701"
+            onClick={() => setOpen(false)}
+            className="mt-3 text-center text-xs tracking-widest uppercase font-semibold px-5 py-3 rounded-full bg-[#e0a58c] text-[#1b1113]"
+          >
+            Bel voor afspraak
+          </a>
+        </div>
+      )}
     </header>
   );
 }
