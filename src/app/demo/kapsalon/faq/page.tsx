@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ChatBot from "../_components/ChatBot";
 
 export const metadata: Metadata = { title: "Veelgestelde vragen" };
 
@@ -23,27 +24,7 @@ export default function FaqPage() {
           </p>
         </div>
 
-        {/* Chatbot preview */}
-        <div className="mb-16 rounded-2xl border border-[#e0a58c]/20 bg-[#150d0f] overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-[#e0a58c]/15 flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-[#e0a58c] animate-pulse" />
-            <span className="text-xs tracking-widest uppercase text-[#e0a58c]/80">Kapsalon Davines — assistent</span>
-          </div>
-          <div className="p-5 flex flex-col gap-3">
-            <div className="self-start max-w-[85%] bg-[#e0a58c]/10 border border-[#e0a58c]/20 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm text-[#f3e9e4]/80">
-              Hoi! Waar kan ik je mee helpen? Vraag gerust naar openingstijden, prijzen of een afspraak.
-            </div>
-            <div className="self-end max-w-[85%] bg-[#e0a58c] rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-[#1b1113] font-medium">
-              Kan ik zonder afspraak langskomen?
-            </div>
-            <div className="self-start max-w-[85%] bg-[#e0a58c]/10 border border-[#e0a58c]/20 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm text-[#f3e9e4]/80">
-              Een afspraak is bij ons verplicht — dat kan telefonisch (0575 – 57 07 01) of via deze website. Zal ik je doorverwijzen?
-            </div>
-          </div>
-          <p className="px-5 pb-4 text-[10px] text-[#f3e9e4]/25">
-            Voorbeeldweergave van de AI-chatbot — een vraag die de bot niet kent wordt opgeslagen zodat de eigenaar &apos;m later kan beantwoorden, en de bot leert bij.
-          </p>
-        </div>
+        <ChatBot />
 
         {/* FAQ lijst */}
         <div className="flex flex-col gap-3">
