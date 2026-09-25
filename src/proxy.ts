@@ -13,6 +13,15 @@ export function proxy(req: NextRequest) {
   if (!basePath) return NextResponse.next();
 
   const url = req.nextUrl.clone();
+
+  // De navbar-links wijzen zelf al naar /demo/kapsalon/... (dezelfde
+  // component wordt ook gebruikt op lifegix.nl/demo/kapsalon zelf).
+  // Zonder deze check zou een klik op zo'n link op het subdomein het pad
+  // een tweede keer krijgen voorgeplakt: /demo/kapsalon/demo/kapsalon/... (404).
+  if (url.pathname === basePath || url.pathname.startsWith(`${basePath}/`)) {
+    return NextResponse.next();
+  }
+
   const rest = url.pathname === "/" ? "" : url.pathname;
   url.pathname = `${basePath}${rest}`;
   return NextResponse.rewrite(url);
