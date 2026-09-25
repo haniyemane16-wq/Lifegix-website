@@ -48,11 +48,20 @@ export default function Navbar() {
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Sluit menu" : "Open menu"}
             aria-expanded={open}
-            className="md:hidden shrink-0 w-9 h-9 flex flex-col items-center justify-center gap-1.5"
+            className="md:hidden shrink-0 relative w-9 h-9"
           >
-            <span className={`block w-5 h-px bg-[#f3e9e4] transition-transform ${open ? "translate-y-[3px] rotate-45" : ""}`} />
-            <span className={`block w-5 h-px bg-[#f3e9e4] transition-opacity ${open ? "opacity-0" : ""}`} />
-            <span className={`block w-5 h-px bg-[#f3e9e4] transition-transform ${open ? "-translate-y-[3px] -rotate-45" : ""}`} />
+            <span
+              className="absolute left-1/2 top-1/2 w-5 h-px bg-[#f3e9e4] transition-transform duration-200"
+              style={{ transform: open ? "translate(-50%, -50%) rotate(45deg)" : "translate(-50%, -50%) translateY(-6px)" }}
+            />
+            <span
+              className="absolute left-1/2 top-1/2 w-5 h-px bg-[#f3e9e4] transition-opacity duration-200"
+              style={{ transform: "translate(-50%, -50%)", opacity: open ? 0 : 1 }}
+            />
+            <span
+              className="absolute left-1/2 top-1/2 w-5 h-px bg-[#f3e9e4] transition-transform duration-200"
+              style={{ transform: open ? "translate(-50%, -50%) rotate(-45deg)" : "translate(-50%, -50%) translateY(6px)" }}
+            />
           </button>
         </div>
       </div>
