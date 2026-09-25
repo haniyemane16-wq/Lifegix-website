@@ -15,7 +15,7 @@ const CATEGORIEEN = [
   {
     naam: "Kleur & stylen",
     items: [
-      { naam: "Kleuren", prijs: "vanaf 65" },
+      { naam: "Kleuren", prijs: "65", vanaf: true },
       { naam: "Föhnen / stylen", prijs: "25" },
     ],
   },
@@ -44,7 +44,9 @@ export default function DienstenPage() {
                     className={`flex items-center justify-between px-6 py-4 ${i !== cat.items.length - 1 ? "border-b border-[#e0a58c]/10" : ""}`}
                   >
                     <span className="text-sm text-[#f3e9e4]/70">{item.naam}</span>
-                    <span className="font-serif text-[#e0a58c]">€ {item.prijs}</span>
+                    <span className="font-serif text-[#e0a58c]">
+                      {item.vanaf ? "vanaf " : ""}€ {item.prijs}
+                    </span>
                   </div>
                 ))}
               </div>
