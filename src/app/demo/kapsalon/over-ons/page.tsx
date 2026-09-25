@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = { title: "Over ons" };
 
@@ -9,6 +10,16 @@ export default function OverOnsPage() {
         <div className="text-center mb-12">
           <p className="text-xs tracking-[0.3em] uppercase text-[#e0a58c] mb-4">Ons verhaal</p>
           <h1 className="font-serif text-4xl text-[#f3e9e4]">Over Kapsalon Davines</h1>
+        </div>
+
+        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-12">
+          <Image
+            src="/demo/kapsalon/over-ons.jpg"
+            alt="Kapster van Kapsalon Davines knipt het haar van een klant"
+            fill
+            sizes="(min-width: 640px) 672px, 90vw"
+            className="object-cover"
+          />
         </div>
 
         <div className="flex flex-col gap-5 text-[#f3e9e4]/55 leading-relaxed">
