@@ -49,7 +49,7 @@ export default function ChatBot() {
   return (
     <>
       {open && (
-        <div className="fixed bottom-24 left-5 z-50 w-[calc(100vw-40px)] sm:w-[360px] max-h-[70vh] flex flex-col rounded-2xl border border-[#e0a58c]/20 bg-[#150d0f] shadow-2xl shadow-black/50 overflow-hidden">
+        <div className="fixed bottom-24 right-5 z-50 w-[calc(100vw-40px)] sm:w-[360px] max-h-[70vh] flex flex-col rounded-2xl border border-[#e0a58c]/20 bg-[#150d0f] shadow-2xl shadow-black/50 overflow-hidden">
           <div className="px-5 py-3.5 border-b border-[#e0a58c]/15 flex items-center gap-2.5 flex-shrink-0">
             <span className="w-2 h-2 rounded-full bg-[#e0a58c] animate-pulse" />
             <span className="text-xs tracking-widest uppercase text-[#e0a58c]/80">Kapsalon Davines — assistent</span>
@@ -118,7 +118,7 @@ export default function ChatBot() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Sluit chat" : "Open chat met onze AI-assistent"}
-        className="fixed bottom-8 left-5 z-50 w-14 h-14 rounded-full bg-[#e0a58c] hover:bg-[#e8b8a2] shadow-lg shadow-black/40 flex items-center justify-center transition-colors"
+        className="fixed bottom-8 right-5 z-50 w-14 h-14 rounded-full bg-[#e0a58c] hover:bg-[#e8b8a2] shadow-lg shadow-black/40 flex items-center justify-center transition-colors"
       >
         {open ? (
           <svg width="20" height="20" fill="none" viewBox="0 0 20 20">

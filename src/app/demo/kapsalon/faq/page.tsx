@@ -19,7 +19,7 @@ export default function FaqPage() {
           <p className="text-xs tracking-[0.3em] uppercase text-[#e0a58c] mb-4">Vragen?</p>
           <h1 className="font-serif text-4xl text-[#f3e9e4]">Veelgestelde vragen</h1>
           <p className="mt-4 text-[#f3e9e4]/45 max-w-md mx-auto">
-            Staat je vraag er niet bij? Klik linksonder op het chatballetje — onze AI-assistent helpt je direct verder.
+            Staat je vraag er niet bij? Klik rechtsonder op het chatballetje — onze AI-assistent helpt je direct verder.
           </p>
         </div>
 
