@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { haalBeantwoordeVragen, logOnbeantwoordeVraag } from "@/lib/kapsalonVragen";
 
 export const dynamic = "force-dynamic";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-function systemPrompt() {
+const ESCALATIE_MARKER = "[NIET_GEVONDEN]";
+
+function systemPrompt(geleerdeVragen: { vraag: string; antwoord: string }[]) {
   const vandaag = new Intl.DateTimeFormat("nl-NL", {
     weekday: "long",
     day: "numeric",
@@ -13,7 +16,14 @@ function systemPrompt() {
     year: "numeric",
   }).format(new Date());
 
+  const geleerdBlok = geleerdeVragen.length
+    ? `\n**Extra vragen die de eigenaar zelf heeft beantwoord (gebruik deze net zo goed als de rest):**\n${geleerdeVragen
+        .map((qa) => `- Vraag: "${qa.vraag}" → Antwoord: ${qa.antwoord}`)
+        .join("\n")}\n`
+    : "";
+
   return `Je bent de AI-assistent van Kapsalon Davines, een lokale kapperszaak in Warnsveld. Je helpt bezoekers van de website met vragen.
+${geleerdBlok}
 
 **Vandaag is het:** ${vandaag}. Gebruik dit om vragen als "zijn jullie morgen open?" of "is het nu maandag?" correct te beantwoorden.
 
@@ -44,9 +54,10 @@ function systemPrompt() {
 **Gedragsrichtlijnen:**
 - Antwoord kort en vriendelijk in het Nederlands (max 2–3 zinnen)
 - Gebruik alleen de informatie hierboven — verzin geen diensten, prijzen of openingstijden
-- Als je het antwoord niet weet of de vraag gaat ergens anders over, zeg dat eerlijk en verwijs naar bellen op 0575 – 57 07 01
 - Gebruik geen markdown opmaak — gewone tekst
-- Dit is een demo-website van Lifegix; bij expliciete vragen daarover mag je dat vermelden`;
+- Dit is een demo-website van Lifegix; bij expliciete vragen daarover mag je dat vermelden
+- Gaat de vraag duidelijk ergens anders over (bijv. het weer, een ander bedrijf) dan verwijs je vriendelijk door naar bellen op 0575 – 57 07 01, zonder de marker hieronder
+- Gaat de vraag wél over Kapsalon Davines (diensten, een specifieke behandeling, beleid) maar staat het antwoord niet in de informatie hierboven of hiernaast, zeg dat eerlijk, verwijs naar 0575 – 57 07 01, en zet op een NIEUWE, aparte regel exact dit en niets anders: ${ESCALATIE_MARKER}`;
 }
 
 export async function POST(req: NextRequest) {
@@ -57,14 +68,33 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Ongeldig verzoek." }, { status: 400 });
     }
 
+    const geleerdeVragen = await haalBeantwoordeVragen();
+
     const response = await client.messages.create({
       model: "claude-haiku-4-5",
       max_tokens: 300,
-      system: systemPrompt(),
+      system: systemPrompt(geleerdeVragen),
       messages: messages.slice(-10),
     });
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const raw = response.content[0].type === "text" ? response.content[0].text : "";
+    const moetEscaleren = raw.includes(ESCALATIE_MARKER);
+    const text = raw.replace(ESCALATIE_MARKER, "").trim();
+
+    if (moetEscaleren) {
+      const laatsteVraag = [...messages].reverse().find((m) => m.role === "user")?.content;
+      if (laatsteVraag) {
+        // Bewust awaiten (niet fire-and-forget): een serverless function kan
+        // stoppen zodra de response is verstuurd, waardoor een niet-afgewachte
+        // Notion-call soms nooit zou voltooien.
+        try {
+          await logOnbeantwoordeVraag(laatsteVraag);
+        } catch (err) {
+          console.error("Vraag loggen naar Notion mislukt:", err);
+        }
+      }
+    }
+
     return NextResponse.json({ message: text });
   } catch (err) {
     console.error("Kapsalon chat API error:", err);
