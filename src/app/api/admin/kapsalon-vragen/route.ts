@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isValidAdminKey } from "@/lib/adminAuth";
+import { isValidKapsalonOwnerKey } from "@/lib/adminAuth";
 import { beantwoordVraag, haalOpenVragen, haalRecentBeantwoordVoorPortaal } from "@/lib/kapsalonVragen";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  if (!isValidAdminKey(req.headers.get("x-admin-key"))) {
+  if (!isValidKapsalonOwnerKey(req.headers.get("x-admin-key"))) {
     return NextResponse.json({ error: "Geen toegang" }, { status: 401 });
   }
 
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isValidAdminKey(req.headers.get("x-admin-key"))) {
+  if (!isValidKapsalonOwnerKey(req.headers.get("x-admin-key"))) {
     return NextResponse.json({ error: "Geen toegang" }, { status: 401 });
   }
 

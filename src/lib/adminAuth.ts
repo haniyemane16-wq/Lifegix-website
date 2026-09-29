@@ -14,7 +14,21 @@ import { timingSafeEqual } from "crypto";
  * niet-matchende sleutel.
  */
 export function isValidAdminKey(key: string | null | undefined): boolean {
-  const expected = process.env.ADMIN_KEY;
+  return matchesEnvKey(key, "ADMIN_KEY");
+}
+
+// Eigen, aparte sleutel voor het Kapsalon Davines-eigenaarportaal
+// (/demo/kapsalon-eigenaar). Bewust losgekoppeld van ADMIN_KEY: dat is
+// Hanibals eigen bedrijfssleutel (abonnementen stoppen, review-mails
+// versturen, enz.) en die geef je nooit aan een klant. Een klant krijgt
+// alleen toegang tot zijn eigen vragen-portaal, niet tot de rest van het
+// admin-paneel.
+export function isValidKapsalonOwnerKey(key: string | null | undefined): boolean {
+  return matchesEnvKey(key, "KAPSALON_OWNER_KEY");
+}
+
+function matchesEnvKey(key: string | null | undefined, envVar: string): boolean {
+  const expected = process.env[envVar];
   if (!expected || !key) return false;
   const a = Buffer.from(key);
   const b = Buffer.from(expected);
