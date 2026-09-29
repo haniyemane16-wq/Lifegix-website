@@ -11,7 +11,7 @@ function formatDatum(iso: string | null) {
   return new Intl.DateTimeFormat("nl-NL", { day: "numeric", month: "short" }).format(new Date(iso));
 }
 
-function VragenPortaal({ adminKey }: { adminKey: string }) {
+function VragenPortaal({ ownerKey }: { ownerKey: string }) {
   const [open, setOpen] = useState<OpenVraag[] | null>(null);
   const [beantwoord, setBeantwoord] = useState<BeantwoordeVraag[] | null>(null);
   const [antwoorden, setAntwoorden] = useState<Record<string, string>>({});
@@ -21,7 +21,7 @@ function VragenPortaal({ adminKey }: { adminKey: string }) {
   async function laden() {
     setFoutmelding("");
     try {
-      const res = await fetch("/api/admin/kapsalon-vragen", { headers: { "x-admin-key": adminKey } });
+      const res = await fetch("/api/admin/kapsalon-vragen", { headers: { "x-admin-key": ownerKey } });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Onbekende fout");
       setOpen(data.open);
@@ -44,7 +44,7 @@ function VragenPortaal({ adminKey }: { adminKey: string }) {
     try {
       const res = await fetch("/api/admin/kapsalon-vragen", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+        headers: { "Content-Type": "application/json", "x-admin-key": ownerKey },
         body: JSON.stringify({ pageId: id, antwoord }),
       });
       const data = await res.json();
@@ -141,7 +141,7 @@ function EigenaarInner() {
   useEffect(() => {
     if (!key) return;
     let actief = true;
-    fetch("/api/admin/verify", {
+    fetch("/api/admin/verify-kapsalon-owner", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ key }),
@@ -176,7 +176,7 @@ function EigenaarInner() {
 
   return (
     <main className="min-h-screen bg-[#1b1113]">
-      <VragenPortaal adminKey={key ?? ""} />
+      <VragenPortaal ownerKey={key ?? ""} />
     </main>
   );
 }
