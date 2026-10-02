@@ -6,7 +6,19 @@ export const dynamic = "force-dynamic";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-const ESCALATIE_MARKER = "[NIET_GEVONDEN]";
+// Tool-call i.p.v. een tekst-marker: het model moet expliciet kiezen om deze
+// tool aan te roepen, wat veel betrouwbaarder is dan erop vertrouwen dat het
+// zelf een exacte regel tekst toevoegt (dat werd in de praktijk soms gemist).
+const ESCALATIE_TOOL = "meld_onbeantwoorde_vraag";
+
+const tools: Anthropic.Tool[] = [
+  {
+    name: ESCALATIE_TOOL,
+    description:
+      "Roep dit aan wanneer de vraag van de bezoeker wél over Kapsalon Davines gaat, maar het antwoord niet in de gegeven informatie staat. Gebruik dit naast je normale tekstantwoord (waarin je dat eerlijk zegt en doorverwijst naar 0575 – 57 07 01) — niet in plaats daarvan.",
+    input_schema: { type: "object", properties: {} },
+  },
+];
 
 function systemPrompt(geleerdeVragen: { vraag: string; antwoord: string }[]) {
   const vandaag = new Intl.DateTimeFormat("nl-NL", {
@@ -56,8 +68,8 @@ ${geleerdBlok}
 - Gebruik alleen de informatie hierboven — verzin geen diensten, prijzen of openingstijden
 - Gebruik geen markdown opmaak — gewone tekst
 - Dit is een demo-website van Lifegix; bij expliciete vragen daarover mag je dat vermelden
-- Gaat de vraag duidelijk ergens anders over (bijv. het weer, een ander bedrijf) dan verwijs je vriendelijk door naar bellen op 0575 – 57 07 01, zonder de marker hieronder
-- Gaat de vraag wél over Kapsalon Davines (diensten, een specifieke behandeling, beleid) maar staat het antwoord niet in de informatie hierboven of hiernaast, zeg dat eerlijk, verwijs naar 0575 – 57 07 01, en zet op een NIEUWE, aparte regel exact dit en niets anders: ${ESCALATIE_MARKER}`;
+- Gaat de vraag duidelijk ergens anders over (bijv. het weer, een ander bedrijf) dan verwijs je vriendelijk door naar bellen op 0575 – 57 07 01
+- Gaat de vraag wél over Kapsalon Davines (diensten, een specifieke behandeling, beleid) maar staat het antwoord niet in de informatie hierboven of hiernaast: zeg dat eerlijk, verwijs naar 0575 – 57 07 01, én roep de tool ${ESCALATIE_TOOL} aan zodat de eigenaar de vraag later kan beantwoorden`;
 }
 
 export async function POST(req: NextRequest) {
@@ -75,11 +87,24 @@ export async function POST(req: NextRequest) {
       max_tokens: 300,
       system: systemPrompt(geleerdeVragen),
       messages: messages.slice(-10),
+      tools,
     });
 
-    const raw = response.content[0].type === "text" ? response.content[0].text : "";
-    const moetEscaleren = raw.includes(ESCALATIE_MARKER);
-    const text = raw.replace(ESCALATIE_MARKER, "").trim();
+    const moetEscaleren = response.content.some(
+      (block) => block.type === "tool_use" && block.name === ESCALATIE_TOOL
+    );
+    const ruweTekst = response.content
+      .filter((block) => block.type === "text")
+      .map((block) => block.text)
+      .join("\n")
+      .trim();
+    // Het model hoort naast de tool-call ook gewoon tekst terug te geven, maar
+    // mocht dat een keer uitblijven dan tonen we geen lege chatbubbel.
+    const text =
+      ruweTekst ||
+      (moetEscaleren
+        ? "Daar heb ik op dit moment geen antwoord op. Bel ons gerust op 0575 – 57 07 01, dan helpt onze kapper je verder."
+        : ruweTekst);
 
     if (moetEscaleren) {
       const laatsteVraag = [...messages].reverse().find((m) => m.role === "user")?.content;
