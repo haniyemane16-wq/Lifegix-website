@@ -72,6 +72,30 @@ ${geleerdBlok}
 - Gaat de vraag wél over Kapsalon Davines (diensten, een specifieke behandeling, beleid) maar staat het antwoord niet in de informatie hierboven of hiernaast: zeg dat eerlijk, verwijs naar 0575 – 57 07 01, én roep de tool ${ESCALATIE_TOOL} aan zodat de eigenaar de vraag later kan beantwoorden`;
 }
 
+const FALLBACK_ESCALATIE_TEKST =
+  "Daar heb ik op dit moment geen antwoord op. Bel ons gerust op 0575 – 57 07 01, dan helpt onze kapper je verder.";
+
+// Puur, makkelijk los te testen: bepaalt uit de content-blocks van Claude's
+// response wat de bezoeker te zien krijgt en of dit naar het eigenaarportaal
+// geëscaleerd moet worden. Geen netwerk-/Notion-logica hier.
+export function bepaalAntwoord(
+  content: Anthropic.ContentBlock[]
+): { text: string; moetEscaleren: boolean } {
+  const moetEscaleren = content.some(
+    (block) => block.type === "tool_use" && block.name === ESCALATIE_TOOL
+  );
+  const ruweTekst = content
+    .filter((block) => block.type === "text")
+    .map((block) => block.text)
+    .join("\n")
+    .trim();
+  // Het model hoort naast de tool-call ook gewoon tekst terug te geven, maar
+  // mocht dat een keer uitblijven dan tonen we geen lege chatbubbel.
+  const text = ruweTekst || (moetEscaleren ? FALLBACK_ESCALATIE_TEKST : ruweTekst);
+
+  return { text, moetEscaleren };
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
@@ -90,21 +114,7 @@ export async function POST(req: NextRequest) {
       tools,
     });
 
-    const moetEscaleren = response.content.some(
-      (block) => block.type === "tool_use" && block.name === ESCALATIE_TOOL
-    );
-    const ruweTekst = response.content
-      .filter((block) => block.type === "text")
-      .map((block) => block.text)
-      .join("\n")
-      .trim();
-    // Het model hoort naast de tool-call ook gewoon tekst terug te geven, maar
-    // mocht dat een keer uitblijven dan tonen we geen lege chatbubbel.
-    const text =
-      ruweTekst ||
-      (moetEscaleren
-        ? "Daar heb ik op dit moment geen antwoord op. Bel ons gerust op 0575 – 57 07 01, dan helpt onze kapper je verder."
-        : ruweTekst);
+    const { text, moetEscaleren } = bepaalAntwoord(response.content);
 
     if (moetEscaleren) {
       const laatsteVraag = [...messages].reverse().find((m) => m.role === "user")?.content;
