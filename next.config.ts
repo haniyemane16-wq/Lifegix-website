@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 
 const nextConfig: NextConfig = {
   compress: true,
@@ -18,4 +19,11 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  // Zonder SENTRY_AUTH_TOKEN slaat de plugin het uploaden van source maps
+  // gewoon over (met een waarschuwing) — breekt de build niet.
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: true,
+});
