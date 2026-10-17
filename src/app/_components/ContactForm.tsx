@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ContactForm() {
+  const router = useRouter();
   const [form, setForm] = useState({ name: "", email: "", phone: "", service: "", message: "" });
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -22,25 +23,14 @@ export default function ContactForm() {
         try { const data = await res.json(); message = data.error ?? message; } catch {}
         throw new Error(message);
       }
-      setSubmitted(true);
+      router.push("/bericht-verzonden");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Er ging iets mis.");
-    } finally {
       setLoading(false);
     }
   };
 
   const inputClass = "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-violet-500/50 focus:bg-white/[0.07] transition-colors";
-
-  if (submitted) {
-    return (
-      <div className="text-center py-16 px-8 rounded-2xl bg-violet-500/10 border border-violet-500/20">
-        <div className="text-8xl mb-6 text-green-400">✓</div>
-        <h3 className="text-xl font-bold text-violet-300 mb-2">Bericht ontvangen!</h3>
-        <p className="text-white/50 text-sm">Ik reageer zo snel mogelijk, uiterlijk binnen 24 uur.</p>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-5 sm:p-8 rounded-2xl bg-white/[0.03] gradient-border">
