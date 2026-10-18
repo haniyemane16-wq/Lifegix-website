@@ -40,6 +40,20 @@ const PAKKET_NAAR_NOTION: Record<string, string> = {
   ai_volledig:  "AI Volledig",
 };
 
+/**
+ * Bepaalt het weergave-pakket (bijv. "AI FAQ" of "Bundel Starter") zoals dat
+ * ook in de Notion-CRM wordt gebruikt. Wordt zowel voor de Notion-kolom
+ * "Pakket" gebruikt als voor de `pakket`-queryparam op de onboarding-link,
+ * zodat de DPA-pagina daar de juiste sub-verwerkers op kan baseren.
+ */
+function bepaalWeergavePakket(pakket: string, aiAgent: boolean): string | null {
+  let notionPakket = PAKKET_NAAR_NOTION[pakket] ?? null;
+  if (aiAgent && (pakket === "starter" || pakket === "business")) {
+    notionPakket = pakket === "starter" ? "Bundel Starter" : "Bundel Business";
+  }
+  return notionPakket;
+}
+
 /* ─── Notion helper ─────────────────────────────────────── */
 
 async function addNotionKlant(data: {
@@ -59,10 +73,7 @@ async function addNotionKlant(data: {
   if (!token) { console.warn("⚠️ NOTION_API_KEY niet ingesteld"); return; }
 
   // Pakket label bepalen
-  let notionPakket = PAKKET_NAAR_NOTION[data.pakket] ?? null;
-  if (data.aiAgent && (data.pakket === "starter" || data.pakket === "business")) {
-    notionPakket = data.pakket === "starter" ? "Bundel Starter" : "Bundel Business";
-  }
+  const notionPakket = bepaalWeergavePakket(data.pakket, data.aiAgent);
 
   const properties: Record<string, unknown> = {
     "Bedrijfsnaam":        { title: [{ text: { content: data.bedrijf || data.naam } }] },
@@ -263,6 +274,9 @@ export async function POST(req: NextRequest) {
   const aiLabel = aiAgent === "true" ? " + AI Agent (bundelkorting)" : "";
   const beschrijving = metaBeschrijving || `${pakketLabel}${aiLabel}`;
   const maandelijks = parseFloat(maandelijksBedrag ?? "0");
+  // Weergave-pakket voor de onboarding-link, zodat de DPA-pagina daar de
+  // juiste sub-verwerkers (AI-gerelateerd of niet) op kan baseren.
+  const weergavePakket = bepaalWeergavePakket(pakket, aiAgent === "true") ?? pakket ?? "";
 
   // ── Abonnement aanmaken via IBAN (Copilot approach: klant vult IBAN in formulier) ──
   let mollieKlantId: string | undefined;
@@ -315,7 +329,7 @@ export async function POST(req: NextRequest) {
           <p style="color: #9ca3af; margin-bottom: 24px;">Je betaling is ontvangen. Vul het formulier hieronder in zodat ik direct aan de slag kan. Wil je nog even bellen om alles door te nemen? Prima, laat het weten. Liever alles per mail? Ook prima — helemaal jouw keuze.</p>
 
           <div style="text-align: center; margin-bottom: 24px;">
-            <a href="${BASE_URL}/onboarding?naam=${encodeURIComponent(naam)}&email=${encodeURIComponent(email)}&bedrijf=${encodeURIComponent(bedrijf ?? "")}"
+            <a href="${BASE_URL}/onboarding?naam=${encodeURIComponent(naam)}&email=${encodeURIComponent(email)}&bedrijf=${encodeURIComponent(bedrijf ?? "")}&pakket=${encodeURIComponent(weergavePakket)}"
                style="display: inline-block; padding: 14px 32px; background: #7c3aed; color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px;">
               Vul je gegevens in →
             </a>

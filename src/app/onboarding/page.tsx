@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import DpaAcceptance from "./_components/DpaAcceptance";
 
 const MAX_BESTANDEN = 2;
 const MAX_BESTAND_BYTES = 1.5 * 1024 * 1024; // 1,5MB per bestand — houdt de mail als geheel verstuurbaar
@@ -11,7 +12,9 @@ type Bijlage = { filename: string; contentType: string; content: string };
 
 function OnboardingFormInner() {
   const params = useSearchParams();
+  const pakket = params.get("pakket") ?? "";
 
+  const [dpaGeaccepteerd, setDpaGeaccepteerd] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -102,6 +105,18 @@ function OnboardingFormInner() {
   const inputClass =
     "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-white/25 focus:outline-none focus:border-violet-500/60 focus:bg-white/[0.07] transition-all";
   const labelClass = "block text-xs font-medium text-white/50 mb-1.5";
+
+  if (!dpaGeaccepteerd) {
+    return (
+      <DpaAcceptance
+        naam={form.naam}
+        email={form.email}
+        bedrijf={form.bedrijf}
+        pakket={pakket}
+        onAccepted={() => setDpaGeaccepteerd(true)}
+      />
+    );
+  }
 
   if (submitted) {
     return (
