@@ -45,14 +45,14 @@ function Hero() {
       </div>
 
       <h1 className="animate-fade-in-up animation-delay-200 max-w-3xl text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight text-white">
-        Ik bouw websites die{" "}
+        Ik bouw websites &amp; AI-agents die{" "}
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-purple-300 to-violet-400">
           klanten opleveren
         </span>
       </h1>
 
       <p className="animate-fade-in-up animation-delay-400 mt-6 max-w-xl text-white/55 text-lg leading-relaxed">
-        Professioneel, mobielvriendelijk en binnen 1–2 weken live. Met AI-automatisering zodat jij je kunt focussen op ondernemen.
+        Professionele websites, slimme chatbots en automatisering — binnen 1–2 weken live, zodat jij je kunt focussen op ondernemen.
       </p>
 
       <div className="animate-fade-in-up animation-delay-600 mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center">
