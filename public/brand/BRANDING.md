@@ -12,6 +12,17 @@ Vaste merkelementen, zodat kleuren en logo overal consistent blijven (website, G
 | Violet 500 | `#8b5cf6` | Glow/schaduw-effecten, borders |
 | Violet 600 | `#7c3aed` | Knoppen ("Gratis gesprek", CTA's) |
 
+## Extra kleuren (uit Canva "Merkmateriaal")
+
+Naast de paarse kernkleuren hierboven staan er in het Canva-merkmateriaal van LifeGix ook een groen en oranje accent, gebruikt voor social-media-ontwerpen. Exacte hex-waarden hieronder zijn een benadering op basis van het scherm — klik in Canva op de kleurswatch zelf voor de exacte hex als je die 1-op-1 moet overnemen.
+
+| Naam | Indicatieve hex | Gebruik |
+|---|---|---|
+| Lavendel (licht paars) | `#e0d4ff` (indicatief) | Lichte achtergrondvlakken, subtiele accenten |
+| Slate (blauwgrijs) | `#64748b` (indicatief) | Neutrale accenten naast paars |
+| Groen | `#10b981` (indicatief) | Prijs/actie-highlights, positieve accenten (bv. kortingsprijs) |
+| Oranje | `#f97316` (indicatief) | CTA-accenten op social media |
+
 ## Logo
 
 Tekst-logo: **Life** (wit) + **gix** (violet), vetgedrukt, geen apart beeldmerk — zie `/src/app/_components/Navbar.tsx`.
